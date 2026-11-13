@@ -1,0 +1,3901 @@
+{
+ "sections": [
+  {
+   "id": "kitchen",
+   "title": {
+    "ru": "Кухня",
+    "en": "Kitchen",
+    "zh": "厨房"
+   },
+   "categories": [
+    {
+     "id": "breakfast",
+     "title": {
+      "ru": "Завтраки",
+      "en": "Breakfast",
+      "zh": "早餐"
+     },
+     "icon": "🍳",
+     "items": [
+      {
+       "id": "benedict-bacon",
+       "name": {
+        "ru": "Бенедикт с беконом",
+        "en": "Eggs Benedict with Bacon",
+        "zh": "培根班尼迪克蛋"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 272,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 847,
+          "protein": 33.0,
+          "fat": 64.7,
+          "carbs": 31.5
+         },
+         "per100": {
+          "kcal": 311,
+          "protein": 12.1,
+          "fat": 23.8,
+          "carbs": 11.6
+         },
+         "allergens": [
+          "eggs",
+          "gluten",
+          "milk",
+          "sulfites"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Яйца пашот на поджаренном хлебе с беконом под сливочным голландским соусом. Готовим на заказ, чтобы желток оставался жидким.",
+        "en": "Poached eggs on toasted bread with bacon under creamy hollandaise. Cooked to order so the yolk stays runny.",
+        "zh": "烤面包配培根和水波蛋，淋上奶油荷兰酱。现点现做，蛋黄保持流心。"
+       }
+      },
+      {
+       "id": "benedict-trout",
+       "name": {
+        "ru": "Бенедикт с лососем",
+        "en": "Eggs Benedict with Salmon",
+        "zh": "三文鱼班尼迪克蛋"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 297,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 757,
+          "protein": 37.4,
+          "fat": 52.7,
+          "carbs": 31.5
+         },
+         "per100": {
+          "kcal": 255,
+          "protein": 12.6,
+          "fat": 17.7,
+          "carbs": 10.6
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "milk",
+          "sulfites"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Яйца пашот на поджаренном хлебе с лососем слабой соли под голландским соусом. Готовим на заказ, желток остаётся жидким.",
+        "en": "Poached eggs on toasted bread with lightly salted salmon under hollandaise. Cooked to order with a runny yolk.",
+        "zh": "烤面包配轻腌三文鱼和水波蛋，淋上荷兰酱。现点现做，蛋黄流心。"
+       }
+      },
+      {
+       "id": "avocado-shrimp-breakfast",
+       "name": {
+        "ru": "Завтрак с авокадо и креветками",
+        "en": "Avocado & Shrimp Breakfast",
+        "zh": "牛油果鲜虾早餐"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 351,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 735,
+          "protein": 35.3,
+          "fat": 49.7,
+          "carbs": 33.6
+         },
+         "per100": {
+          "kcal": 209,
+          "protein": 10.1,
+          "fat": 14.1,
+          "carbs": 9.6
+         },
+         "allergens": [
+          "crustaceans",
+          "eggs",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Тост с авокадо, обжаренными креветками и яйцом. Сытный завтрак с морепродуктами.",
+        "en": "Toast with avocado, sautéed shrimp and egg. A hearty seafood breakfast.",
+        "zh": "牛油果吐司配煎虾和鸡蛋。丰盛的海鲜早餐。"
+       }
+      },
+      {
+       "id": "egg-salmon-spinach",
+       "name": {
+        "ru": "Завтрак с яйцом, лососем, шпинатом",
+        "en": "Egg, Salmon & Spinach Breakfast",
+        "zh": "鸡蛋三文鱼菠菜早餐"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 290,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 307,
+          "protein": 27.3,
+          "fat": 17.4,
+          "carbs": 9.3
+         },
+         "per100": {
+          "kcal": 106,
+          "protein": 9.4,
+          "fat": 6.0,
+          "carbs": 3.2
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "sesame"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Яйцо, лосось и тушёный шпинат с кунжутом. Лёгкий белковый завтрак без хлеба.",
+        "en": "Egg, salmon and sautéed spinach with sesame. A light protein breakfast without bread.",
+        "zh": "鸡蛋、三文鱼和芝麻炒菠菜。不含面包的轻盈高蛋白早餐。"
+       }
+      },
+      {
+       "id": "oatmeal-berries",
+       "name": {
+        "ru": "Овсянка с ягодами и сливочным кремом",
+        "en": "Oatmeal with Berries & Cream",
+        "zh": "莓果奶油燕麦粥"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 420,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 528,
+          "protein": 14.7,
+          "fat": 23.8,
+          "carbs": 64.3
+         },
+         "per100": {
+          "kcal": 126,
+          "protein": 3.5,
+          "fat": 5.7,
+          "carbs": 15.3
+         },
+         "allergens": [
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Овсянка, сваренная на молоке, с ягодами и сливочным кремом. Тёплая и нежная.",
+        "en": "Oatmeal cooked in milk with berries and a creamy topping. Warm and gentle.",
+        "zh": "牛奶燕麦粥配浆果和奶油。温暖细腻。"
+       }
+      },
+      {
+       "id": "omelette-avocado",
+       "name": {
+        "ru": "Омлет с авокадо",
+        "en": "Omelette with Avocado",
+        "zh": "牛油果煎蛋卷"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 337,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 587,
+          "protein": 21.4,
+          "fat": 47.8,
+          "carbs": 15.1
+         },
+         "per100": {
+          "kcal": 174,
+          "protein": 6.3,
+          "fat": 14.2,
+          "carbs": 4.5
+         },
+         "allergens": [
+          "eggs",
+          "milk"
+         ],
+         "mayContain": [
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Пышный омлет на молоке с ломтиками спелого авокадо. Готовим на сливочном масле.",
+        "en": "A fluffy omelette made with milk, served with ripe avocado. Cooked in butter.",
+        "zh": "牛奶蓬松煎蛋卷配熟牛油果片。用黄油煎制。"
+       }
+      },
+      {
+       "id": "rice-porridge-mango",
+       "name": {
+        "ru": "Рисовая каша с манго и семенами чиа",
+        "en": "Rice Porridge with Mango & Chia Seeds",
+        "zh": "芒果奇亚籽米粥"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 311,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 447,
+          "protein": 6.4,
+          "fat": 20.3,
+          "carbs": 59.1
+         },
+         "per100": {
+          "kcal": 144,
+          "protein": 2.1,
+          "fat": 6.5,
+          "carbs": 19.0
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Рисовая каша на растительном молоке с манго и семенами чиа. Без молочных продуктов и глютена.",
+        "en": "Rice porridge on plant milk with mango and chia seeds. Dairy-free and gluten-free.",
+        "zh": "植物奶米粥配芒果和奇亚籽。不含乳制品和麸质。"
+       }
+      },
+      {
+       "id": "scramble-bacon",
+       "name": {
+        "ru": "Скрембл с беконом",
+        "en": "Scrambled Eggs with Bacon",
+        "zh": "培根炒蛋"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 321,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 877,
+          "protein": 29.2,
+          "fat": 69.5,
+          "carbs": 32.2
+         },
+         "per100": {
+          "kcal": 273,
+          "protein": 9.1,
+          "fat": 21.7,
+          "carbs": 10.0
+         },
+         "allergens": [
+          "eggs",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Нежная яичница-скрембл со сливочным маслом и хрустящим беконом. Подаём с тостом.",
+        "en": "Soft scrambled eggs with butter and crispy bacon. Served with toast.",
+        "zh": "黄油嫩炒蛋配香脆培根。配吐司。"
+       }
+      },
+      {
+       "id": "scramble-salmon",
+       "name": {
+        "ru": "Скрембл с лососем",
+        "en": "Scrambled Eggs with Salmon",
+        "zh": "三文鱼炒蛋"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 346,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 786,
+          "protein": 33.7,
+          "fat": 57.5,
+          "carbs": 32.2
+         },
+         "per100": {
+          "kcal": 227,
+          "protein": 9.7,
+          "fat": 16.6,
+          "carbs": 9.3
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Нежный скрембл со сливочным маслом и лососем слабой соли. Подаём с тостом.",
+        "en": "Soft scrambled eggs with butter and lightly salted salmon. Served with toast.",
+        "zh": "黄油嫩炒蛋配轻腌三文鱼。配吐司。"
+       }
+      },
+      {
+       "id": "scramble-tomyum",
+       "name": {
+        "ru": "Скрембл с Том Ям",
+        "en": "Tom Yum Scrambled Eggs",
+        "zh": "冬阴功炒蛋"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 237,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 553,
+          "protein": 20.7,
+          "fat": 36.4,
+          "carbs": 34.2
+         },
+         "per100": {
+          "kcal": 234,
+          "protein": 8.7,
+          "fat": 15.4,
+          "carbs": 14.5
+         },
+         "allergens": [
+          "crustaceans",
+          "eggs",
+          "fish",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Скрембл со вкусом тайского супа том ям: пикантный, с лёгкой кислинкой. Подаём с тостом.",
+        "en": "Scrambled eggs with the flavour of Thai tom yum soup — spicy and a little sour. Served with toast.",
+        "zh": "泰式冬阴功风味炒蛋，微辣微酸。配吐司。"
+       }
+      },
+      {
+       "id": "syrniki-blue-matcha",
+       "name": {
+        "ru": "Сырники с соусом из голубой матчи",
+        "en": "Syrniki with Blue Matcha Sauce",
+        "zh": "蓝抹茶酱奶酪煎饼"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 197,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 485,
+          "protein": 20.5,
+          "fat": 30.6,
+          "carbs": 32.5
+         },
+         "per100": {
+          "kcal": 246,
+          "protein": 10.4,
+          "fat": 15.5,
+          "carbs": 16.5
+         },
+         "allergens": [
+          "eggs",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Румяные творожные сырники, обжаренные на сковороде. Подаём с ярким сливочным соусом из голубой матчи.",
+        "en": "Golden cottage-cheese pancakes, pan-fried. Served with a bright, creamy blue matcha sauce.",
+        "zh": "煎至金黄的俄式奶酪饼。配鲜亮的蓝抹茶奶油酱。"
+       }
+      },
+      {
+       "id": "turkish-breakfast",
+       "name": {
+        "ru": "Турецкий завтрак",
+        "en": "Turkish Breakfast",
+        "zh": "土耳其早餐"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 338,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 649,
+          "protein": 23.9,
+          "fat": 44.1,
+          "carbs": 37.6
+         },
+         "per100": {
+          "kcal": 192,
+          "protein": 7.1,
+          "fat": 13.0,
+          "carbs": 11.1
+         },
+         "allergens": [
+          "eggs",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Яйца пашот на йогурте с пряным маслом и хлебом, как готовят в Турции. Сытный и яркий завтрак.",
+        "en": "Poached eggs on yoghurt with spiced butter and bread, Turkish style. A hearty, vivid breakfast.",
+        "zh": "土耳其风味：酸奶上的水波蛋，淋香料黄油，配面包。丰盛又鲜明的早餐。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "salads",
+     "title": {
+      "ru": "Салаты",
+      "en": "Salads",
+      "zh": "沙拉"
+     },
+     "icon": "🥗",
+     "items": [
+      {
+       "id": "necaesar-chicken",
+       "name": {
+        "ru": "Не цезарь с курицей и авокадо",
+        "en": "Not-a-Caesar with Chicken & Avocado",
+        "zh": "鸡肉牛油果“非凯撒”沙拉"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 320,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 715,
+          "protein": 37.1,
+          "fat": 57.2,
+          "carbs": 11.0
+         },
+         "per100": {
+          "kcal": 223,
+          "protein": 11.6,
+          "fat": 17.9,
+          "carbs": 3.4
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "milk",
+          "mustard",
+          "soy",
+          "sesame",
+          "sulfites"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Наш вариант цезаря: листья салата, курица, авокадо и фирменная заправка. Сытно и свежо.",
+        "en": "Our take on Caesar: lettuce, chicken, avocado and our own dressing. Filling and fresh.",
+        "zh": "我们版本的凯撒沙拉：生菜、鸡肉、牛油果和招牌酱汁。饱腹又清爽。"
+       }
+      },
+      {
+       "id": "necaesar-shrimp",
+       "name": {
+        "ru": "Не цезарь с креветкой и авокадо",
+        "en": "Not-a-Caesar with Shrimp & Avocado",
+        "zh": "鲜虾牛油果“非凯撒”沙拉"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 650,
+          "protein": 27.4,
+          "fat": 55.9,
+          "carbs": 7.0
+         },
+         "per100": {
+          "kcal": 217,
+          "protein": 9.1,
+          "fat": 18.6,
+          "carbs": 2.3
+         },
+         "allergens": [
+          "crustaceans",
+          "eggs",
+          "fish",
+          "milk",
+          "mustard",
+          "soy",
+          "sulfites"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Наш вариант цезаря с креветками и авокадо и фирменной заправкой. Лёгкий и сытный.",
+        "en": "Our take on Caesar with shrimp, avocado and our own dressing. Light yet filling.",
+        "zh": "我们版本的凯撒沙拉，配虾和牛油果及招牌酱汁。清爽又饱腹。"
+       }
+      },
+      {
+       "id": "green-avocado",
+       "name": {
+        "ru": "Зелёный салат с авокадо",
+        "en": "Green Salad with Avocado",
+        "zh": "牛油果绿色沙拉"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 384,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 559,
+          "protein": 9.1,
+          "fat": 49.2,
+          "carbs": 19.5
+         },
+         "per100": {
+          "kcal": 146,
+          "protein": 2.4,
+          "fat": 12.8,
+          "carbs": 5.1
+         },
+         "allergens": [
+          "mustard",
+          "soy",
+          "sulfites"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Свежие зелёные листья и овощи с авокадо под горчичной заправкой. Без мяса и молочных продуктов.",
+        "en": "Fresh greens and vegetables with avocado and a mustard dressing. No meat or dairy.",
+        "zh": "新鲜绿叶蔬菜配牛油果和芥末酱汁。不含肉类和乳制品。"
+       }
+      },
+      {
+       "id": "cucumber-zucchini-pesto",
+       "name": {
+        "ru": "Салат с огурцом, кабачком и песто",
+        "en": "Cucumber & Zucchini Salad with Pesto",
+        "zh": "青酱黄瓜西葫芦沙拉"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 290,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 348,
+          "protein": 11.1,
+          "fat": 30.3,
+          "carbs": 9.0
+         },
+         "per100": {
+          "kcal": 120,
+          "protein": 3.8,
+          "fat": 10.5,
+          "carbs": 3.1
+         },
+         "allergens": [
+          "milk",
+          "nuts"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Огурец и тонкие ленты кабачка с ароматным соусом песто и сыром. Лёгкий летний салат.",
+        "en": "Cucumber and thin ribbons of zucchini with fragrant pesto and cheese. A light summer salad.",
+        "zh": "黄瓜和西葫芦薄片，配香浓青酱和奶酪。清爽的夏日沙拉。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "poke",
+     "title": {
+      "ru": "Поке и боулы",
+      "en": "Poke & Bowls",
+      "zh": "波奇饭与碗饭"
+     },
+     "icon": "🍱",
+     "items": [
+      {
+       "id": "poke-chicken",
+       "name": {
+        "ru": "Поке с курицей",
+        "en": "Chicken Poke",
+        "zh": "鸡肉波奇饭"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 327,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 669,
+          "protein": 29.7,
+          "fat": 30.8,
+          "carbs": 67.7
+         },
+         "per100": {
+          "kcal": 205,
+          "protein": 9.1,
+          "fat": 9.4,
+          "carbs": 20.7
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "mustard",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": [
+          "crustaceans",
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Гавайская миска: рис, курица, свежие овощи, эдамаме и соус на основе соевого. Собираем на заказ.",
+        "en": "A Hawaiian bowl: rice, chicken, fresh vegetables, edamame and a soy-based sauce. Assembled to order.",
+        "zh": "夏威夷碗：米饭、鸡肉、新鲜蔬菜、毛豆和酱油底酱汁。现点现拌。"
+       }
+      },
+      {
+       "id": "poke-tuna",
+       "name": {
+        "ru": "Поке с тунцом",
+        "en": "Tuna Poke",
+        "zh": "金枪鱼波奇饭"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 318,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 507,
+          "protein": 22.3,
+          "fat": 17.2,
+          "carbs": 64.2
+         },
+         "per100": {
+          "kcal": 159,
+          "protein": 7.0,
+          "fat": 5.4,
+          "carbs": 20.2
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "mustard",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": [
+          "crustaceans",
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Гавайская миска: рис, кубики тунца, свежие овощи, эдамаме и соус на основе соевого. Собираем на заказ.",
+        "en": "A Hawaiian bowl: rice, diced tuna, fresh vegetables, edamame and a soy-based sauce. Assembled to order.",
+        "zh": "夏威夷碗：米饭、金枪鱼丁、新鲜蔬菜、毛豆和酱油底酱汁。现点现拌。"
+       }
+      },
+      {
+       "id": "poke-salmon",
+       "name": {
+        "ru": "Поке с лососем",
+        "en": "Salmon Poke",
+        "zh": "三文鱼波奇饭"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 318,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 566,
+          "protein": 19.9,
+          "fat": 25.0,
+          "carbs": 64.2
+         },
+         "per100": {
+          "kcal": 178,
+          "protein": 6.3,
+          "fat": 7.9,
+          "carbs": 20.2
+         },
+         "allergens": [
+          "eggs",
+          "fish",
+          "gluten",
+          "mustard",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": [
+          "crustaceans",
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Гавайская миска: рис, кубики лосося, свежие овощи, эдамаме и соус на основе соевого. Собираем на заказ.",
+        "en": "A Hawaiian bowl: rice, diced salmon, fresh vegetables, edamame and a soy-based sauce. Assembled to order.",
+        "zh": "夏威夷碗：米饭、三文鱼丁、新鲜蔬菜、毛豆和酱油底酱汁。现点现拌。"
+       }
+      },
+      {
+       "id": "bowl-tuna",
+       "name": {
+        "ru": "Боул с тунцом",
+        "en": "Tuna Bowl",
+        "zh": "金枪鱼碗饭"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 384,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 664,
+          "protein": 25.0,
+          "fat": 33.9,
+          "carbs": 61.4
+         },
+         "per100": {
+          "kcal": 173,
+          "protein": 6.5,
+          "fat": 8.8,
+          "carbs": 16.0
+         },
+         "allergens": [
+          "fish",
+          "gluten",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": [
+          "nuts",
+          "peanuts"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Тёплая миска с крупой, тунцом и овощами, заправленная соевым соусом и кунжутом. Сытный обед в одной тарелке.",
+        "en": "A warm bowl of grains, tuna and vegetables with soy sauce and sesame. A filling lunch in one dish.",
+        "zh": "温热谷物碗，配金枪鱼和蔬菜，淋酱油撒芝麻。一碗就是丰盛午餐。"
+       }
+      },
+      {
+       "id": "bowl-trout",
+       "name": {
+        "ru": "Боул с форелью",
+        "en": "Trout Bowl",
+        "zh": "鳟鱼碗饭"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 414,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 959,
+          "protein": 27.8,
+          "fat": 76.0,
+          "carbs": 37.9
+         },
+         "per100": {
+          "kcal": 232,
+          "protein": 6.7,
+          "fat": 18.4,
+          "carbs": 9.2
+         },
+         "allergens": [
+          "fish",
+          "gluten",
+          "milk",
+          "mustard",
+          "nuts",
+          "soy",
+          "sesame",
+          "sulfites"
+         ],
+         "mayContain": [
+          "celery",
+          "crustaceans"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Миска с крупой, форелью, овощами и ореховым соусом. Сытный и сбалансированный обед.",
+        "en": "A bowl of grains, trout, vegetables and a nutty sauce. A filling, balanced lunch.",
+        "zh": "谷物碗配鳟鱼、蔬菜和坚果酱。饱腹又均衡的午餐。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "soups",
+     "title": {
+      "ru": "Супы",
+      "en": "Soups",
+      "zh": "汤"
+     },
+     "icon": "🍜",
+     "items": [
+      {
+       "id": "mushroom-soup",
+       "name": {
+        "ru": "Крем-суп грибной",
+        "en": "Cream of Mushroom Soup",
+        "zh": "奶油蘑菇汤"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 393,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 668,
+          "protein": 9.7,
+          "fat": 60.0,
+          "carbs": 21.0
+         },
+         "per100": {
+          "kcal": 170,
+          "protein": 2.5,
+          "fat": 15.3,
+          "carbs": 5.3
+         },
+         "allergens": [
+          "gluten",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Бархатный суп-пюре из шампиньонов на сливках. Подаём горячим с гренками.",
+        "en": "A velvety cream soup of mushrooms. Served hot with croutons.",
+        "zh": "丝滑的奶油蘑菇浓汤。热食，配面包丁。"
+       }
+      },
+      {
+       "id": "tom-kha",
+       "name": {
+        "ru": "Том Кха с курицей",
+        "en": "Tom Kha with Chicken",
+        "zh": "椰汁鸡汤"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 392,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 550,
+          "protein": 20.0,
+          "fat": 39.2,
+          "carbs": 28.5
+         },
+         "per100": {
+          "kcal": 140,
+          "protein": 5.1,
+          "fat": 10.0,
+          "carbs": 7.3
+         },
+         "allergens": [
+          "gluten",
+          "milk",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": [
+          "crustaceans",
+          "fish"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Тайский суп на кокосовом молоке с курицей, галангалом и лаймом. Мягкий, сливочный, с лёгкой остротой.",
+        "en": "Thai coconut-milk soup with chicken, galangal and lime. Mild, creamy, a little spicy.",
+        "zh": "泰式椰奶鸡汤，配南姜和青柠。温和浓郁，微辣。"
+       }
+      },
+      {
+       "id": "tom-yum",
+       "name": {
+        "ru": "Том Ям с морепродуктами",
+        "en": "Tom Yum with Seafood",
+        "zh": "海鲜冬阴功汤"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 427,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 539,
+          "protein": 17.4,
+          "fat": 33.6,
+          "carbs": 40.5
+         },
+         "per100": {
+          "kcal": 126,
+          "protein": 4.1,
+          "fat": 7.9,
+          "carbs": 9.5
+         },
+         "allergens": [
+          "crustaceans",
+          "fish",
+          "molluscs",
+          "sesame"
+         ],
+         "mayContain": [
+          "gluten",
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Острый и кисловатый тайский суп с креветками, кальмаром и мидиями. Подаём с рисом.",
+        "en": "Spicy and sour Thai soup with shrimp, squid and mussels. Served with rice.",
+        "zh": "酸辣泰式冬阴功汤，配虾、鱿鱼和青口。配米饭。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "pasta",
+     "title": {
+      "ru": "Паста",
+      "en": "Pasta",
+      "zh": "意面"
+     },
+     "icon": "🍝",
+     "items": [
+      {
+       "id": "pasta-chicken-pesto",
+       "name": {
+        "ru": "Паста с цыплёнком, песто и адыгейским сыром",
+        "en": "Pasta with Chicken, Pesto & Adyghe Cheese",
+        "zh": "鸡肉青酱阿迪格奶酪意面"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 330,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 871,
+          "protein": 28.3,
+          "fat": 64.4,
+          "carbs": 44.7
+         },
+         "per100": {
+          "kcal": 264,
+          "protein": 8.6,
+          "fat": 19.5,
+          "carbs": 13.6
+         },
+         "allergens": [
+          "gluten",
+          "milk",
+          "nuts",
+          "soy",
+          "sesame"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Паста с нежным цыплёнком в соусе песто, с кубиками адыгейского сыра. Готовим на заказ.",
+        "en": "Pasta with tender chicken in pesto, with cubes of Adyghe cheese. Cooked to order.",
+        "zh": "嫩鸡肉青酱意面，配阿迪格奶酪丁。现点现做。"
+       }
+      },
+      {
+       "id": "pasta-tomyum-bacon",
+       "name": {
+        "ru": "Паста том ям с беконом",
+        "en": "Tom Yum Pasta with Bacon",
+        "zh": "培根冬阴功意面"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 305,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 748,
+          "protein": 22.4,
+          "fat": 53.0,
+          "carbs": 42.9
+         },
+         "per100": {
+          "kcal": 245,
+          "protein": 7.3,
+          "fat": 17.4,
+          "carbs": 14.1
+         },
+         "allergens": [
+          "crustaceans",
+          "fish",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Паста в сливочном соусе со вкусом том ям и беконом. Острая, ароматная, с азиатским характером.",
+        "en": "Pasta in a creamy tom yum sauce with bacon. Spicy, aromatic, with an Asian twist.",
+        "zh": "冬阴功风味奶油培根意面。香辣浓郁，亚洲风情。"
+       }
+      },
+      {
+       "id": "pink-pasta-salmon",
+       "name": {
+        "ru": "Розовая паста с лососем и авокадо",
+        "en": "Pink Pasta with Salmon & Avocado",
+        "zh": "三文鱼牛油果粉红意面"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 369,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 712,
+          "protein": 29.4,
+          "fat": 45.2,
+          "carbs": 44.4
+         },
+         "per100": {
+          "kcal": 193,
+          "protein": 8.0,
+          "fat": 12.3,
+          "carbs": 12.0
+         },
+         "allergens": [
+          "fish",
+          "gluten",
+          "milk",
+          "nuts",
+          "soy"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Паста в розовом сливочно-томатном соусе с лососем и авокадо. Нежная и сытная.",
+        "en": "Pasta in a pink creamy tomato sauce with salmon and avocado. Delicate and filling.",
+        "zh": "粉色奶油番茄酱意面，配三文鱼和牛油果。细腻饱腹。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "mains",
+     "title": {
+      "ru": "Горячее",
+      "en": "Mains",
+      "zh": "热菜"
+     },
+     "icon": "🍤",
+     "items": [
+      {
+       "id": "scallop-beet",
+       "name": {
+        "ru": "Гребешок на свекольном креме с чёрным рисом",
+        "en": "Scallop on Beet Cream with Black Rice",
+        "zh": "甜菜奶油扇贝配黑米"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 371,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 526,
+          "protein": 21.6,
+          "fat": 25.2,
+          "carbs": 56.3
+         },
+         "per100": {
+          "kcal": 142,
+          "protein": 5.8,
+          "fat": 6.8,
+          "carbs": 15.2
+         },
+         "allergens": [
+          "molluscs",
+          "nuts",
+          "soy"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Обжаренные гребешки на бархатном свекольном креме с чёрным рисом. Ресторанная подача.",
+        "en": "Seared scallops on velvety beet cream with black rice. Restaurant-style plating.",
+        "zh": "香煎扇贝配丝滑甜菜泥和黑米。餐厅级摆盘。"
+       }
+      },
+      {
+       "id": "squid-spinach",
+       "name": {
+        "ru": "Кальмар гриль на пюре из шпината",
+        "en": "Grilled Squid on Spinach Purée",
+        "zh": "烤鱿鱼配菠菜泥"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 296,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 404,
+          "protein": 33.4,
+          "fat": 25.5,
+          "carbs": 10.2
+         },
+         "per100": {
+          "kcal": 136,
+          "protein": 11.3,
+          "fat": 8.6,
+          "carbs": 3.5
+         },
+         "allergens": [
+          "milk",
+          "molluscs",
+          "soy"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Кальмар на гриле на сливочном пюре из шпината. Лёгкое горячее с морепродуктами.",
+        "en": "Grilled squid on creamy spinach purée. A light seafood main.",
+        "zh": "烤鱿鱼配奶油菠菜泥。清爽的海鲜主菜。"
+       }
+      },
+      {
+       "id": "shrimp-carrot",
+       "name": {
+        "ru": "Креветка с морковным кремом",
+        "en": "Shrimp with Carrot Cream",
+        "zh": "鲜虾配胡萝卜奶油"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 333,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 359,
+          "protein": 29.1,
+          "fat": 20.6,
+          "carbs": 12.8
+         },
+         "per100": {
+          "kcal": 108,
+          "protein": 8.7,
+          "fat": 6.2,
+          "carbs": 3.8
+         },
+         "allergens": [
+          "crustaceans",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Обжаренные креветки на нежном морковном креме. Яркое и лёгкое горячее.",
+        "en": "Seared shrimp on a smooth carrot cream. A bright, light main.",
+        "zh": "香煎虾配细腻胡萝卜泥。鲜亮清爽的主菜。"
+       }
+      },
+      {
+       "id": "chicken-broccoli",
+       "name": {
+        "ru": "Куриная грудка с брокколи",
+        "en": "Chicken Breast with Broccoli",
+        "zh": "鸡胸肉配西兰花"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 304,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 450,
+          "protein": 44.1,
+          "fat": 28.2,
+          "carbs": 6.6
+         },
+         "per100": {
+          "kcal": 148,
+          "protein": 14.5,
+          "fat": 9.3,
+          "carbs": 2.2
+         },
+         "allergens": [
+          "gluten"
+         ],
+         "mayContain": [
+          "celery",
+          "milk"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Сочная куриная грудка с брокколи на пару. Простое и полезное горячее.",
+        "en": "Juicy chicken breast with steamed broccoli. A simple, wholesome main.",
+        "zh": "多汁鸡胸肉配蒸西兰花。简单健康的主菜。"
+       }
+      },
+      {
+       "id": "salmon-black-rice",
+       "name": {
+        "ru": "Лосось с чёрным рисом и вялеными томатами",
+        "en": "Salmon with Black Rice & Sun-dried Tomatoes",
+        "zh": "三文鱼配黑米与油浸番茄"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 407,
+         "unit": "g",
+         "nutrition": {
+          "kcal": 584,
+          "protein": 34.5,
+          "fat": 23.8,
+          "carbs": 58.6
+         },
+         "per100": {
+          "kcal": 143,
+          "protein": 8.5,
+          "fat": 5.9,
+          "carbs": 14.4
+         },
+         "allergens": [
+          "fish",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Запечённый лосось с чёрным рисом и вялеными томатами. Сытное горячее с рыбой.",
+        "en": "Baked salmon with black rice and sun-dried tomatoes. A filling fish main.",
+        "zh": "烤三文鱼配黑米和油浸番茄干。丰盛的鱼类主菜。"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "desserts",
+   "title": {
+    "ru": "Десерты",
+    "en": "Desserts",
+    "zh": "甜品"
+   },
+   "categories": [
+    {
+     "id": "custards",
+     "title": {
+      "ru": "Кустарды",
+      "en": "Custards",
+      "zh": "卡仕达芝士蛋糕"
+     },
+     "icon": "🍮",
+     "items": [
+      {
+       "id": "custard",
+       "name": {
+        "ru": "Кустард",
+        "en": "Custard Cheesecake",
+        "zh": "卡仕达芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Азиатский заварной чизкейк с мягким центром и хрустящей корочкой. Без желатина и стабилизаторов, минимум муки и сахара — напоминает запечённое мороженое или крем-брюле.",
+        "en": "Asian baked custard cheesecake with a soft centre and a crisp top. No gelatin or stabilisers, very little flour and sugar — like baked ice cream or crème brûlée.",
+        "zh": "亚洲风味烤卡仕达芝士蛋糕，外皮微脆、中心柔软。不含明胶和稳定剂，少面粉少糖，口感像烤冰淇淋或焦糖布丁。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, сливки, молоко, яйцо, щепотка муки, сахар",
+        "en": "cream cheese, cream, milk, egg, a pinch of flour, sugar",
+        "zh": "奶油奶酪、淡奶油、牛奶、鸡蛋、少许面粉、糖"
+       }
+      },
+      {
+       "id": "custard-lingonberry",
+       "name": {
+        "ru": "Кустард с брусникой",
+        "en": "Lingonberry Custard",
+        "zh": "越橘卡仕达"
+       },
+       "price": null,
+       "description": {
+        "ru": "Классический кустард со свежей брусникой и сиропом фиалки. Свежий цветочный вкус.",
+        "en": "Classic custard with fresh lingonberries and violet syrup. Fresh and floral.",
+        "zh": "经典卡仕达，加入新鲜越橘和紫罗兰糖浆，清新花香。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, сливки, молоко, яйцо, щепотка муки, сахар",
+        "en": "cream cheese, cream, milk, egg, a pinch of flour, sugar",
+        "zh": "奶油奶酪、淡奶油、牛奶、鸡蛋、少许面粉、糖"
+       }
+      },
+      {
+       "id": "custard-strawberry",
+       "name": {
+        "ru": "Кустард с клубникой / голубикой",
+        "en": "Strawberry / Blueberry Custard",
+        "zh": "草莓／蓝莓卡仕达"
+       },
+       "price": null,
+       "description": {
+        "ru": "Классический кустард: влажная гладкая текстура, ягоды для свежести и естественной сладости. Наш хит.",
+        "en": "Classic custard with a moist, silky texture and berries for freshness and natural sweetness. Our bestseller.",
+        "zh": "经典卡仕达，湿润细腻，搭配莓果带来清新与自然甜味。招牌热卖。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, сливки, молоко, яйцо, щепотка муки, сахар",
+        "en": "cream cheese, cream, milk, egg, a pinch of flour, sugar",
+        "zh": "奶油奶酪、淡奶油、牛奶、鸡蛋、少许面粉、糖"
+       }
+      },
+      {
+       "id": "custard-caramel",
+       "name": {
+        "ru": "Карамельный кустард",
+        "en": "Caramel Custard",
+        "zh": "焦糖卡仕达"
+       },
+       "price": null,
+       "description": {
+        "ru": "Вкус топлёного молока с шоколадной карамелью, посыпан алкализованным какао.",
+        "en": "Baked-milk flavour with caramel chocolate, dusted with alkalised cocoa.",
+        "zh": "烤奶风味搭配焦糖巧克力，表面撒碱化可可粉。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, яйцо, сливки, кукурузный крахмал, сахар, карамельный шоколад",
+        "en": "cream cheese, egg, cream, corn starch, sugar, caramel chocolate",
+        "zh": "奶油奶酪、鸡蛋、淡奶油、玉米淀粉、糖、焦糖巧克力"
+       }
+      },
+      {
+       "id": "japanese-cheese",
+       "name": {
+        "ru": "Японский чизз",
+        "en": "Japanese Cheesecake",
+        "zh": "日式芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Воздушный чизз с творожной зернистой текстурой — что-то между запеканкой и чизкейком.",
+        "en": "Airy cheesecake with a grainy, curd-like texture — somewhere between a bake and a cheesecake.",
+        "zh": "轻盈的芝士蛋糕，带有颗粒感的奶酪质地，介于烤奶酪糕与芝士蛋糕之间。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "сметана, яйцо, сахар, кукурузный крахмал, ванилин",
+        "en": "sour cream, egg, sugar, corn starch, vanillin",
+        "zh": "酸奶油、鸡蛋、糖、玉米淀粉、香草醛"
+       }
+      }
+     ]
+    },
+    {
+     "id": "cream-cheese",
+     "title": {
+      "ru": "КремЧизы",
+      "en": "Cream Cheese Cakes",
+      "zh": "奶油芝士蛋糕"
+     },
+     "icon": "🍰",
+     "items": [
+      {
+       "id": "cc-classic",
+       "name": {
+        "ru": "КремЧиз классический",
+        "en": "Classic Cream Cheese Cake",
+        "zh": "经典奶油芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Внизу классический кустард, сверху воздушный крем на маскарпоне — немного похоже на тирамису. Сытнее, чем кустарды.",
+        "en": "Classic custard base topped with airy mascarpone cream — a little like tiramisu. Richer than our custards.",
+        "zh": "底层为经典卡仕达，上层为轻盈马斯卡彭奶油，有点像提拉米苏，比卡仕达更饱满。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, сливки, молоко, яйцо, щепотка муки, сахар, маскарпоне, какао",
+        "en": "cream cheese, cream, milk, egg, a pinch of flour, sugar, mascarpone, cocoa",
+        "zh": "奶油奶酪、淡奶油、牛奶、鸡蛋、少许面粉、糖、马斯卡彭、可可"
+       }
+      },
+      {
+       "id": "cc-lavender",
+       "name": {
+        "ru": "КремЧиз лаванда",
+        "en": "Lavender Cream Cheese Cake",
+        "zh": "薰衣草奶油芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Кустард в основе и крем на маскарпоне с лавандовым сиропом — как лавандовое тирамису. Цветочный, свежий, сливочно-творожный.",
+        "en": "Custard base with mascarpone cream and lavender syrup — like a lavender tiramisu. Floral, fresh and creamy.",
+        "zh": "卡仕达底层配薰衣草糖浆马斯卡彭奶油，宛如薰衣草提拉米苏，花香清新、奶香浓郁。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ]
+      },
+      {
+       "id": "cc-chocolate",
+       "name": {
+        "ru": "КремЧиз шоколадный",
+        "en": "Chocolate Cream Cheese Cake",
+        "zh": "巧克力奶油芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Шоколадный кустард и крем из маскарпоне с бельгийским тёмным шоколадом и цедрой апельсина — по вкусу как «Птичье молоко». Посыпка из тёмного шоколада и какао.",
+        "en": "Chocolate custard with mascarpone cream, Belgian dark chocolate and orange zest — tastes like the classic “Bird’s Milk” cake. Topped with dark chocolate and cocoa.",
+        "zh": "巧克力卡仕达配比利时黑巧克力与橙皮马斯卡彭奶油，口味类似“鸟奶”蛋糕，表面撒黑巧克力与可可。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "творожный сыр, яйцо, сливки, кукурузный крахмал, сахар, 2 вида шоколада, маскарпоне, цедра апельсина",
+        "en": "cream cheese, egg, cream, corn starch, sugar, two kinds of chocolate, mascarpone, orange zest",
+        "zh": "奶油奶酪、鸡蛋、淡奶油、玉米淀粉、糖、两种巧克力、马斯卡彭、橙皮"
+       }
+      },
+      {
+       "id": "cc-matcha",
+       "name": {
+        "ru": "КремЧиз матча",
+        "en": "Matcha Cream Cheese Cake",
+        "zh": "抹茶奶油芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Кустард с нашей фирменной зелёной матчей, воздушный крем на маскарпоне и посыпка из матчи. Нежный, сливочный, со свежей горчинкой.",
+        "en": "Custard with our signature green matcha, airy mascarpone cream and a matcha dusting. Tender and creamy with a fresh bitter note.",
+        "zh": "以招牌绿抹茶卡仕达为底，配轻盈马斯卡彭奶油并撒抹茶粉，细腻奶香中带清新微苦。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ]
+      },
+      {
+       "id": "cc-earl-grey",
+       "name": {
+        "ru": "КремЧиз Эрл Грей",
+        "en": "Earl Grey Cream Cheese Cake",
+        "zh": "伯爵茶奶油芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Основа из шоколадного печенья и бисквита, пропитанного чаем эрл грей, залита чизкейком с белым шоколадом, сверху крошка печенья. Для тех, кто любит послаще.",
+        "en": "Chocolate cookie base and Earl Grey-soaked sponge under a white chocolate cheesecake, topped with cookie crumbs. For those who like it sweeter.",
+        "zh": "巧克力饼干底与伯爵茶浸润的蛋糕胚，覆以白巧克力芝士蛋糕并撒饼干碎，适合喜欢偏甜口味的客人。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "milk",
+          "eggs"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "cakes",
+     "title": {
+      "ru": "Торты",
+      "en": "Cakes",
+      "zh": "蛋糕"
+     },
+     "icon": "🎂",
+     "items": [
+      {
+       "id": "raspberry-pistachio",
+       "name": {
+        "ru": "Малина-фисташка",
+        "en": "Raspberry & Pistachio",
+        "zh": "覆盆子开心果"
+       },
+       "price": null,
+       "description": {
+        "ru": "Малиновый чизкейк с ярким вкусом фисташки и освежающей кислинкой малины, украшен сливочным кремом из фисташки.",
+        "en": "Raspberry cheesecake with a bold pistachio flavour and fresh raspberry tang, finished with pistachio cream.",
+        "zh": "覆盆子芝士蛋糕，开心果风味浓郁，覆盆子微酸清爽，以开心果奶油装饰。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "eggs",
+          "milk",
+          "gluten",
+          "nuts"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "яйцо, сахар, кремчиз, сливки, белое печенье, малиновое пюре, фисташковая паста",
+        "en": "egg, sugar, cream cheese, cream, white biscuits, raspberry purée, pistachio paste",
+        "zh": "鸡蛋、糖、奶油奶酪、淡奶油、白饼干、覆盆子果泥、开心果酱"
+       }
+      },
+      {
+       "id": "dubai-cheese",
+       "name": {
+        "ru": "Дубайский чиз",
+        "en": "Dubai Cheesecake",
+        "zh": "迪拜芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Основа из двух видов печенья, обжаренное тесто катаифи с фисташковой пастой и творожный сыр с шоколадом. Сверху молочный шоколад.",
+        "en": "Two-cookie base, toasted kataifi with pistachio paste and chocolate cream cheese, topped with milk chocolate.",
+        "zh": "两种饼干做底，烤卡塔耶夫酥丝配开心果酱与巧克力奶油奶酪，表面淋牛奶巧克力。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "milk",
+          "eggs",
+          "nuts",
+          "peanuts",
+          "soy"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "печенье, сливки, творожный сыр, шоколад, яйцо, какао, катаифи, фисташковая паста, белый шоколад, молоко, соевое масло, арахисовая паста",
+        "en": "biscuits, cream, cream cheese, chocolate, egg, cocoa, kataifi, pistachio paste, white chocolate, milk, soybean oil, peanut paste",
+        "zh": "饼干、淡奶油、奶油奶酪、巧克力、鸡蛋、可可、卡塔耶夫酥丝、开心果酱、白巧克力、牛奶、大豆油、花生酱"
+       }
+      },
+      {
+       "id": "snickers",
+       "name": {
+        "ru": "Сникерс",
+        "en": "Snickers Cheesecake",
+        "zh": "士力架芝士蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Чизкейк с арахисом и нежным шоколадным кремом, сверху солёная карамель с арахисом. Похоже на батончик, но менее сладко.",
+        "en": "Peanut cheesecake with silky chocolate cream and salted peanut caramel on top. Like the candy bar, only less sweet.",
+        "zh": "花生芝士蛋糕配柔滑巧克力奶油，顶部为咸焦糖花生，像巧克力棒但没那么甜。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "eggs",
+          "peanuts",
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "яйцо, ванилин, арахисовая паста, чёрный шоколад, белое печенье, солёная карамель, арахис",
+        "en": "egg, vanillin, peanut paste, dark chocolate, white biscuits, salted caramel, peanuts",
+        "zh": "鸡蛋、香草醛、花生酱、黑巧克力、白饼干、咸焦糖、花生"
+       }
+      },
+      {
+       "id": "medovik",
+       "name": {
+        "ru": "Медовик",
+        "en": "Honey Cake",
+        "zh": "蜂蜜蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Многослойный десерт из медовых коржей с прослойками творожного крема.",
+        "en": "Layers of honey sponge with cream cheese filling.",
+        "zh": "多层蜂蜜蛋糕胚，夹奶油奶酪馅。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "eggs",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "мука, мёд, яйца, сливочное масло, кремчиз, сливки",
+        "en": "flour, honey, eggs, butter, cream cheese, cream",
+        "zh": "面粉、蜂蜜、鸡蛋、黄油、奶油奶酪、淡奶油"
+       }
+      },
+      {
+       "id": "karpatka",
+       "name": {
+        "ru": "Карпатка",
+        "en": "Karpatka",
+        "zh": "喀尔巴阡蛋糕"
+       },
+       "price": null,
+       "description": {
+        "ru": "Заварное тесто с кремом на молоке и яйцах и прослойкой из смородины и малины. С лёгкой кислинкой.",
+        "en": "Choux pastry with milk-and-egg cream and a blackcurrant-raspberry layer. Lightly tart.",
+        "zh": "泡芙面坯配牛奶鸡蛋奶油，夹黑加仑与覆盆子，带微酸口感。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "eggs",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "молоко, яйца, ванилин, смородина, малиновое пюре, сливочное масло, мука",
+        "en": "milk, eggs, vanillin, blackcurrant, raspberry purée, butter, flour",
+        "zh": "牛奶、鸡蛋、香草醛、黑加仑、覆盆子果泥、黄油、面粉"
+       }
+      },
+      {
+       "id": "napoleon",
+       "name": {
+        "ru": "Наполеон",
+        "en": "Napoleon",
+        "zh": "拿破仑"
+       },
+       "price": null,
+       "description": {
+        "ru": "Многослойный десерт из слоёного теста, пропитанный варёной сгущёнкой.",
+        "en": "Layered puff pastry soaked with dulce de leche.",
+        "zh": "多层千层酥皮，浸润熟炼乳。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "milk"
+         ],
+         "mayContain": [
+          "eggs"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "мука, сливочное масло, варёная сгущёнка",
+        "en": "flour, butter, dulce de leche",
+        "zh": "面粉、黄油、熟炼乳"
+       }
+      }
+     ]
+    },
+    {
+     "id": "mochi",
+     "title": {
+      "ru": "Моти",
+      "en": "Mochi",
+      "zh": "麻糬"
+     },
+     "icon": "🍡",
+     "items": [
+      {
+       "id": "mochi",
+       "name": {
+        "ru": "Моти",
+        "en": "Mochi",
+        "zh": "麻糬"
+       },
+       "price": null,
+       "description": {
+        "ru": "Японский десерт из тонкого рисового теста со сливочным кремом и натуральным фруктовым пюре. Выберите вкус — набор меняется каждый день.",
+        "en": "Japanese dessert: thin rice dough with cream and natural fruit purée. Pick a flavour — the line-up changes daily.",
+        "zh": "日式甜点：薄糯米皮包裹奶油与天然果泥。请选择口味——每日口味有所不同。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "flavors": [
+        {
+         "id": "strawberry",
+         "name": {
+          "ru": "Клубника",
+          "en": "Strawberry",
+          "zh": "草莓"
+         }
+        },
+        {
+         "id": "peach",
+         "name": {
+          "ru": "Персик",
+          "en": "Peach",
+          "zh": "桃子"
+         }
+        },
+        {
+         "id": "passion-fruit",
+         "name": {
+          "ru": "Маракуйя",
+          "en": "Passion fruit",
+          "zh": "百香果"
+         }
+        },
+        {
+         "id": "pear",
+         "name": {
+          "ru": "Груша",
+          "en": "Pear",
+          "zh": "梨"
+         }
+        },
+        {
+         "id": "mango",
+         "name": {
+          "ru": "Манго",
+          "en": "Mango",
+          "zh": "芒果"
+         }
+        },
+        {
+         "id": "banana",
+         "name": {
+          "ru": "Банан",
+          "en": "Banana",
+          "zh": "香蕉"
+         }
+        },
+        {
+         "id": "caramel",
+         "name": {
+          "ru": "Карамель",
+          "en": "Caramel",
+          "zh": "焦糖"
+         }
+        }
+       ]
+      },
+      {
+       "id": "mochi-dubai",
+       "name": {
+        "ru": "Моти дубай",
+        "en": "Dubai Mochi",
+        "zh": "迪拜麻糬"
+       },
+       "price": null,
+       "description": {
+        "ru": "Рисовое тесто, шоколадный крем и хрустящий катаифи с фисташковой пастой. Покрыт тонким слоем шоколада с молотой фисташкой.",
+        "en": "Rice dough with chocolate cream and crunchy kataifi with pistachio paste, coated in thin chocolate and ground pistachio.",
+        "zh": "糯米皮包裹巧克力奶油与开心果酱脆酥丝，外层为薄巧克力和开心果碎。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "eggs",
+          "milk",
+          "gluten",
+          "nuts"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "рисовое тесто, желток, сливки, шоколад, тесто катаифи, фисташковая паста, белый шоколад",
+        "en": "rice dough, egg yolk, cream, chocolate, kataifi, pistachio paste, white chocolate",
+        "zh": "糯米皮、蛋黄、淡奶油、巧克力、卡塔耶夫酥丝、开心果酱、白巧克力"
+       }
+      }
+     ]
+    },
+    {
+     "id": "pastries",
+     "title": {
+      "ru": "Пирожные и печенье",
+      "en": "Pastries & Cookies",
+      "zh": "小点心与饼干"
+     },
+     "icon": "🥧",
+     "items": [
+      {
+       "id": "egg-tart",
+       "name": {
+        "ru": "Эгг тарт",
+        "en": "Egg Tart",
+        "zh": "蛋挞"
+       },
+       "price": null,
+       "description": {
+        "ru": "Азиатская корзиночка из слоёного теста со сливочно-яичной начинкой: хрустящая снаружи, мягкая внутри.",
+        "en": "Asian puff-pastry tart with a creamy egg filling — crisp outside, soft inside.",
+        "zh": "亚洲风味酥皮蛋挞，奶香蛋馅，外酥内软。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "eggs",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "слоёное тесто; начинка — желток, сахар, кукурузный крахмал, сливки, молоко, ванилин",
+        "en": "puff pastry; filling — egg yolk, sugar, corn starch, cream, milk, vanillin",
+        "zh": "千层酥皮；馅料——蛋黄、糖、玉米淀粉、淡奶油、牛奶、香草醛"
+       }
+      },
+      {
+       "id": "meringue",
+       "name": {
+        "ru": "Меренга",
+        "en": "Lemon Meringue Tart",
+        "zh": "柠檬蛋白霜挞"
+       },
+       "price": null,
+       "description": {
+        "ru": "Песочная основа, лимонная прослойка и слегка обожжённые взбитые белки с цедрой лимона. Сладкая, воздушная, с лимонной кислинкой.",
+        "en": "Shortcrust base, lemon layer and lightly torched meringue with lemon zest. Sweet, airy and tangy.",
+        "zh": "酥饼底、柠檬夹层，顶部为微烤柠檬皮蛋白霜。香甜轻盈，带柠檬酸味。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "gluten",
+          "eggs",
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ]
+      },
+      {
+       "id": "butter-cookie",
+       "name": {
+        "ru": "Баттер куки",
+        "en": "Butter Cookie",
+        "zh": "黄油曲奇慕斯"
+       },
+       "price": null,
+       "description": {
+        "ru": "Воздушный мусс из маскарпоне на песочной основе, украшен вишней. По вкусу как сливочный пломбир.",
+        "en": "Airy mascarpone mousse on a shortbread base, topped with a cherry. Tastes like creamy ice cream.",
+        "zh": "酥饼底上的轻盈马斯卡彭慕斯，点缀樱桃，口味像奶油冰淇淋。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "milk",
+          "gluten"
+         ],
+         "mayContain": [
+          "eggs"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "сахарная пудра, сливки, маскарпоне, ванилин, желатин; основа — печенье, сливочное масло",
+        "en": "icing sugar, cream, mascarpone, vanillin, gelatin; base — biscuits, butter",
+        "zh": "糖粉、淡奶油、马斯卡彭、香草醛、明胶；底层——饼干、黄油"
+       }
+      },
+      {
+       "id": "brownie",
+       "name": {
+        "ru": "Брауни",
+        "en": "Protein Brownie",
+        "zh": "蛋白布朗尼"
+       },
+       "price": null,
+       "description": {
+        "ru": "Протеиновый брауни без глютена с насыщенным шоколадным вкусом.",
+        "en": "Gluten-free protein brownie with a rich chocolate taste.",
+        "zh": "无麸质蛋白布朗尼，浓郁巧克力风味。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "eggs",
+          "nuts"
+         ],
+         "mayContain": [
+          "milk",
+          "soy"
+         ]
+        }
+       ],
+       "ingredients": {
+        "ru": "яйцо, миндальная и кокосовая мука, какао, кофе, ванилин, 2 вида шоколада, кокосовое масло",
+        "en": "egg, almond and coconut flour, cocoa, coffee, vanillin, two kinds of chocolate, coconut oil",
+        "zh": "鸡蛋、杏仁粉与椰子粉、可可、咖啡、香草醛、两种巧克力、椰子油"
+       }
+      },
+      {
+       "id": "matcha-cookie",
+       "name": {
+        "ru": "Матча печенье",
+        "en": "Matcha Cookie",
+        "zh": "抹茶饼干"
+       },
+       "price": null,
+       "description": {
+        "ru": "Веганское печенье на кокосовом масле с миндальной и пшеничной мукой и чаем матча.",
+        "en": "Vegan cookie with coconut oil, almond and wheat flour and matcha.",
+        "zh": "纯素饼干，采用椰子油、杏仁粉、小麦粉与抹茶制作。"
+       },
+       "variants": [
+        {
+         "amount": 1,
+         "unit": "pc",
+         "allergens": [
+          "nuts",
+          "gluten"
+         ],
+         "mayContain": []
+        }
+       ],
+       "ingredients": {
+        "ru": "миндальная мука, кокосовое масло, кешью-молоко, сода, разрыхлитель, матча, ванилин, соль, сахар",
+        "en": "almond flour, coconut oil, cashew milk, baking soda, baking powder, matcha, vanillin, salt, sugar",
+        "zh": "杏仁粉、椰子油、腰果奶、小苏打、泡打粉、抹茶、香草醛、盐、糖"
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bar",
+   "title": {
+    "ru": "Бар",
+    "en": "Bar",
+    "zh": "饮品"
+   },
+   "categories": [
+    {
+     "id": "coffee",
+     "title": {
+      "ru": "Кофе",
+      "en": "Coffee",
+      "zh": "咖啡"
+     },
+     "icon": "☕️",
+     "items": [
+      {
+       "id": "ristretto",
+       "name": {
+        "ru": "Ристретто",
+        "en": "Ristretto",
+        "zh": "芮斯崔朵"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 20,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 2,
+          "protein": 0.0,
+          "fat": 0.0,
+          "carbs": 0.3
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Самая короткая и плотная порция эспрессо. Насыщенный вкус без горечи.",
+        "en": "The shortest, densest shot of espresso. Intense flavour without bitterness.",
+        "zh": "最短最浓的意式浓缩。浓郁而不苦。"
+       }
+      },
+      {
+       "id": "espresso",
+       "name": {
+        "ru": "Эспрессо",
+        "en": "Espresso",
+        "zh": "意式浓缩"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 20,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 2,
+          "protein": 0.0,
+          "fat": 0.0,
+          "carbs": 0.3
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Классическая порция кофе, приготовленная под давлением. Основа всех наших кофейных напитков.",
+        "en": "A classic shot of coffee brewed under pressure. The base of all our coffee drinks.",
+        "zh": "高压萃取的经典意式浓缩。我们所有咖啡饮品的基础。"
+       }
+      },
+      {
+       "id": "double-espresso",
+       "name": {
+        "ru": "Двойной эспрессо",
+        "en": "Double Espresso",
+        "zh": "双份浓缩"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 40,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 4,
+          "protein": 0.0,
+          "fat": 0.1,
+          "carbs": 0.7
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Двойная порция эспрессо. Для тех, кому нужно больше бодрости.",
+        "en": "A double shot of espresso. For when you need a stronger lift.",
+        "zh": "双份意式浓缩。需要更多提神时的选择。"
+       }
+      },
+      {
+       "id": "americano",
+       "name": {
+        "ru": "Американо",
+        "en": "Americano",
+        "zh": "美式咖啡"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 200,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 3,
+          "protein": 0.0,
+          "fat": 0.1,
+          "carbs": 0.5
+         },
+         "allergens": [],
+         "mayContain": []
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 4,
+          "protein": 0.0,
+          "fat": 0.1,
+          "carbs": 0.8
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Эспрессо, разбавленный горячей водой. Мягкий чёрный кофе.",
+        "en": "Espresso topped up with hot water. Smooth black coffee.",
+        "zh": "意式浓缩加热水。顺滑的黑咖啡。"
+       }
+      },
+      {
+       "id": "lungo",
+       "name": {
+        "ru": "Лунго",
+        "en": "Lungo",
+        "zh": "隆戈"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 100,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 9,
+          "protein": 0.1,
+          "fat": 0.2,
+          "carbs": 1.7
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Эспрессо, пролитый большим объёмом воды. Мягче эспрессо, крепче американо.",
+        "en": "Espresso pulled long with more water. Milder than espresso, stronger than americano.",
+        "zh": "以更多水量萃取的长萃咖啡。比浓缩温和，比美式浓郁。"
+       }
+      },
+      {
+       "id": "cappuccino",
+       "name": {
+        "ru": "Капучино",
+        "en": "Cappuccino",
+        "zh": "卡布奇诺"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 151,
+          "protein": 7.3,
+          "fat": 8.1,
+          "carbs": 12.4
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "regular"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 149,
+          "protein": 7.3,
+          "fat": 8.1,
+          "carbs": 12.4
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "lactoseFree"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 154,
+          "protein": 2.0,
+          "fat": 3.8,
+          "carbs": 28.2
+         },
+         "allergens": [],
+         "mayContain": [
+          "gluten"
+         ],
+         "milk": "banana"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 104,
+          "protein": 0.8,
+          "fat": 6.3,
+          "carbs": 10.7
+         },
+         "allergens": [],
+         "mayContain": [],
+         "milk": "coconut"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 116,
+          "protein": 2.5,
+          "fat": 6.3,
+          "carbs": 11.9
+         },
+         "allergens": [
+          "nuts"
+         ],
+         "mayContain": [],
+         "milk": "almond"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 181,
+          "protein": 8.7,
+          "fat": 9.7,
+          "carbs": 14.9
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "regular"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 178,
+          "protein": 8.7,
+          "fat": 9.7,
+          "carbs": 14.9
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "lactoseFree"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 184,
+          "protein": 2.4,
+          "fat": 4.6,
+          "carbs": 33.8
+         },
+         "allergens": [],
+         "mayContain": [
+          "gluten"
+         ],
+         "milk": "banana"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 124,
+          "protein": 0.9,
+          "fat": 7.6,
+          "carbs": 12.8
+         },
+         "allergens": [],
+         "mayContain": [],
+         "milk": "coconut"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 139,
+          "protein": 3.0,
+          "fat": 7.6,
+          "carbs": 14.3
+         },
+         "allergens": [
+          "nuts"
+         ],
+         "mayContain": [],
+         "milk": "almond"
+        }
+       ],
+       "description": {
+        "ru": "Эспрессо с горячим молоком и плотной молочной пеной. Можно на растительном молоке.",
+        "en": "Espresso with hot milk and a thick layer of foam. Plant milk available.",
+        "zh": "意式浓缩配热牛奶和厚奶泡。可选植物奶。"
+       }
+      },
+      {
+       "id": "latte",
+       "name": {
+        "ru": "Латте",
+        "en": "Latte",
+        "zh": "拿铁"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 151,
+          "protein": 7.3,
+          "fat": 8.1,
+          "carbs": 12.3
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "regular"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 148,
+          "protein": 7.3,
+          "fat": 8.1,
+          "carbs": 12.3
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "lactoseFree"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 153,
+          "protein": 2.0,
+          "fat": 3.8,
+          "carbs": 28.1
+         },
+         "allergens": [],
+         "mayContain": [
+          "gluten"
+         ],
+         "milk": "banana"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 103,
+          "protein": 0.8,
+          "fat": 6.3,
+          "carbs": 10.6
+         },
+         "allergens": [],
+         "mayContain": [],
+         "milk": "coconut"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 116,
+          "protein": 2.5,
+          "fat": 6.3,
+          "carbs": 11.8
+         },
+         "allergens": [
+          "nuts"
+         ],
+         "mayContain": [],
+         "milk": "almond"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 181,
+          "protein": 8.7,
+          "fat": 9.7,
+          "carbs": 14.8
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "regular"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 178,
+          "protein": 8.7,
+          "fat": 9.7,
+          "carbs": 14.8
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "lactoseFree"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 184,
+          "protein": 2.4,
+          "fat": 4.6,
+          "carbs": 33.7
+         },
+         "allergens": [],
+         "mayContain": [
+          "gluten"
+         ],
+         "milk": "banana"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 124,
+          "protein": 0.9,
+          "fat": 7.6,
+          "carbs": 12.7
+         },
+         "allergens": [],
+         "mayContain": [],
+         "milk": "coconut"
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 139,
+          "protein": 3.0,
+          "fat": 7.6,
+          "carbs": 14.2
+         },
+         "allergens": [
+          "nuts"
+         ],
+         "mayContain": [],
+         "milk": "almond"
+        }
+       ],
+       "description": {
+        "ru": "Эспрессо с большим количеством молока и тонким слоем пены. Мягкий и нежный, можно на растительном молоке.",
+        "en": "Espresso with plenty of milk and a thin layer of foam. Mild and smooth; plant milk available.",
+        "zh": "意式浓缩配大量牛奶和薄奶泡。温和顺滑，可选植物奶。"
+       }
+      },
+      {
+       "id": "raf",
+       "name": {
+        "ru": "Раф",
+        "en": "Raf",
+        "zh": "拉夫咖啡"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 322,
+          "protein": 7.5,
+          "fat": 25.1,
+          "carbs": 16.5
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        },
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 389,
+          "protein": 9.0,
+          "fat": 30.1,
+          "carbs": 20.6
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "note": {
+        "ru": "С ванильным сахаром",
+        "en": "With vanilla sugar",
+        "zh": "加香草糖"
+       },
+       "description": {
+        "ru": "Эспрессо, взбитый со сливками и ванильным сахаром. Сливочный и сладкий.",
+        "en": "Espresso steamed together with cream and vanilla sugar. Creamy and sweet.",
+        "zh": "意式浓缩与奶油和香草糖一同打发。奶香浓郁，口感甜润。"
+       }
+      },
+      {
+       "id": "flat-white",
+       "name": {
+        "ru": "Флэт уайт",
+        "en": "Flat White",
+        "zh": "澳白"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 200,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 93,
+          "protein": 4.4,
+          "fat": 4.9,
+          "carbs": 7.8
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Двойной эспрессо с небольшим количеством бархатистого молока. Кофейный вкус ярче, чем в латте.",
+        "en": "A double espresso with a little velvety milk. More coffee-forward than a latte.",
+        "zh": "双份浓缩配少量丝滑牛奶。咖啡味比拿铁更突出。"
+       }
+      },
+      {
+       "id": "americano-on-milk",
+       "name": {
+        "ru": "Американо на молоке",
+        "en": "Americano Brewed on Milk",
+        "zh": "牛奶冲煮美式"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 122,
+          "protein": 5.8,
+          "fat": 6.5,
+          "carbs": 10.2
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Эспрессо, разбавленный горячим молоком вместо воды. Мягче и сливочнее обычного американо.",
+        "en": "Espresso topped up with hot milk instead of water. Softer and creamier than a regular americano.",
+        "zh": "用热牛奶代替水稀释的意式浓缩。比普通美式更柔和顺滑。"
+       }
+      },
+      {
+       "id": "americano-with-milk",
+       "name": {
+        "ru": "Американо с молоком",
+        "en": "Americano with Milk",
+        "zh": "美式加奶"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 39,
+          "protein": 1.8,
+          "fat": 2.0,
+          "carbs": 3.6
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Классический американо с добавлением горячего молока. Для тех, кто любит чуть мягче.",
+        "en": "A classic americano with a splash of hot milk. For a slightly softer cup.",
+        "zh": "经典美式加热牛奶。口感更柔和。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "signature",
+     "title": {
+      "ru": "Авторские напитки",
+      "en": "Signature Drinks",
+      "zh": "特调饮品"
+     },
+     "icon": "✨",
+     "items": [
+      {
+       "id": "latte-singapore",
+       "name": {
+        "ru": "Латте Сингапур",
+        "en": "Singapore Latte",
+        "zh": "新加坡拿铁"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 311,
+          "protein": 6.9,
+          "fat": 19.8,
+          "carbs": 26.2
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Авторский латте с азиатскими нотами. Сливочный, мягкий, слегка пряный.",
+        "en": "Our signature latte with Asian notes. Creamy, smooth, gently spiced.",
+        "zh": "带有亚洲风味的招牌拿铁。奶香顺滑，微带香料味。"
+       }
+      },
+      {
+       "id": "orange-blossom",
+       "name": {
+        "ru": "Апельсиновый цвет",
+        "en": "Orange Blossom",
+        "zh": "橙花"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 220,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 136,
+          "protein": 4.4,
+          "fat": 4.9,
+          "carbs": 18.6
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Авторский кофейный напиток с молоком и апельсиновыми нотами. Цветочный и освежающий.",
+        "en": "Our signature coffee drink with milk and orange notes. Floral and refreshing.",
+        "zh": "招牌牛奶咖啡，带橙香。花香清新。"
+       }
+      },
+      {
+       "id": "matcha-latte",
+       "name": {
+        "ru": "Матча латте",
+        "en": "Matcha Latte",
+        "zh": "抹茶拿铁"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 160,
+          "protein": 8.4,
+          "fat": 8.2,
+          "carbs": 13.3
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "regular"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 158,
+          "protein": 8.4,
+          "fat": 8.2,
+          "carbs": 13.3
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [],
+         "milk": "lactoseFree"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 163,
+          "protein": 3.2,
+          "fat": 4.0,
+          "carbs": 29.1
+         },
+         "allergens": [],
+         "mayContain": [
+          "gluten"
+         ],
+         "milk": "banana"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 113,
+          "protein": 1.9,
+          "fat": 6.5,
+          "carbs": 11.6
+         },
+         "allergens": [],
+         "mayContain": [],
+         "milk": "coconut"
+        },
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 125,
+          "protein": 3.7,
+          "fat": 6.5,
+          "carbs": 12.8
+         },
+         "allergens": [
+          "nuts"
+         ],
+         "mayContain": [],
+         "milk": "almond"
+        }
+       ],
+       "description": {
+        "ru": "Японский зелёный чай матча, взбитый с горячим молоком. Можно на растительном молоке.",
+        "en": "Japanese matcha green tea whisked with hot milk. Plant milk available.",
+        "zh": "日本抹茶与热牛奶打发。可选植物奶。"
+       }
+      },
+      {
+       "id": "lotus-coffee",
+       "name": {
+        "ru": "Лотос кофе",
+        "en": "Lotus Coffee",
+        "zh": "莲花咖啡"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 124,
+          "protein": 0.0,
+          "fat": 0.1,
+          "carbs": 31.2
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "note": {
+        "ru": "Лотос, личи, кардамон",
+        "en": "Lotus, lychee, cardamom",
+        "zh": "莲花、荔枝、小豆蔻"
+       },
+       "description": {
+        "ru": "Авторский кофе с лотосом, личи и кардамоном. Цветочный, сладковатый, пряный.",
+        "en": "Our signature coffee with lotus, lychee and cardamom. Floral, sweet and spiced.",
+        "zh": "招牌莲花咖啡，配荔枝和小豆蔻。花香、甜美、带香料味。"
+       }
+      },
+      {
+       "id": "bumble-orange",
+       "name": {
+        "ru": "Бамбл апельсин",
+        "en": "Orange Bumble",
+        "zh": "橙子大黄蜂"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 144,
+          "protein": 1.4,
+          "fat": 0.5,
+          "carbs": 33.9
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Холодный напиток: апельсиновый сок, лёд и эспрессо сверху. Освежает и бодрит.",
+        "en": "An iced drink: orange juice, ice and espresso poured on top. Refreshing and energising.",
+        "zh": "冰饮：橙汁加冰，顶部注入意式浓缩。清爽提神。"
+       }
+      },
+      {
+       "id": "bumble-cherry",
+       "name": {
+        "ru": "Бамбл вишня",
+        "en": "Cherry Bumble",
+        "zh": "樱桃大黄蜂"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 400,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 154,
+          "protein": 0.8,
+          "fat": 0.3,
+          "carbs": 37.1
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Холодный напиток: вишнёвый сок, лёд и эспрессо сверху. Ягодный и бодрящий.",
+        "en": "An iced drink: cherry juice, ice and espresso poured on top. Fruity and energising.",
+        "zh": "冰饮：樱桃汁加冰，顶部注入意式浓缩。果香提神。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "cocoa",
+     "title": {
+      "ru": "Какао",
+      "en": "Cocoa",
+      "zh": "可可"
+     },
+     "icon": "🍫",
+     "items": [
+      {
+       "id": "cocoa-tonka",
+       "name": {
+        "ru": "Какао с бобами тонка и кокосовой пастой",
+        "en": "Cocoa with Tonka Bean & Coconut Paste",
+        "zh": "零陵香豆椰子可可"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 250,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 455,
+          "protein": 5.8,
+          "fat": 32.8,
+          "carbs": 34.4
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Какао на молоке с бобами тонка и кокосовой пастой. Ароматное, с нотами ванили и миндаля.",
+        "en": "Cocoa on milk with tonka bean and coconut paste. Fragrant, with notes of vanilla and almond.",
+        "zh": "牛奶可可配零陵香豆和椰子酱。香气浓郁，带香草和杏仁风味。"
+       }
+      },
+      {
+       "id": "cocoa-spiced",
+       "name": {
+        "ru": "Какао со специями",
+        "en": "Spiced Cocoa",
+        "zh": "香料可可"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 250,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 287,
+          "protein": 7.8,
+          "fat": 17.6,
+          "carbs": 25.1
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Какао на молоке с согревающими специями. Уютный напиток для холодного дня.",
+        "en": "Cocoa on milk with warming spices. A cosy drink for a cold day.",
+        "zh": "加入暖身香料的牛奶可可。寒冷天气的温暖饮品。"
+       }
+      },
+      {
+       "id": "cocoa-classic",
+       "name": {
+        "ru": "Классический какао",
+        "en": "Classic Cocoa",
+        "zh": "经典可可"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 250,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 287,
+          "protein": 7.8,
+          "fat": 17.6,
+          "carbs": 25.1
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Какао на горячем молоке, как в детстве. Мягкое и сливочное.",
+        "en": "Cocoa made with hot milk, just like in childhood. Smooth and creamy.",
+        "zh": "热牛奶冲泡的经典可可，童年的味道。顺滑香浓。"
+       }
+      },
+      {
+       "id": "hot-chocolate",
+       "name": {
+        "ru": "Горячий шоколад",
+        "en": "Hot Chocolate",
+        "zh": "热巧克力"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 70,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 156,
+          "protein": 2.6,
+          "fat": 2.4,
+          "carbs": 31.2
+         },
+         "allergens": [],
+         "mayContain": [
+          "milk",
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Густой горячий шоколад небольшой порцией. Насыщенный, как растопленная плитка.",
+        "en": "Thick hot chocolate in a small cup. Rich, like a melted bar.",
+        "zh": "小杯浓稠热巧克力。浓郁如融化的巧克力块。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "tea",
+     "title": {
+      "ru": "Чай",
+      "en": "Tea",
+      "zh": "茶"
+     },
+     "icon": "🫖",
+     "items": [
+      {
+       "id": "loose-tea",
+       "name": {
+        "ru": "Чай листовой, чайник",
+        "en": "Loose-leaf Tea, Pot",
+        "zh": "壶装散叶茶"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 650,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 4,
+          "protein": 0.2,
+          "fat": 0.0,
+          "carbs": 0.8
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "note": {
+        "ru": "Зелёный, чёрный, улун, пуэр или травяной",
+        "en": "Green, black, oolong, pu-erh or herbal",
+        "zh": "绿茶、红茶、乌龙、普洱或花草茶"
+       },
+       "description": {
+        "ru": "Листовой чай в чайнике на выбор: зелёный, чёрный, улун, пуэр или травяной. Заваривается при вас.",
+        "en": "A pot of loose-leaf tea of your choice: green, black, oolong, pu-erh or herbal. Brewed fresh.",
+        "zh": "整壶散装茶，可选绿茶、红茶、乌龙、普洱或花草茶。现泡。"
+       }
+      },
+      {
+       "id": "tea-mulled",
+       "name": {
+        "ru": "Глинтвейн безалкогольный",
+        "en": "Non-alcoholic Mulled Tea",
+        "zh": "无酒精热红酒风味茶"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 650,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 168,
+          "protein": 0.6,
+          "fat": 0.0,
+          "carbs": 41.5
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Горячий напиток на соках со специями и фруктами, без алкоголя. Согревает в холод.",
+        "en": "A hot drink of juices with spices and fruit, alcohol-free. Warms you up on a cold day.",
+        "zh": "以果汁、香料和水果熬制的热饮，不含酒精。寒冷天气暖身。"
+       }
+      },
+      {
+       "id": "green-shantaram",
+       "name": {
+        "ru": "Зелёный шантарам",
+        "en": "Green Shantaram",
+        "zh": "绿色项塔兰"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 650,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 153,
+          "protein": 0.7,
+          "fat": 0.1,
+          "carbs": 37.3
+         },
+         "allergens": [],
+         "mayContain": [
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Авторский чай в чайнике на основе зелёного чая с фруктами и травами. Свежий и ароматный.",
+        "en": "Our signature pot of green tea with fruit and herbs. Fresh and fragrant.",
+        "zh": "招牌绿茶壶，加入水果和香草。清新芳香。"
+       }
+      },
+      {
+       "id": "taiga",
+       "name": {
+        "ru": "Таёжный",
+        "en": "Taiga",
+        "zh": "泰加林"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 650,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 211,
+          "protein": 0.7,
+          "fat": 0.0,
+          "carbs": 51.9
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Авторский чай в чайнике с таёжными ягодами и травами. Согревающий, с лесным ароматом.",
+        "en": "Our signature pot of tea with taiga berries and herbs. Warming, with a forest aroma.",
+        "zh": "招牌泰加林浆果香草茶。暖身，带森林香气。"
+       }
+      },
+      {
+       "id": "tea-bag",
+       "name": {
+        "ru": "Чай пакетированный",
+        "en": "Tea Bag",
+        "zh": "袋泡茶"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 2,
+          "protein": 0.1,
+          "fat": 0.0,
+          "carbs": 0.4
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Чай из пакетика в чашке. Быстро и просто.",
+        "en": "A cup of tea from a tea bag. Quick and simple.",
+        "zh": "一杯袋泡茶。简单快捷。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "tea-lemonades",
+     "title": {
+      "ru": "Чайные лимонады",
+      "en": "Tea Lemonades",
+      "zh": "茶柠檬水"
+     },
+     "icon": "🍋",
+     "items": [
+      {
+       "id": "sen-zen",
+       "name": {
+        "ru": "Сэн Дзен",
+        "en": "Sen Zen",
+        "zh": "禅意"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 270,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 88,
+          "protein": 0.2,
+          "fat": 0.0,
+          "carbs": 21.8
+         },
+         "allergens": [],
+         "mayContain": [
+          "sulfites"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Авторский холодный чайный лимонад. Освежающий, с лёгкой кислинкой.",
+        "en": "Our signature iced tea lemonade. Refreshing with a light tartness.",
+        "zh": "招牌冰茶柠檬水。清爽微酸。"
+       }
+      },
+      {
+       "id": "buzzy-li",
+       "name": {
+        "ru": "Баззи Ли",
+        "en": "Buzzy Li",
+        "zh": "Buzzy Li"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 270,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 115,
+          "protein": 0.7,
+          "fat": 0.3,
+          "carbs": 27.4
+         },
+         "allergens": [],
+         "mayContain": [
+          "peanuts",
+          "sesame"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Авторский холодный чайный лимонад. Яркий, фруктовый и освежающий.",
+        "en": "Our signature iced tea lemonade. Bright, fruity and refreshing.",
+        "zh": "招牌冰茶柠檬水。明亮果香，清爽解渴。"
+       }
+      },
+      {
+       "id": "shao-milky",
+       "name": {
+        "ru": "Шао Милки",
+        "en": "Shao Milky",
+        "zh": "Shao Milky"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 270,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 121,
+          "protein": 0.6,
+          "fat": 1.4,
+          "carbs": 27.1
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [
+          "nuts"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Авторский холодный чай с молоком. Сливочный и мягкий.",
+        "en": "Our signature iced milk tea. Creamy and smooth.",
+        "zh": "招牌冰奶茶。奶香顺滑。"
+       }
+      },
+      {
+       "id": "da-hong-panda",
+       "name": {
+        "ru": "Да Хун Панда",
+        "en": "Da Hong Panda",
+        "zh": "大红熊猫"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 270,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 194,
+          "protein": 2.8,
+          "fat": 8.2,
+          "carbs": 27.5
+         },
+         "allergens": [
+          "sesame"
+         ],
+         "mayContain": [
+          "gluten",
+          "milk",
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Авторский холодный напиток на улуне Да Хун Пао. С кунжутными нотами.",
+        "en": "Our signature iced drink based on Da Hong Pao oolong. With sesame notes.",
+        "zh": "以大红袍乌龙为基底的招牌冰饮。带芝麻香。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "warming",
+     "title": {
+      "ru": "Согревающие азиатские напитки",
+      "en": "Warming Asian Drinks",
+      "zh": "亚洲暖饮"
+     },
+     "icon": "🔥",
+     "items": [
+      {
+       "id": "aloe-nuvo",
+       "name": {
+        "ru": "Aloe Nuvo, чайник",
+        "en": "Aloe Nuvo, Pot",
+        "zh": "芦荟 Nuvo（壶）"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 600,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 200,
+          "protein": 0.8,
+          "fat": 0.2,
+          "carbs": 50.0
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Горячий фруктовый чай в чайнике с кусочками алоэ. Мягкий и согревающий.",
+        "en": "A hot pot of fruit tea with pieces of aloe. Gentle and warming.",
+        "zh": "热水果茶壶，含芦荟果粒。温和暖身。"
+       }
+      },
+      {
+       "id": "blue-peach",
+       "name": {
+        "ru": "Blue Peach, чайник",
+        "en": "Blue Peach, Pot",
+        "zh": "蓝蜜桃（壶）"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 600,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 251,
+          "protein": 1.6,
+          "fat": 0.4,
+          "carbs": 61.9
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Горячий напиток в чайнике с персиком и голубым чаем. Сливочный и ароматный.",
+        "en": "A hot pot with peach and blue tea. Creamy and fragrant.",
+        "zh": "桃子与蓝茶热饮壶。奶香芬芳。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "bubble",
+     "title": {
+      "ru": "Бабл Мания",
+      "en": "Bubble Mania",
+      "zh": "珍珠奶茶"
+     },
+     "icon": "🧋",
+     "items": [
+      {
+       "id": "mangusta",
+       "name": {
+        "ru": "Мангуста",
+        "en": "Mangusta",
+        "zh": "Mangusta"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 121,
+          "protein": 0.3,
+          "fat": 0.1,
+          "carbs": 30.2
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Бабл-ти с шариками тапиоки. Фруктовый и сладкий, с манго.",
+        "en": "Bubble tea with tapioca pearls. Fruity and sweet, with mango.",
+        "zh": "珍珠奶茶类饮品，含木薯珍珠。果香甜美，带芒果味。"
+       }
+      },
+      {
+       "id": "picholli",
+       "name": {
+        "ru": "Пичолли",
+        "en": "Picholli",
+        "zh": "Picholli"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 121,
+          "protein": 0.4,
+          "fat": 1.3,
+          "carbs": 27.1
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Бабл-ти с шариками тапиоки. Фруктовый и освежающий.",
+        "en": "Bubble tea with tapioca pearls. Fruity and refreshing.",
+        "zh": "含木薯珍珠的泡泡茶。果香清爽。"
+       }
+      },
+      {
+       "id": "toffee-coffee",
+       "name": {
+        "ru": "Тоффи кофе",
+        "en": "Toffee Coffee",
+        "zh": "太妃咖啡"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 129,
+          "protein": 0.4,
+          "fat": 1.6,
+          "carbs": 28.5
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Кофейный бабл-ти со вкусом тоффи и шариками тапиоки. Сладкий и карамельный.",
+        "en": "Coffee bubble tea with toffee flavour and tapioca pearls. Sweet and caramelly.",
+        "zh": "太妃糖风味咖啡珍珠饮。甜蜜焦糖味。"
+       }
+      },
+      {
+       "id": "guava-mama",
+       "name": {
+        "ru": "Гуава мама",
+        "en": "Guava Mama",
+        "zh": "番石榴妈妈"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 129,
+          "protein": 0.3,
+          "fat": 0.1,
+          "carbs": 31.9
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Бабл-ти с гуавой и шариками тапиоки. Тропический и освежающий.",
+        "en": "Bubble tea with guava and tapioca pearls. Tropical and refreshing.",
+        "zh": "番石榴珍珠饮。热带风味，清爽解渴。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "smoothies",
+     "title": {
+      "ru": "Смузи и краши",
+      "en": "Smoothies & Crushes",
+      "zh": "冰沙与碎冰饮"
+     },
+     "icon": "🥭",
+     "items": [
+      {
+       "id": "passion-mango",
+       "name": {
+        "ru": "Страстный манго",
+        "en": "Passionate Mango",
+        "zh": "热情芒果"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 253,
+          "protein": 4.6,
+          "fat": 1.7,
+          "carbs": 55.2
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Густой смузи из манго и маракуйи. Тропический и освежающий.",
+        "en": "A thick smoothie of mango and passion fruit. Tropical and refreshing.",
+        "zh": "芒果百香果浓稠思慕雪。热带清爽。"
+       }
+      },
+      {
+       "id": "raspberry-euphoria",
+       "name": {
+        "ru": "Малиновая эйфория",
+        "en": "Raspberry Euphoria",
+        "zh": "覆盆子狂欢"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 210,
+          "protein": 4.7,
+          "fat": 1.8,
+          "carbs": 42.5
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Густой смузи с малиной. Ягодный, с приятной кислинкой.",
+        "en": "A thick raspberry smoothie. Berry-rich with a pleasant tartness.",
+        "zh": "浓稠树莓思慕雪。浆果浓郁，微酸可口。"
+       }
+      },
+      {
+       "id": "chocolate-berry",
+       "name": {
+        "ru": "Шоколадная ягода",
+        "en": "Chocolate Berry",
+        "zh": "巧克力莓果"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 284,
+          "protein": 9.1,
+          "fat": 4.2,
+          "carbs": 50.5
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": [
+          "soy"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Смузи с шоколадом и ягодами. Как десерт в стакане.",
+        "en": "A smoothie with chocolate and berries. Like dessert in a glass.",
+        "zh": "巧克力浆果思慕雪。杯中甜点。"
+       }
+      },
+      {
+       "id": "berry-crush",
+       "name": {
+        "ru": "Ягодный краш",
+        "en": "Berry Crush",
+        "zh": "莓果碎冰"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 237,
+          "protein": 2.0,
+          "fat": 0.7,
+          "carbs": 54.9
+         },
+         "allergens": [
+          "milk"
+         ],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Освежающий смузи из ягод. Яркий и сочный.",
+        "en": "A refreshing berry smoothie. Bright and juicy.",
+        "zh": "清爽浆果思慕雪。鲜亮多汁。"
+       }
+      },
+      {
+       "id": "mango-tango-crush",
+       "name": {
+        "ru": "Манго танго краш",
+        "en": "Mango Tango Crush",
+        "zh": "芒果探戈碎冰"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 223,
+          "protein": 1.3,
+          "fat": 0.4,
+          "carbs": 54.3
+         },
+         "allergens": [],
+         "mayContain": []
+        }
+       ],
+       "description": {
+        "ru": "Освежающий смузи из манго без молока. Сочный и тропический.",
+        "en": "A refreshing dairy-free mango smoothie. Juicy and tropical.",
+        "zh": "清爽芒果思慕雪，不含牛奶。多汁热带风味。"
+       }
+      }
+     ]
+    },
+    {
+     "id": "milkshakes",
+     "title": {
+      "ru": "Милкшейки",
+      "en": "Milkshakes",
+      "zh": "奶昔"
+     },
+     "icon": "🥤",
+     "items": [
+      {
+       "id": "milkshake-mango-orange",
+       "name": {
+        "ru": "Манго с апельсиновым джемом",
+        "en": "Mango & Orange Jam",
+        "zh": "芒果橙子果酱奶昔"
+       },
+       "price": null,
+       "variants": [
+        {
+         "amount": 300,
+         "unit": "ml",
+         "nutrition": {
+          "kcal": 372,
+          "protein": 6.9,
+          "fat": 15.8,
+          "carbs": 51.7
+         },
+         "allergens": [
+          "gluten",
+          "milk",
+          "soy"
+         ],
+         "mayContain": [
+          "eggs"
+         ]
+        }
+       ],
+       "description": {
+        "ru": "Молочный коктейль с манго и апельсиновым джемом. Сливочный и фруктовый.",
+        "en": "A milkshake with mango and orange jam. Creamy and fruity.",
+        "zh": "芒果橙子果酱奶昔。奶香果味。"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
