@@ -1,0 +1,8 @@
+{
+ "versionCode": 4,
+ "versionName": "1.3",
+ "notes": "Подтверждение номера через Telegram, общий вход, уведомления персоналу о заказах, описания в меню",
+ "apk": "https://github.com/virety/dad-app/releases/latest/download/DAD.apk",
+ "size": 37435578,
+ "date": "2026-11-13"
+}
