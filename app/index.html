@@ -1,0 +1,1133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DAD</title>
+<meta name="description" content="Меню DAD, заказ заранее и оплата по QR. Владивосток, ул. Адмирала Фокина, 14.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="DAD">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Not render-blocking: the page shows at once with the fallback font and switches when Montserrat arrives. -->
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+  :root {
+    --blue: #1F2B8E; --tint: #EEF0FA; --muted: #7F86BC; --rule: #C9CDEA; --hair: rgba(31,43,142,.15);
+    --warn: #C8551E; --bg: #FFFFFF;
+    --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--blue); font-family: Montserrat, system-ui, sans-serif; line-height: 1.4; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  input, textarea { font: inherit; color: var(--blue); }
+  .page { max-width: 560px; margin: 0 auto; padding: calc(var(--safe-t) + 8px) 16px calc(96px + var(--safe-b)); }
+  .top { position: relative; height: 52px; display: flex; align-items: center; justify-content: center; }
+  .top .left { position: absolute; left: 0; } .top .right { position: absolute; right: 0; }
+  .logo { width: 44px; height: 44px; border: 2.5px solid var(--blue); border-radius: 50%; display: grid; place-items: center; font-weight: 500; font-size: 14px; letter-spacing: -.3px; }
+  .logo.big { width: 96px; height: 96px; border-width: 3px; font-size: 30px; margin: 24px auto 8px; }
+  .lang { font-weight: 800; font-size: 14px; padding: 10px 6px; }
+  .search { display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--rule); border-radius: 999px; padding: 0 8px 0 16px; height: 50px; margin: 6px 0; }
+  .search:focus-within { border-color: var(--blue); }
+  .search input { flex: 1; border: 0; outline: 0; font-size: 16px; background: transparent; min-width: 0; }
+  .search input::placeholder { color: var(--muted); }
+  .icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; }
+  h1 { font-weight: 900; font-size: 40px; line-height: 1.05; text-transform: uppercase; text-align: center; margin: 14px 0 2px; }
+  .sub { text-align: center; font-weight: 600; font-size: 13px; color: var(--muted); margin: 0; }
+  .status { text-align: center; font-weight: 700; font-size: 12px; margin: 2px 0 0; }
+  .status.closed { color: var(--warn); }
+  .sections { display: flex; border-top: 1.5px solid var(--rule); margin-top: 12px; }
+  .sections button { flex: 1; padding: 12px 0 0; font-weight: 900; font-size: 17px; text-transform: uppercase; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sections button::after { content: ""; width: 48px; height: 3px; background: transparent; }
+  .sections button.on { color: var(--blue); } .sections button.on::after { background: var(--blue); }
+  .chips { position: sticky; top: 0; z-index: 5; background: var(--bg); display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px; margin: 0 -16px; scrollbar-width: none; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { flex: none; border: 1.5px solid var(--blue); border-radius: 999px; padding: 7px 14px; font-weight: 700; font-size: 12px; text-transform: uppercase; white-space: nowrap; }
+  .chip.on { background: var(--blue); color: #fff; }
+  .chip:disabled { opacity: .4; }
+  .wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+  .heading { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1.5px solid var(--blue); padding: 26px 0 6px; scroll-margin-top: 56px; }
+  .heading h2 { margin: 0; font-weight: 900; font-size: 24px; text-transform: uppercase; }
+  .heading span { font-size: 11px; font-weight: 700; }
+  .row { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--hair); width: 100%; text-align: left; }
+  .row.off { opacity: .6; }
+  .thumb { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; flex: none; background: var(--tint); display: grid; place-items: center; font-size: 12px; font-weight: 600; }
+  .row .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .row .name { font-weight: 600; font-size: 15px; }
+  .row .meta { font-size: 12px; color: var(--muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .row .kbju { font-size: 12px; font-weight: 500; }
+  .row .price { font-weight: 700; font-size: 14px; white-space: nowrap; }
+  .row .price small { display: block; margin-top: 2px; font-size: 11px; font-weight: 600; color: var(--muted); text-align: right; }
+  .row .price.promo { color: var(--warn); text-align: right; }
+  .row .price s { display: block; font-size: 12px; font-weight: 500; color: var(--muted); }
+  .pct { display: inline-block; background: var(--warn); color: #fff; border-radius: 999px; padding: 1px 7px; font-size: 11px; font-weight: 900; }
+  .row .price .pct { display: table; margin: 0 0 2px auto; }
+  .badge { align-self: flex-start; background: var(--blue); color: #fff; font-size: 10px; font-weight: 900; border-radius: 999px; padding: 2px 6px; }
+  .out { font-size: 11px; font-weight: 800; color: var(--warn); text-transform: uppercase; }
+  .empty { text-align: center; padding: 56px 0; }
+  .empty b { display: block; font-weight: 900; font-size: 18px; text-transform: uppercase; margin-top: 12px; }
+  .empty p { color: var(--muted); margin: 6px 0 0; font-size: 14px; }
+  .muted { color: var(--muted); } .warn { color: var(--warn); }
+  .small { font-size: 12px; } .note { font-size: 12px; color: var(--muted); font-weight: 500; }
+  .btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 54px; border-radius: 999px; background: var(--blue); color: #fff; font-weight: 800; font-size: 15px; letter-spacing: .5px; text-transform: uppercase; text-decoration: none; padding: 0 16px; text-align: center; }
+  .btn:disabled, .btn.off { background: var(--muted); }
+  .btn.line { background: #fff; color: var(--blue); border: 1.5px solid var(--blue); min-height: 46px; font-size: 14px; }
+  .link { font-weight: 700; font-size: 14px; padding: 8px 0; }
+  .link.warn { color: var(--warn); }
+  .field { width: 100%; border: 1.5px solid var(--blue); border-radius: 12px; padding: 14px; font-size: 16px; outline: 0; background: #fff; }
+  textarea.field { resize: vertical; min-height: 52px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .label { font-weight: 900; font-size: 14px; text-transform: uppercase; margin: 6px 0 0; }
+  .tabs { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--hair); display: flex; justify-content: center; padding: 6px 8px calc(6px + var(--safe-b)); z-index: 20; }
+  .tabs button { flex: 1; max-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: var(--muted); padding: 4px 0; position: relative; }
+  .tabs button svg { width: 26px; height: 26px; fill: currentColor; }
+  .tabs button.on { color: var(--blue); }
+  .tabs .count { position: absolute; top: 0; left: calc(50% + 6px); background: var(--blue); color: #fff; font-size: 10px; font-weight: 800; border-radius: 999px; padding: 1px 5px; }
+  .sheet { position: fixed; inset: 0; background: #fff; z-index: 30; overflow-y: auto; animation: up .22s ease-out; }
+  .extras { position: fixed; inset: 0; z-index: 40; background: rgba(31,43,142,.35); display: flex; align-items: flex-end; }
+  .extras .panel { width: 100%; max-width: 560px; margin: 0 auto; background: #fff; border-radius: 20px 20px 0 0; padding: 20px 16px calc(16px + var(--safe-b)); animation: up .22s ease-out; }
+  .extras .panel.tall { height: 88vh; display: flex; flex-direction: column; gap: 10px; }
+  .extras .list { flex: 1; overflow-y: auto; }
+  .extras h3 { font-weight: 900; font-size: 22px; text-transform: uppercase; margin: 0; }
+  @keyframes up { from { transform: translateY(24px); opacity: 0; } }
+  .sheet .hero { width: 100%; height: 320px; object-fit: cover; display: block; background: var(--tint); }
+  .sheet .body { max-width: 560px; margin: 0 auto; padding: 16px 16px calc(110px + var(--safe-b)); }
+  .close { position: fixed; top: calc(var(--safe-t) + 12px); left: 12px; width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.12); z-index: 31; font-size: 22px; }
+  .sheet h3 { font-weight: 900; font-size: 30px; line-height: 1.1; text-transform: uppercase; margin: 8px 0 2px; }
+  .table { border-top: 1.5px solid var(--blue); }
+  .table div { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--hair); font-size: 14px; }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--hair); padding: 10px 16px calc(10px + var(--safe-b)); z-index: 32; }
+  .bar .in { max-width: 560px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
+  /* A computer: the menu in two columns, the item page in the middle instead of a stretched photo. */
+  @media (min-width: 1000px) {
+    .page.wide { max-width: 1040px; }
+    .items { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
+    .sheet { background: rgba(31,43,142,.25); }
+    .sheet .hero, .sheet .body { max-width: 640px; margin-left: auto; margin-right: auto; background: #fff; }
+    .sheet .hero { margin-top: 24px; border-radius: 18px 18px 0 0; }
+    .sheet .body { padding-left: 24px; padding-right: 24px; min-height: calc(100vh - 344px); }
+  }
+  .qty { display: flex; align-items: center; border: 1.5px solid var(--blue); border-radius: 999px; height: 50px; flex: none; }
+  .qty button { width: 44px; height: 48px; font-size: 22px; font-weight: 600; }
+  .qty span { min-width: 20px; text-align: center; font-weight: 700; }
+  .ordercard { display: flex; width: 100%; justify-content: space-between; align-items: center; gap: 12px; margin-top: 8px; padding: 12px 14px;
+    border: 1.5px solid var(--blue); border-radius: 14px; background: none; color: var(--blue); font: inherit; text-align: left; cursor: pointer; }
+  .ordercard span:first-child { display: flex; flex-direction: column; gap: 2px; }
+  .ordercard small { font-size: 12px; font-weight: 500; }
+  .ordercard > span:last-child { font-size: 22px; font-weight: 900; }
+  .total { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 0; font-weight: 700; }
+  .total b { font-weight: 900; font-size: 22px; }
+  .num { font-weight: 900; font-size: 64px; text-align: center; line-height: 1; margin: 6px 0; }
+  .steps { display: flex; margin: 8px 0; }
+  .steps div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--muted); }
+  .steps i { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--blue); }
+  .steps .on { color: var(--blue); } .steps .on i { background: var(--blue); }
+  .center { text-align: center; }
+  .card { border: 1.5px solid var(--warn); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .qr { display: block; margin: 0 auto; padding: 12px; border: 2px solid var(--blue); border-radius: 18px; width: 240px; }
+  .install { background: var(--tint); border-radius: 16px; padding: 14px 16px; font-size: 13px; font-weight: 500; margin-top: 16px; }
+  .install b { display: block; font-weight: 800; margin-bottom: 4px; }
+  .toast { position: fixed; left: 50%; bottom: calc(90px + var(--safe-b)); transform: translateX(-50%); background: var(--blue); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; font-size: 14px; z-index: 50; }
+  footer { margin-top: 28px; font-size: 12px; color: var(--muted); }
+  footer a { color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<!-- Deferred: the page draws without waiting for them (QR is needed only at payment; until morphdom arrives, render() falls back to innerHTML). -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/morphdom@2.7.4/dist/morphdom-umd.min.js"></script>
+<script>
+/*
+ * DAD for iPhone (and any browser): the guest side of the Android/iOS apps, on the same Supabase.
+ * Same account (phone + password), same orders, same pre-order and payment rules — see supabase/setup.sql.
+ * Kept in sync with AppConfig.kt / Config.swift by hand: hours, slots, payment link.
+ */
+const SUPABASE_URL = "https://dmuhzirtkdbklperdzrz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_HV8qr5U5vh4tW8BEiAfjuw_HFjlVtl_";
+const PAYMENT_LINK = "https://qr.nspk.ru/AS1A004NVTEA9DA38MN8FKC20JTOR7HR?type=01&bank=100000000008&crc=3012";
+const GUEST_DOMAIN = "@guest.dad.cafe";
+// Opening hours from Monday, null for a day off; the owner changes them in the app (settings 'hours').
+const DEFAULT_HOURS = [0, 1, 2, 3, 4, 5, 6].map(d => ({ open: "09:00", close: d === 4 || d === 5 ? "22:00" : "21:00" }));
+const PHONE = "+79046283013", PHONE_TEXT = "+7 904 628-30-13";
+const SLOT_MINUTES = 15, PREORDER_LEAD_MINUTES = 30, PREORDER_DAYS = 2, DELIVERY_DAYS = 8, KITCHEN_LEAD_MINUTES = 20, NEW_ITEM_DAYS = 14;
+const VLAT_OFFSET = 10 * 3600e3;  // Vladivostok is UTC+10 all year
+const POLL_MS = 5000;
+
+const ALLERGENS = {
+  gluten: ["Глютен", "Gluten"], crustaceans: ["Ракообразные", "Crustaceans"], molluscs: ["Моллюски", "Molluscs"],
+  fish: ["Рыба", "Fish"], eggs: ["Яйца", "Eggs"], milk: ["Молоко/лактоза", "Milk/lactose"], soy: ["Соя", "Soy"],
+  peanuts: ["Арахис", "Peanuts"], nuts: ["Орехи", "Tree nuts"], sesame: ["Кунжут", "Sesame"], mustard: ["Горчица", "Mustard"],
+  celery: ["Сельдерей", "Celery"], sulfites: ["Сульфиты", "Sulfites"],
+};
+const MILKS = { regular: ["Обычное", "Regular"], lactoseFree: ["Безлактозное", "Lactose-free"], banana: ["Банановое", "Banana"],
+  coconut: ["Кокосовое", "Coconut"], almond: ["Миндальное", "Almond"] };
+const PAYMENTS = { sbp: ["СБП по QR", "SBP by QR"], card: ["Картой на кассе", "Card at the counter"], cash: ["Наличными", "Cash"] };
+const STATUS = {
+  unpaid: ["Оплатите заказ — после оплаты он уйдёт баристе", "Please pay — then the order goes to the barista"],
+  new: ["Бариста проверяет оплату и заказ", "The barista is checking the payment and the order"],
+  waiting: ["Кое-чего не хватает — выберите замену", "Something ran out — choose a replacement"],
+  accepted: ["Готовится", "Being prepared"], ready: ["Готов — заберите на баре", "Ready — pick it up at the bar"],
+  done: ["Выдан. Приятного аппетита!", "Picked up. Enjoy!"], rejected: ["Нет в наличии", "Out of stock"],
+  cancelled: ["Отменён", "Cancelled"], no_show: ["Заказ не забрали", "Not picked up"],
+};
+const FINISHED = ["done", "rejected", "cancelled", "no_show"];
+
+// ── Storage (every access guarded: private mode may refuse it) ──────────────
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+const S = {
+  lang: store.get("lang", (navigator.language || "ru").startsWith("ru") ? "ru" : "en"),
+  tab: "menu", section: "kitchen", query: "",
+  bundled: null, menu: null, custom: [], prices: {}, stop: new Set(store.get("stop", [])), photos: {}, paused: false, hours: store.get("hours", null), addons: store.get("addons", []), promos: store.get("promos", []), stock: {}, extras: null,
+  cart: store.get("cart", []), session: store.get("session", null), myRef: store.get("myRef", null),
+  myOrder: null, history: [], item: null, pay: null, checkout: { name: store.get("name", ""), comment: "", takeaway: false, delivery: false, address: store.get("address", ""),
+    later: false, day: 0, slot: null, payment: store.get("payment", "sbp"), busy: false, error: null },
+  account: { mode: "signin", phone: "", name: "", password: "", busy: false, error: null, code: null, checked: null },
+  bot: null,  // Telegram bot that confirms phones (settings telegram_bot), once phone_check is on
+};
+const t = (ru, en) => S.lang === "ru" ? ru : en;
+const L = (x) => x ? (S.lang === "ru" ? x.ru : (x.en || x.ru)) : "";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const price = (p) => p.toLocaleString("ru-RU") + " ₽";
+const unit = (u) => u === "ml" ? t("мл", "ml") : u === "pc" ? t("шт", "pc") : t("г", "g");
+// Desserts sold by the slice (unit "cut"): amount 8, 6 or 4 is that fraction of the cake, 1 is the whole cake.
+const cutText = (a) => a === 1 ? t("целиком", "whole") : "1/" + a;
+const isCut = (item) => item.variants.some(v => v.unit === "cut");
+// A quarter for those: guests take it most often.
+const defVariant = (item) => item.variants.find(v => v.unit === "cut" && v.amount === 4) || item.variants[0];
+const kbju = (n) => n ? `${n.kcal} / ${fmt(n.protein)} / ${fmt(n.fat)} / ${fmt(n.carbs)}` : "";
+const fmt = (x) => (Math.round(x * 10) / 10).toLocaleString(S.lang === "ru" ? "ru-RU" : "en-US", { minimumFractionDigits: 1 });
+// 8 921…, +7 921… and 921… (ten digits, without the country code) are the same Russian number.
+const digits = (s) => { const d = String(s).replace(/\D/g, ""); return d.length === 11 && d[0] === "8" ? "7" + d.slice(1) : d.length === 10 && d[0] === "9" ? "7" + d : d; };
+const phoneText = (d) => d.length === 11 && d[0] === "7" ? `+7 ${d.slice(1, 4)} ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9)}` : "+" + d;
+const guestPhone = () => S.session?.email?.endsWith(GUEST_DOMAIN) ? S.session.email.slice(0, -GUEST_DOMAIN.length) : null;
+
+// ── Vladivostok time ────────────────────────────────────────────────────────
+// A "local" Date here holds Vladivostok wall time in its UTC fields.
+const local = (d = new Date()) => new Date(d.getTime() + VLAT_OFFSET);
+const fromLocal = (l) => new Date(l.getTime() - VLAT_OFFSET);
+const mins = (s) => +s.slice(0, 2) * 60 + +s.slice(3, 5);
+const shortTime = (s) => s.replace(/^0(\d)/, "$1");
+// Hours of the day of a local date (Monday first in the stored week); null on a day off.
+const dayHours = (l) => (Array.isArray(S.hours) && S.hours.length === 7 ? S.hours : DEFAULT_HOURS)[(l.getUTCDay() + 6) % 7] || null;
+const minuteOf = (l) => l.getUTCHours() * 60 + l.getUTCMinutes();
+const isOpen = () => { const l = local(), h = dayHours(l); return !!h && minuteOf(l) >= mins(h.open) && minuteOf(l) < mins(h.close); };
+const hhmm = (l) => String(l.getUTCHours()).padStart(2, "0") + ":" + String(l.getUTCMinutes()).padStart(2, "0");
+function dayName(l) {
+  const today = local(); today.setUTCHours(0, 0, 0, 0);
+  const d = new Date(l); d.setUTCHours(0, 0, 0, 0);
+  const diff = Math.round((d - today) / 864e5);
+  return diff === 0 ? t("Сегодня", "Today") : diff === 1 ? t("Завтра", "Tomorrow")
+    : (S.lang === "ru" ? ["вс", "пн", "вт", "ср", "чт", "пт", "сб"] : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"])[d.getUTCDay()] + ` ${d.getUTCDate()}.${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+const pickupText = (iso) => { const l = local(new Date(iso)); return dayName(l).toLowerCase() + ", " + hhmm(l); };
+function hoursStatus() {
+  const now = local();
+  if (isOpen()) return t("Открыто до", "Open until") + " " + shortTime(dayHours(now).close);
+  // The next opening: later today, tomorrow or on a weekday.
+  for (let off = 0; off <= 7; off++) {
+    const day = new Date(now); day.setUTCDate(day.getUTCDate() + off);
+    const h = dayHours(day);
+    if (!h || (off === 0 && minuteOf(now) >= mins(h.open))) continue;
+    const at = shortTime(h.open);
+    return t("Закрыто · откроемся", "Closed · opens") + " " + (off === 0 ? t("в ", "at ") + at : off === 1 ? t("завтра в ", "tomorrow at ") + at
+      : (S.lang === "ru" ? ["вс", "пн", "вт", "ср", "чт", "пт", "сб"] : ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"])[day.getUTCDay()] + t(" в ", " at ") + at);
+  }
+  return t("Закрыто", "Closed");
+}
+/** Pre-order times by day: from 30 minutes after opening to 15 minutes before closing, at least 30 minutes ahead (pickup_ok() on the server). */
+function slots(days = PREORDER_DAYS) {
+  const now = local(), earliest = new Date(now.getTime() + PREORDER_LEAD_MINUTES * 6e4), out = [];
+  for (let off = 0; off < days; off++) {
+    const day = new Date(now); day.setUTCHours(0, 0, 0, 0); day.setUTCDate(day.getUTCDate() + off);
+    const h = dayHours(day);
+    if (!h) continue;
+    const last = new Date(day.getTime() + (mins(h.close) - 15) * 6e4);
+    const list = [];
+    for (let s = new Date(day.getTime() + (mins(h.open) + 30) * 6e4); s <= last; s = new Date(s.getTime() + SLOT_MINUTES * 6e4)) {
+      if (s >= earliest) list.push(s);
+    }
+    if (list.length) out.push(list);
+  }
+  return out;
+}
+
+// ── Supabase ────────────────────────────────────────────────────────────────
+class ApiError extends Error {}
+async function api(path, { method = "GET", body, token, prefer } = {}) {
+  const headers = { apikey: SUPABASE_KEY, Authorization: "Bearer " + (token || SUPABASE_KEY) };
+  if (body !== undefined) headers["Content-Type"] = "application/json";
+  if (prefer) headers.Prefer = prefer;
+  const r = await fetch(SUPABASE_URL + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body), cache: "no-store" });
+  const text = await r.text();
+  if (!r.ok) {
+    const m = text.match(/unavailable:([\w,:-]+)/);
+    const e = new ApiError(text);
+    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more)"/) || [])[1] || (r.status + "");
+    if (m) e.ids = m[1].split(",");
+    e.status = r.status; e.text = text;
+    throw e;
+  }
+  return text ? JSON.parse(text) : null;
+}
+const rpc = (name, args, token) => api("/rest/v1/rpc/" + name, { method: "POST", body: args, token });
+
+function saveSession(s) { S.session = s; store.set("session", s); }
+function parseSession(r) {
+  return { access: r.access_token, refresh: r.refresh_token, expires: Date.now() + r.expires_in * 1000,
+    email: r.user?.email, id: r.user?.id, name: r.user?.user_metadata?.name || "" };
+}
+async function token() {
+  const s = S.session;
+  if (!s) return null;
+  if (s.expires > Date.now() + 60e3) return s.access;
+  try {
+    const r = await api("/auth/v1/token?grant_type=refresh_token", { method: "POST", body: { refresh_token: s.refresh } });
+    saveSession({ ...parseSession(r), name: parseSession(r).name || s.name });
+    return S.session.access;
+  } catch { saveSession(null); return null; }
+}
+
+// ── Menu ────────────────────────────────────────────────────────────────────
+const allItems = (m) => m.sections.flatMap(s => s.categories.flatMap(c => c.items));
+const isNewRow = (c) => c.created_at && (Date.now() - Date.parse(c.created_at)) < NEW_ITEM_DAYS * 864e5;
+/** Same merge as CafeMenu.merged in the apps: admin edits replace bundled items, new ones go to «Новинки». */
+function merge() {
+  const m = structuredClone(S.bundled);
+  const bundledIds = new Set(allItems(S.bundled).map(i => i.id));
+  const edit = Object.fromEntries(S.custom.filter(c => bundledIds.has(c.id)).map(c => [c.id, c]));
+  const moved = [];
+  for (const s of m.sections) for (const c of s.categories) {
+    c.items = c.items.flatMap(item => {
+      const e = edit[item.id];
+      if (!e) return [item];
+      if (e.item.hidden) return [];
+      if (e.section_id !== s.id || e.category_id !== c.id) { moved.push(e); return []; }
+      return [e.item];
+    });
+  }
+  for (const c of [...S.custom.filter(c => !bundledIds.has(c.id)), ...moved]) {
+    const s = m.sections.find(s => s.id === c.section_id);
+    if (!s) continue;
+    const fresh = !bundledIds.has(c.id) && isNewRow(c);
+    let cat = s.categories.find(x => x.id === (fresh ? "new" : c.category_id));
+    if (!cat && fresh) { cat = { id: "new", title: { ru: "Новинки", en: "New" }, items: [] }; s.categories.unshift(cat); }
+    (cat || s.categories[s.categories.length - 1]).items.push(c.item);
+  }
+  for (const item of allItems(m)) {
+    const p = S.prices[item.id];
+    if (p) for (const v of item.variants) if (p[v.amount] != null) v.price = p[v.amount];
+  }
+  S.menu = m;
+}
+const findItem = (id) => S.menu && allItems(S.menu).find(i => i.id === id);
+const itemPrice = (item, v) => v.price ?? item.price ?? null;
+// Stop-list by hand, and desserts counted on the counter that ran out (table stock).
+const available = (id, flavor) => !S.stop.has(id) && S.stock[id]?.left_units !== 0
+  && (!flavor || (!S.stop.has(id + ":" + flavor) && S.stock[id + ":" + flavor]?.left_units !== 0));
+const itemAvailable = (item) => available(item.id) && (!item.flavors || item.flavors.some(f => available(item.id, f.id)));
+const photoUrl = (id) => S.photos[id] ? `${SUPABASE_URL}/storage/v1/object/public/menu-photos/${S.photos[id]}` : (PHOTOS.has(id) ? `photos/${id}.jpg` : null);
+let PHOTOS = new Set();
+
+async function loadServer() {
+  const [custom, prices, stop, photos, settings, addons, promos, stock] = await Promise.all([
+    api("/rest/v1/menu_items?select=*&order=created_at.asc").catch(() => null),
+    api("/rest/v1/prices?select=item_id,amount,price").catch(() => null),
+    api("/rest/v1/stoplist?select=item_id").catch(() => null),
+    api("/rest/v1/photos?select=item_id,path").catch(() => null),
+    api("/rest/v1/settings?select=key,value&key=in.(orders_paused,phone_check,telegram_bot,hours)").catch(() => null),
+    api("/rest/v1/addons?select=*&order=kind.asc,name.asc").catch(() => null),
+    api("/rest/v1/promos?select=*&order=created_at.asc").catch(() => null),
+    api("/rest/v1/stock?select=item_id,cut,left_units").catch(() => null),
+  ]);
+  if (promos) { S.promos = promos; store.set("promos", promos); }
+  if (stock) S.stock = Object.fromEntries(stock.map(r => [r.item_id, r]));
+  if (custom) S.custom = custom;
+  if (addons) { S.addons = addons; store.set("addons", addons); }
+  if (prices) { S.prices = {}; for (const p of prices) (S.prices[p.item_id] ||= {})[p.amount] = p.price; }
+  if (stop) { S.stop = new Set(stop.map(r => r.item_id)); store.set("stop", [...S.stop]); }
+  if (photos) S.photos = Object.fromEntries(photos.map(r => [r.item_id, r.path]));
+  if (settings) {
+    const v = Object.fromEntries(settings.map(r => [r.key, r.value]));
+    S.paused = v.orders_paused === true;
+    if (Array.isArray(v.hours) && v.hours.length === 7) { S.hours = v.hours; store.set("hours", v.hours); }
+    S.bot = v.phone_check === true && typeof v.telegram_bot === "string" ? v.telegram_bot : null;
+  }
+  if (S.bundled) merge();
+}
+
+// ── Cart ────────────────────────────────────────────────────────────────────
+const lineKey = (l) => [l.id, l.amount, l.milk || "-", l.flavor || "-", (l.addons || []).join(",")].join("|");
+// Drink add-ons (syrups, jam, cinnamon…) the owner keeps in the app; targets "cat:<category>" or "item:<item>".
+const itemCategory = (id) => S.custom.find(c => c.id === id)?.category_id
+  || S.menu?.sections.flatMap(s => s.categories).find(c => c.id !== "new" && c.items.some(i => i.id === id))?.id;
+// "-item:<id>" leaves a drink out of a whole category (no syrup in an espresso).
+const addonsFor = (item) => S.addons.filter(a => !a.hidden && !a.targets.includes("-item:" + item.id)
+    && (a.targets.includes("item:" + item.id) || a.targets.includes("cat:" + itemCategory(item.id))))
+  .sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name));
+const addonsOf = (l) => (l.addons || []).map(id => S.addons.find(a => a.id === id && !a.hidden)).filter(Boolean);
+const addonName = (a) => S.lang !== "ru" && a.name_en ? a.name_en : a.name;
+const addonPrice = (a) => a.price === 0 ? t("бесплатно", "free") : "+" + price(a.price);
+/** Search in a long list: what contains the words typed (name or kind: «сироп» lists all syrups), otherwise what is
+ *  close — a typo or another ending («карамел», «кормель» → «Солёная карамель»). */
+function searchAddons(list, query) {
+  const norm = (s) => (s || "").toLowerCase().replace(/ё/g, "е").trim();
+  const words = (s) => norm(s).split(/[^\p{L}\d]+/u).filter(Boolean);
+  const typed = norm(query);
+  if (!typed) return { found: list, similar: false };
+  // «karamel» typed on a Latin keyboard → «карамел».
+  const latin = [["shch", "щ"], ["sch", "щ"], ["ch", "ч"], ["sh", "ш"], ["zh", "ж"], ["kh", "х"], ["ts", "ц"], ["yu", "ю"], ["ya", "я"], ["yo", "е"],
+    ["a", "а"], ["b", "б"], ["v", "в"], ["g", "г"], ["d", "д"], ["e", "е"], ["z", "з"], ["i", "и"], ["y", "ы"], ["k", "к"], ["l", "л"], ["m", "м"],
+    ["n", "н"], ["o", "о"], ["p", "п"], ["r", "р"], ["s", "с"], ["t", "т"], ["u", "у"], ["f", "ф"], ["h", "х"], ["c", "к"], ["w", "в"], ["x", "кс"], ["j", "й"], ["q", "к"]];
+  const cyr = latin.reduce((s, [l, c]) => s.split(l).join(c), typed);
+  if (cyr !== typed) {
+    const a = findAddons(list, typed, norm, words);
+    if (a.found.length && !a.similar) return a;
+    const b = findAddons(list, cyr, norm, words);
+    return b.found.length ? b : a;
+  }
+  return findAddons(list, typed, norm, words);
+}
+function findAddons(list, q, norm, words) {
+  const exact = list.filter(a => words(q).every(w => norm(a.name).includes(w) || norm(a.name_en).includes(w) || norm(a.kind).includes(w)));
+  if (exact.length) return { found: exact, similar: false };
+  const dist = (a, b) => { const d = [...Array(b.length + 1).keys()];
+    for (let i = 1; i <= a.length; i++) { let prev = d[0]; d[0] = i;
+      for (let j = 1; j <= b.length; j++) { const cur = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } }
+    return d[b.length]; };
+  const close = (q, w) => q.length < 3 ? w.startsWith(q) : w.startsWith(q.slice(0, 4)) || (w.length >= 4 && q.startsWith(w.slice(0, 4)))
+    || Math.min(dist(q, w.slice(0, q.length + 1)), dist(q, w)) <= (q.length <= 5 ? 1 : 2);
+  return { found: list.filter(a => { const ns = words(a.name + " " + (a.name_en || "") + " " + a.kind); return words(q).every(w => ns.some(n => close(w, n))); }), similar: true };
+}
+function resolve(l) {
+  const item = findItem(l.id); if (!item) return null;
+  const v = item.variants.find(v => v.amount === l.amount && (v.milk || null) === (l.milk || null));
+  return v ? { item, v } : null;
+}
+function addToCart(item, v, quantity, flavor, addons = []) {
+  const line = { id: item.id, amount: v.amount, milk: v.milk || null, flavor: flavor || null, quantity, addons: [...new Set(addons)].sort() };
+  const same = S.cart.find(l => lineKey(l) === lineKey(line));
+  if (same) same.quantity = Math.min(20, same.quantity + quantity); else S.cart.push(line);
+  store.set("cart", S.cart);
+}
+const cartCount = () => S.cart.reduce((a, l) => a + l.quantity, 0);
+function orderLines() {
+  return S.cart.map(l => {
+    const r = resolve(l); if (!r) return null;
+    const f = r.item.flavors?.find(f => f.id === l.flavor);
+    return { item_id: r.item.id, title: r.item.name.ru, amount: r.v.amount, unit: r.v.unit,
+      milk: r.v.milk && r.v.milk !== "regular" ? MILKS[r.v.milk][0] : null, flavor_id: f?.id || null, flavor: f?.name.ru || null,
+      quantity: l.quantity, price: unitPrice(l, r),
+      addons: addonsOf(l).map(a => ({ id: a.id, name: a.name, price: a.price })) };
+  }).filter(Boolean);
+}
+// ── Promotions («−30% на десерты с 20:00») — the server applies the same rule (promo_for in setup.sql) ──
+const promoOn = (p, l) => p.active && p.days.includes((l.getUTCDay() + 6) % 7 + 1) && minuteOf(l) >= mins(p.start_time)
+  && (p.end_time == null || minuteOf(l) < mins(p.end_time)) && (!p.until_date || l.toISOString().slice(0, 10) <= p.until_date);
+function promoFor(item) {
+  const now = local(), cat = itemCategory(item.id);
+  const best = S.promos.filter(p => promoOn(p, now) && !p.targets.includes("-item:" + item.id)
+    && (p.targets.includes("item:" + item.id) || p.targets.includes("cat:" + cat))).sort((a, b) => b.percent - a.percent)[0];
+  if (!best) return null;
+  // A pre-order picked at checkout: only when the promotion is on then too, the same day.
+  const c = S.checkout, at = S.tab === "order" && c && (c.later || !(isOpen() && !S.paused)) && c.slot ? new Date(c.slot) : null;
+  return !at || (at.toISOString().slice(0, 10) === now.toISOString().slice(0, 10) && promoOn(best, at)) ? best : null;
+}
+const promoTitle = (p) => S.lang !== "ru" && p.title_en ? p.title_en : p.title;
+function promoHours(p) {
+  const from = shortTime(p.start_time.slice(0, 5)), to = p.end_time && shortTime(p.end_time.slice(0, 5));
+  return p.start_time.startsWith("00:00") ? (to ? t("до ", "until ") + to : t("весь день", "all day")) : to ? `${from}–${to}` : t("с ", "from ") + from;
+}
+
+// ── What is left on the counter: pieces, or 1/24 of a whole for desserts by the slice (1/8 = 3, 1/4 = 6) ──
+const stockOf = (id, flavor) => (flavor && S.stock[id + ":" + flavor]) || S.stock[id] || null;
+const stockUnits = (row, amount) => row.cut ? Math.ceil(24 / Math.max(amount, 1)) : 1;
+/** This many more of a portion are left, counting what is in the cart already. */
+function fits(item, amount, flavor, qty) {
+  const row = stockOf(item.id, flavor); if (!row) return true;
+  const used = S.cart.filter(l => l.id === item.id && stockOf(l.id, l.flavor) === row).reduce((s, l) => s + stockUnits(row, l.amount) * l.quantity, 0);
+  return used + stockUnits(row, amount) * qty <= row.left_units;
+}
+/** Cart lines that ask for more than is left. */
+function overStock() {
+  const used = {};
+  return new Set(S.cart.filter(l => { const row = stockOf(l.id, l.flavor); if (!row) return false;
+    used[row.item_id] = (used[row.item_id] || 0) + stockUnits(row, l.amount) * l.quantity; return used[row.item_id] > row.left_units; }).map(lineKey));
+}
+function stockText(row) {
+  if (!row.cut) return row.left_units + " " + t("шт", "pcs");
+  const whole = Math.floor(row.left_units / 24), e = Math.floor((row.left_units % 24) / 3);
+  return whole && e ? `${whole} ${t("целый и", "whole and")} ${e}/8` : whole ? `${whole} ${t(whole === 1 ? "целый" : "целых", "whole")}` : `${e}/8`;
+}
+
+// A sort with its own price (tea: prices row «loose-tea:assam»), else the item's price; sortPrice with the promotion.
+const fullSortPrice = (item, v, flavor) => (flavor && S.prices[item.id + ":" + flavor]?.[v.amount]) ?? itemPrice(item, v);
+const sortPrice = (item, v, flavor) => { const p = fullSortPrice(item, v, flavor), pr = p != null && promoFor(item); return pr ? Math.round(p * (100 - pr.percent) / 100) : p; };
+function unitPrice(l, r = resolve(l)) { const p = r && sortPrice(r.item, r.v, l.flavor); return p == null ? null : p + addonsOf(l).reduce((s, a) => s + a.price, 0); }
+const cartTotal = () => { const ls = orderLines(); return ls.length && ls.every(l => l.price != null) ? ls.reduce((a, l) => a + l.price * l.quantity, 0) : null; };
+/** The cart before promotions, when there is a discount in it. */
+function cartFullTotal() {
+  let sum = 0;
+  for (const l of S.cart) { const r = resolve(l), p = r && fullSortPrice(r.item, r.v, l.flavor); if (p == null) return null; sum += (p + addonsOf(l).reduce((s, a) => s + a.price, 0)) * l.quantity; }
+  return sum !== cartTotal() ? sum : null;
+}
+
+// ── SBP link with the exact sum (same as AppConfig.paymentLink) ─────────────
+function paymentLink(rubles) {
+  const at = PAYMENT_LINK.indexOf("&crc=");
+  if (!rubles || at < 0) return PAYMENT_LINK;
+  const head = PAYMENT_LINK.slice(0, at).replace(/&(sum|cur)=[^&]*/g, "") + `&sum=${rubles * 100}&cur=RUB`;
+  let crc = 0xFFFF;
+  for (const b of new TextEncoder().encode(head)) {
+    crc ^= b << 8;
+    for (let i = 0; i < 8; i++) crc = crc & 0x8000 ? ((crc << 1) ^ 0x1021) & 0xFFFF : (crc << 1) & 0xFFFF;
+  }
+  return head + "&crc=" + crc.toString(16).toUpperCase().padStart(4, "0");
+}
+
+// ── Orders ──────────────────────────────────────────────────────────────────
+function setRef(ref) { S.myRef = ref; store.set("myRef", ref); if (!ref) S.myOrder = null; }
+async function refreshMyOrders() {
+  const tk = await token();
+  if (!tk || !S.session?.id) return;
+  try {
+    S.history = await api(`/rest/v1/orders?select=*&user_id=eq.${S.session.id}&order=created_at.desc&limit=30`, { token: tk });
+    // The current order: a delivery waiting for payment first, then the newest open one (also from another device).
+    if (!S.myRef || (S.myOrder && !isCurrent(S.myOrder))) {
+      const next = S.history.find(deliveryDue) || S.history.find(o => !FINISHED.includes(o.status) && isCurrent(o));
+      if (next) { setRef({ id: next.id, token: next.token }); S.myOrder = next; } else if (S.myRef) { setRef(null); S.myOrder = null; }
+    }
+  } catch {}
+}
+async function refreshMyOrder() {
+  if (!S.myRef) await refreshMyOrders();
+  if (!S.myRef) return;
+  try {
+    const rows = await rpc("order_status", { p_id: S.myRef.id, p_token: S.myRef.token });
+    if (rows[0] && isCurrent(rows[0])) S.myOrder = rows[0];
+    else { setRef(null); S.myOrder = null; await refreshMyOrders(); }
+  } catch {}
+}
+const deliveryDue = (o) => !!o.delivery_address && o.delivery_fee != null && !o.delivery_paid && !o.delivery_paid_claimed;
+/** Still worth showing: an open order of today or later, or one finished in the last 30 minutes (not yesterday's forgotten one). */
+function isCurrent(o) {
+  const stale = Date.now() - 30 * 6e4;
+  if (FINISHED.includes(o.status)) return Date.parse(o.updated_at || o.created_at) > stale;
+  if (o.status === "unpaid") return Date.parse(o.created_at) > stale;
+  const day = (d) => { const l = local(d); l.setUTCHours(0, 0, 0, 0); return l.getTime(); };
+  return day(new Date(o.pickup_at || o.created_at)) >= day(new Date());
+}
+const awaitsPrepay = (o) => o.status === "accepted" && o.prepay && !o.paid;
+const kitchenAt = (o) => o.pickup_at ? Date.parse(o.pickup_at) - KITCHEN_LEAD_MINUTES * 6e4 : null;
+const scheduled = (o) => o.status === "accepted" && !awaitsPrepay(o) && kitchenAt(o) > Date.now();
+/** Same rule as guest_update('cancel'): only before paying. */
+const canCancel = (o) => o.status === "unpaid";
+async function guestAction(action, items) {
+  await rpc("guest_update", { p_id: S.myRef.id, p_token: S.myRef.token, p_action: action, ...(items ? { p_items: items } : {}) });
+  await refreshMyOrder();
+}
+
+// ── Rendering ───────────────────────────────────────────────────────────────
+const $app = document.getElementById("app");
+const ICONS = {
+  menu: '<path d="M8.1 13.34l2.83-2.83L3.91 3.5a4 4 0 000 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z"/>',
+  order: '<path d="M18 6h-2c0-2.21-1.79-4-4-4S8 3.79 8 6H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-6-2c1.1 0 2 .9 2 2h-4c0-1.1.9-2 2-2zm6 16H6V8h2v2c0 .55.45 1 1 1s1-.45 1-1V8h4v2c0 .55.45 1 1 1s1-.45 1-1V8h2v12z"/>',
+  account: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
+};
+function tabs() {
+  const n = S.myRef ? 0 : cartCount();
+  const b = (id, label) => `<button class="${S.tab === id ? "on" : ""}" data-tab="${id}"><svg viewBox="0 0 24 24">${ICONS[id]}</svg>${label}${id === "order" && n ? `<span class="count">${n}</span>` : ""}</button>`;
+  return `<nav class="tabs">${b("menu", t("Меню", "Menu"))}${b("order", t("Заказ", "Order"))}${b("account", t("Аккаунт", "Account"))}</nav>`;
+}
+function thumb(id, cls = "thumb") {
+  const u = photoUrl(id);
+  return u ? `<img class="${cls}" src="${esc(u)}" alt="" loading="lazy" decoding="async">` : `<div class="${cls}">DAD</div>`;
+}
+function itemRow(item) {
+  const v = defVariant(item), ok = itemAvailable(item);
+  // Sorts with their own price: always «от» the cheapest, «от 450 ₽».
+  const sortPrices = (item.flavors || []).map(f => sortPrice(item, v, f.id)).filter(x => x != null);
+  const from = sortPrices.length > 0 && (item.flavors || []).some(f => S.prices[item.id + ":" + f.id]?.[v.amount] != null);
+  const p = from ? Math.min(...sortPrices) : sortPrice(item, v, null);
+  const promo = ok && p != null ? promoFor(item) : null;
+  const fullP = promo ? (from ? Math.min(...(item.flavors || []).map(f => fullSortPrice(item, v, f.id)).filter(x => x != null)) : fullSortPrice(item, v, null)) : null;
+  const sizes = isCut(item) ? item.variants.map(v => cutText(v.amount)).join(" · ") : [...new Set(item.variants.map(v => v.amount))].join(" / ") + " " + unit(v.unit);
+  const whole = isCut(item) ? item.variants.find(v => v.amount === 1) : null, wp = whole ? sortPrice(item, whole, null) : null;
+  const meta = v.unit === "pc" ? "" : sizes + (item.variants.some(v => v.milk) ? t(" · есть альт. молоко", " · plant milk available") : "");
+  // A short description: the first sentence of the full one on the item page.
+  const short = item.description ? (L(item.description).match(/^.*?[.!?。](\s|$)/) || [L(item.description)])[0].trim() : "";
+  const fresh = S.custom.some(c => c.id === item.id && !allItems(S.bundled).some(i => i.id === item.id) && isNewRow(c));
+  return `<button class="row ${ok ? "" : "off"}" data-item="${esc(item.id)}">${thumb(item.id)}
+    <div class="info">${fresh ? '<span class="badge">NEW</span>' : ""}<span class="name">${esc(L(item.name))}</span>
+      ${short ? `<span class="meta" style="color:var(--blue)">${esc(short)}</span>` : ""}${meta ? `<span class="meta">${esc(meta)}</span>` : ""}${ok ? (v.nutrition ? `<span class="kbju">${kbju(v.nutrition)}</span>` : "") : `<span class="out">${t("Нет в наличии", "Out of stock")}</span>`}</div>
+    ${p != null ? `<span class="price ${promo ? "promo" : ""}">${promo ? `<span class="pct">−${promo.percent}%</span><s>${price(fullP)}</s>` : ""}${from ? t("от ", "from ") : ""}${price(p)}${wp != null ? `<small>${t("целиком", "whole")} ${price(wp)}</small>` : ""}</span>` : ""}</button>`;
+}
+function topBar(right = "") {
+  return `<div class="top"><button class="lang left" data-act="lang">${S.lang.toUpperCase()}</button><div class="logo">DAD</div><div class="right">${right}</div></div>`;
+}
+
+function renderMenu() {
+  if (!S.menu) return `<div class="page">${topBar()}<div class="empty"><div class="logo big">DAD</div></div></div>`;
+  const q = S.query.trim().toLowerCase();
+  const search = `<label class="search"><svg width="22" height="22" viewBox="0 0 24 24" fill="#1F2B8E"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+    <input id="q" type="search" enterkeyhint="search" placeholder="${t("Поиск по меню", "Search the menu")}" value="${esc(S.query)}">
+    ${S.query ? `<button class="icon-btn" data-act="clear" aria-label="${t("Очистить", "Clear")}">✕</button>` : ""}</label>`;
+  let body;
+  if (q) {
+    const seen = new Set();
+    const found = allItems(S.menu).filter(i => !seen.has(i.id) && seen.add(i.id) &&
+      [i.name.ru, i.name.en, i.name.zh].some(n => n && n.toLowerCase().includes(q)));
+    body = `<p class="note" style="margin:12px 0 4px">${t("Найдено:", "Found:")} ${found.length}</p><div class="items">${found.map(itemRow).join("")}</div>` +
+      (found.length ? "" : `<div class="empty"><b>${t("Ничего не найдено", "Nothing found")}</b></div>`);
+  } else {
+    const section = S.menu.sections.find(s => s.id === S.section) || S.menu.sections[0];
+    body = `<h1>${t("Меню", "Menu")}</h1><p class="sub">${t("Азиатская кондитерская и кофейня", "Asian patisserie & coffee")}</p>
+      <p class="status ${isOpen() ? "" : "closed"}">${hoursStatus()}</p>
+      <p class="status"><a href="tel:${PHONE}" style="color:inherit">${PHONE_TEXT}</a></p>
+      <div class="sections">${S.menu.sections.map(s => `<button class="${s.id === section.id ? "on" : ""}" data-section="${s.id}">${esc(L(s.title))}</button>`).join("")}</div>
+      <div class="chips">${section.categories.filter(c => c.items.length).map(c => `<button class="chip" data-cat="${c.id}">${esc(L(c.title))}</button>`).join("")}</div>
+      ${section.categories.filter(c => c.items.length).map(c => `<div class="heading" id="cat-${c.id}"><h2>${esc(L(c.title))}</h2><span>${t("Ккал / Б / Ж / У", "Kcal / P / F / C")}</span></div><div class="items">${c.items.map(itemRow).join("")}</div>`).join("")}
+      ${installHint()}
+      <footer>${t("Временные фото: ", "Temporary photos: ")}<a href="https://commons.wikimedia.org" target="_blank" rel="noopener">Wikimedia Commons</a> (CC BY / CC BY-SA) ·
+        ${t("КБЖУ рассчитаны по техкартам; при аллергии уточните состав у бариста.", "Nutrition is calculated from recipe cards; if you have an allergy, please check with the barista.")}</footer>`;
+  }
+  return `<div class="page wide">${topBar()}${search}${body}</div>`;
+}
+
+function installHint() {
+  const standalone = window.navigator.standalone || matchMedia("(display-mode: standalone)").matches;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (standalone || !ios || store.get("hintClosed", false)) return "";
+  return `<div class="install"><b>${t("Установите DAD на iPhone", "Install DAD on your iPhone")}</b>
+    ${t("Нажмите «Поделиться» ⬆︎ внизу Safari, затем «На экран „Домой“». Приложение появится рядом с остальными.",
+      "Tap Share ⬆︎ at the bottom of Safari, then “Add to Home Screen”. DAD appears next to your other apps.")}
+    <div><button class="link" data-act="hint">${t("Понятно", "Got it")}</button></div></div>`;
+}
+
+function renderItem() {
+  const item = S.item && findItem(S.item.id);
+  if (!item) return "";
+  const st = S.item;
+  const sizes = [...new Set(item.variants.map(v => v.amount))];
+  const milks = [...new Set(item.variants.map(v => v.milk).filter(Boolean))];
+  st.size ??= defVariant(item).amount; st.milk ??= defVariant(item).milk || null; st.qty ??= 1;
+  // No flavor at first: the photo of all of them shows until the guest picks one.
+  st.flavor ??= null;
+  const v = item.variants.find(v => v.amount === st.size && (v.milk || null) === st.milk) || item.variants[0];
+  const chosenExtra = addonsFor(item).filter(a => (st.addons || []).includes(a.id)).reduce((s, a) => s + a.price, 0);
+  const enough = fits(item, v.amount, st.flavor, st.qty), promo = itemAvailable(item) ? promoFor(item) : null, left = stockOf(item.id, st.flavor);
+  const p = sortPrice(item, v, st.flavor) == null ? null : sortPrice(item, v, st.flavor) + chosenExtra, ok = itemAvailable(item) && enough && (!item.flavors || (st.flavor && available(item.id, st.flavor)));
+  const allSortPrices = (item.flavors || []).map(f => sortPrice(item, v, f.id)), showSortPrices = new Set(allSortPrices.filter(x => x != null)).size > 1;
+  const groups = [...new Set((item.flavors || []).map(f => JSON.stringify(f.group || null)))].map(g => JSON.parse(g));
+  const al = (list) => list.map(a => ALLERGENS[a][S.lang === "ru" ? 0 : 1].toLowerCase()).join(", ");
+  // Each flavor can have its own photo (photo id "<item>:<flavor>"); the item's photo until it is uploaded.
+  const fp = st.flavor && item.id + ":" + st.flavor, photo = photoUrl(fp && S.photos[fp] ? fp : item.id);
+  return `<div class="sheet" id="sheet"><button class="close" data-act="close" aria-label="${t("Назад", "Back")}">←</button>
+    ${photo ? `<img class="hero" src="${esc(photo)}" alt="">` : `<div class="hero" style="display:grid;place-items:center;font-size:32px">DAD</div>`}
+    <div class="body stack">
+      <div><h3>${esc(L(item.name))}</h3>${S.lang === "ru" ? `<div class="muted">${esc(item.name.en)}</div>` : ""}
+        ${itemAvailable(item) ? "" : `<div class="warn" style="font-weight:800;margin-top:6px">⏱ ${t("Сейчас нет в наличии", "Out of stock right now")}</div>`}
+        ${promo ? `<div class="warn" style="font-weight:800;margin-top:8px"><span class="pct">−${promo.percent}%</span> ${esc(promoTitle(promo))} · ${promoHours(promo)}</div>` : ""}
+        ${left && itemAvailable(item) && left.left_units > 0 && left.left_units <= (left.cut ? 24 : 5) ? `<div class="warn" style="font-weight:700;margin-top:6px">${t("Осталось на витрине: ", "Left on the counter: ")}${stockText(left)}</div>` : ""}
+        ${item.description ? `<p style="margin:10px 0 0;font-size:14px">${esc(L(item.description))}</p>` : ""}
+        ${addonsFor(item).length ? `<p style="margin:8px 0 0;font-size:13px;font-weight:600">${t("Можно добавить: ", "You can add: ")}${esc([...new Set(addonsFor(item).map(a => a.kind.toLowerCase()))].join(", "))}${t(" — предложим при заказе", " — offered when you add it")}</p>` : ""}
+        ${item.ingredients ? `<p class="note" style="margin:6px 0 0">${t("Состав: ", "Ingredients: ")}${esc(L(item.ingredients))}</p>` : ""}</div>
+      ${isCut(item) ? `<div class="label">${t("Порция", "Portion")}</div><div class="wrap">${item.variants.map(c => { const cp = sortPrice(item, c, null), l = cutText(c.amount); return `<button class="chip ${c.amount === st.size ? "on" : ""}" data-size="${c.amount}" ${fits(item, c.amount, st.flavor, 1) ? "" : "disabled"}>${l[0].toUpperCase() + l.slice(1)}${cp != null ? " · " + price(cp) : ""}</button>`; }).join("")}</div>`
+        : sizes.length > 1 ? `<div class="label">${t("Объём", "Size")}</div><div class="wrap">${sizes.map(s => `<button class="chip ${s === st.size ? "on" : ""}" data-size="${s}">${s} ${unit(item.variants[0].unit)}</button>`).join("")}</div>` : ""}
+      ${addonsFor(item).length ? `<div class="label">${t("Добавки", "Add-ons")}</div>
+        ${(st.addons || []).length ? `<div class="wrap">${addonsFor(item).filter(a => st.addons.includes(a.id)).map(a =>
+          `<button class="chip on" data-unextra="${esc(a.id)}">${esc(addonName(a))}${a.price ? " +" + price(a.price) : ""} ✕</button>`).join("")}</div>` : ""}
+        <button class="btn line" data-act="extras-open">${(st.addons || []).length ? t("Изменить добавки", "Change add-ons") : t("Выбрать добавки", "Choose add-ons")}</button>` : ""}
+      ${milks.length > 1 ? `<div class="label">${t("Молоко", "Milk")}</div><div class="wrap">${milks.map(m => `<button class="chip ${m === st.milk ? "on" : ""}" data-milk="${m}">${MILKS[m][S.lang === "ru" ? 0 : 1]}</button>`).join("")}</div>` : ""}
+      ${item.flavors ? `<div class="label">${groups.some(Boolean) ? t("Сорт", "Tea") : t("Вкус", "Flavor")}</div>${groups.map(g =>
+        (g ? `<div class="muted small" style="font-weight:700">${esc(L(g))}</div>` : "") + `<div class="wrap">${item.flavors.filter(f => JSON.stringify(f.group || null) === JSON.stringify(g)).map(f => {
+          const sp = showSortPrices ? sortPrice(item, v, f.id) : null;
+          return `<button class="chip ${f.id === st.flavor ? "on" : ""}" data-flavor="${f.id}" ${available(item.id, f.id) ? "" : "disabled"}>${esc(L(f.name))}${sp != null ? " · " + price(sp) : ""}</button>`; }).join("")}</div>`).join("")}` : ""}
+      ${v.nutrition ? `<div class="label">${t("Пищевая ценность", "Nutrition")}</div><div class="table">
+        <div><span>${t("На порцию", "Per serving")} (${v.amount} ${unit(v.unit)})</span><b>${kbju(v.nutrition)}</b></div>
+        ${v.per100 ? `<div><span>${t("На 100 г", "Per 100 g")}</span><b>${kbju(v.per100)}</b></div>` : ""}</div>
+        <div class="note">${t("Ккал / Б / Ж / У", "Kcal / P / F / C")}</div>` : ""}
+      <div class="label">${t("Аллергены", "Allergens")}</div>
+      <div style="font-size:14px">${v.allergens?.length ? `<b>${t("Содержит:", "Contains:")}</b> ${al(v.allergens)}` : ""}
+        ${v.mayContain?.length ? `<div><b>${t("Может содержать:", "May contain:")}</b> ${al(v.mayContain)}</div>` : ""}
+        ${!v.allergens?.length && !v.mayContain?.length ? t("Не содержит основных аллергенов", "No major allergens") : ""}</div>
+    </div>
+    <div class="bar"><div class="in"><div class="qty"><button data-act="minus">−</button><span>${st.qty}</span><button data-act="plus">+</button></div>
+      <button class="btn" data-act="add" ${ok ? "" : "disabled"}>${item.flavors && !st.flavor ? (groups.some(Boolean) ? t("Выберите сорт", "Choose a tea") : t("Выберите вкус", "Choose a flavor"))
+        : itemAvailable(item) && !enough ? t("Столько не осталось", "Not that many left") : t("В заказ", "Add to order") + (p != null ? " · " + price(p * st.qty) : "")}</button></div></div>
+  </div>`;
+}
+
+/**
+ * Sign-in for everybody (phone or login), registration by phone, and a new password when it is forgotten.
+ * With the Telegram bot set up, registering and resetting need the phone confirmed there (supabase/functions/telegram).
+ */
+function accountForm() {
+  const a = S.account, check = a.mode !== "signin" && S.bot;
+  const d = a.checked || digits(a.phone);
+  const ok = a.mode === "signin" ? true
+    : a.mode === "register" ? d.length >= 10 && d.length <= 15 && a.name.trim() && a.password.length >= 6 && (!check || a.checked)
+    : a.checked && a.password.length >= 6;
+  const fields = a.mode === "signin" || !check || a.checked;
+  return `<div class="stack">
+    <div class="wrap"><button class="chip ${a.mode === "signin" ? "on" : ""}" data-act="signin-mode">${t("Вход", "Sign in")}</button>
+      <button class="chip ${a.mode === "register" ? "on" : ""}" data-act="register-mode">${t("Регистрация", "Register")}</button></div>
+    ${a.mode === "signin" ? `<input class="field" id="a-phone" autocapitalize="off" autocomplete="username" placeholder="${t("Телефон или логин", "Phone or login")}" value="${esc(a.phone)}">`
+      : check && !a.checked ? `<div style="font-weight:600;font-size:14px">${a.mode === "reset" ? t("Чтобы задать новый пароль, подтвердите номер в Telegram: бот DAD попросит поделиться номером.", "To set a new password, confirm your phone in Telegram: the DAD bot asks you to share it.")
+          : t("Подтвердите номер в Telegram: бот DAD попросит поделиться номером — это одно нажатие.", "Confirm your phone in Telegram: the DAD bot asks you to share it — one tap.")}</div>
+        <button class="btn" data-act="telegram">${a.code ? t("Открыть Telegram ещё раз", "Open Telegram again") : t("Подтвердить в Telegram", "Confirm in Telegram")}</button>
+        ${a.code ? `<div class="note">${t("Ждём подтверждения… Нажмите в боте «Поделиться номером» и вернитесь сюда.", "Waiting… Tap “Share phone number” in the bot and come back here.")}</div>` : ""}`
+      : check ? `<div style="font-weight:700">✓ ${t("Номер подтверждён:", "Phone confirmed:")} ${phoneText(a.checked)}</div>`
+      : `<input class="field" id="a-phone" type="tel" autocomplete="tel" placeholder="${t("Телефон", "Phone")}" value="${esc(a.phone)}">`}
+    ${a.mode === "register" && fields ? `<input class="field" id="a-name" autocomplete="given-name" placeholder="${t("Имя", "Name")}" value="${esc(a.name)}">` : ""}
+    ${fields ? `<input class="field" id="a-pass" type="password" autocomplete="${a.mode === "signin" ? "current-password" : "new-password"}" placeholder="${a.mode === "reset" ? t("Новый пароль (от 6 символов)", "New password (6+ characters)") : t("Пароль (от 6 символов)", "Password (6+ characters)")}" value="${esc(a.password)}">` : ""}
+    ${a.error ? `<div class="warn small" style="font-weight:600">${esc(a.error)}</div>` : ""}
+    ${fields ? `<button class="btn" data-act="auth" ${ok && !a.busy ? "" : "disabled"}>${a.busy ? "…" : a.mode === "signin" ? t("Войти", "Sign in") : a.mode === "register" ? t("Создать аккаунт", "Create account") : t("Сохранить пароль и войти", "Save password and sign in")}</button>` : ""}
+    ${a.mode === "signin" && S.bot ? `<a class="btn line" href="https://t.me/${esc(S.bot)}?start=reset" target="_blank" rel="noopener">${t("Забыли пароль?", "Forgot the password?")}</a>
+      <div class="note">${t("Откроется Telegram: бот DAD попросит поделиться номером и написать новый пароль. Потом войдите здесь с новым паролем.",
+        "Telegram opens: the DAD bot asks you to share your phone and type the new password. Then sign in here with it.")}</div>` : ""}
+    <div class="note">${S.bot ? t("Один аккаунт для Android, iPhone и сайта: заказы видны на любом устройстве.", "One account for Android, iPhone and the web: your orders show on any device.")
+      : t("Один аккаунт для Android, iPhone и сайта: заказы видны на любом устройстве. Забыли пароль — скажите баристе: аккаунт сбросят, и вы зарегистрируетесь заново с тем же номером.",
+      "One account for Android, iPhone and the web: your orders show on any device. Forgot the password? Tell the barista: the account is reset and you register again with the same number.")}</div>
+  </div>`;
+}
+
+function renderAccount() {
+  const phone = guestPhone();
+  if (!phone) return `<div class="page">${topBar()}<h1>${t("Аккаунт", "Account")}</h1><div style="margin-top:16px">${accountForm()}</div></div>`;
+  return `<div class="page">${topBar()}<h1>${t("Аккаунт", "Account")}</h1>
+    <div class="table" style="margin-top:16px"><div><span>${t("Телефон", "Phone")}</span><b>${phoneText(phone)}</b></div>
+      <div><span>${t("Имя", "Name")}</span><b>${esc(S.session.name)}</b></div></div>
+    <button class="link warn" data-act="signout">${t("Выйти", "Sign out")}</button>
+    <div class="heading"><h2>${t("Мои заказы", "My orders")}</h2></div>
+    ${S.history.length ? S.history.map(o => {
+      const when = local(new Date(o.pickup_at || o.created_at));
+      const bad = FINISHED.includes(o.status) && o.status !== "done";
+      return `<div class="row"><div class="info"><span class="name">№${o.number} · ${dayName(when)}, ${hhmm(when)}</span>
+        <span class="meta">${esc(o.items.map(l => l.quantity + "× " + l.title).join(", "))}</span>
+        <span class="small ${bad ? "warn" : ""}" style="font-weight:600">${STATUS[o.status][S.lang === "ru" ? 0 : 1]}</span></div>
+        ${o.total != null ? `<span class="price">${price(o.total)}</span>` : ""}</div>`;
+    }).join("") : `<p class="note">${t("Здесь появятся ваши заказы со всех устройств", "Your orders from every device show up here")}</p>`}
+  </div>`;
+}
+
+/** The guest's open orders (today and later), the current one included. */
+function openOrders() {
+  const list = S.history.filter(o => !FINISHED.includes(o.status) && isCurrent(o) && o.token);
+  return S.myOrder && !list.some(o => o.id === S.myOrder.id) ? [S.myOrder, ...list] : list;
+}
+function renderCart() {
+  // A placed order never blocks the next one: with something in the cart the cart comes first, the open orders are
+  // cards above it; with an empty cart the current order is shown, with «Дозаказать».
+  if (S.myRef && (!S.cart.length || S.viewing)) {
+    const open = openOrders();
+    return `<div class="page">${topBar()}
+      ${open.length > 1 ? `<div class="wrap" style="margin-top:8px">${open.map(o => `<button class="chip ${o.id === S.myOrder?.id ? "on" : ""}" data-open="${o.id}">№${o.number}</button>`).join("")}</div>` : ""}
+      ${renderStatus()}
+      ${!S.myOrder ? "" : `<div class="stack" style="margin-top:20px">${S.cart.length ? `<button class="btn" data-act="tocart">${t("Вернуться к корзине", "Back to the cart")}</button>`
+        : `<button class="btn line" data-tab="menu">${t("Дозаказать", "Order more")}</button>`}</div>`}</div>`;
+  }
+  const cards = openOrders().map(o => `<button class="ordercard" data-open="${o.id}"><span><b>${t("Заказ", "Order")} №${o.number}</b>
+    <small class="${o.status === "unpaid" || deliveryDue(o) ? "warn" : "muted"}">${[o.status === "unpaid" ? t("Ждёт оплаты", "Awaiting payment") : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : STATUS[o.status][S.lang === "ru" ? 0 : 1],
+      o.pickup_at ? pickupText(o.pickup_at) : null].filter(Boolean).join(" · ")}</small></span><span>›</span></button>`).join("");
+  if (!S.cart.length) return `<div class="page">${topBar()}<h1>${t("Мой заказ", "My order")}</h1>
+    <div class="empty"><div class="logo big">DAD</div><b>${t("Заказ пуст", "Your order is empty")}</b><p>${t("Добавьте позиции из меню", "Add something from the menu")}</p></div></div>`;
+  const total = cartTotal();
+  const lines = S.cart.map((l, i) => {
+    const r = resolve(l); if (!r) return "";
+    const f = r.item.flavors?.find(f => f.id === l.flavor);
+    const p = unitPrice(l, r), extras = addonsOf(l);
+    const details = [r.v.unit === "cut" ? cutText(r.v.amount) : r.v.unit !== "pc" ? r.v.amount + " " + unit(r.v.unit) : null, r.v.milk && r.v.milk !== "regular" ? MILKS[r.v.milk][S.lang === "ru" ? 0 : 1] : null, f ? L(f.name) : null].filter(Boolean).join(" · ");
+    const ok = available(l.id, l.flavor), over = overStock().has(lineKey(l));
+    return `<div class="row">${thumb(l.id)}<div class="info"><span class="name">${esc(L(r.item.name))}</span><span class="meta">${esc(details)}</span>
+      ${extras.length ? `<span class="meta" style="color:var(--blue);font-weight:600">+ ${esc(extras.map(a => addonName(a).toLowerCase()).join(", "))}</span>` : ""}
+      ${ok ? (over ? `<span class="out">${t("Столько не осталось — уменьшите", "Not that many left — reduce it")}</span>` : "") : `<span class="out">${t("Нет в наличии", "Out of stock")}</span>`}</div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${p != null ? `<span class="price">${price(p * l.quantity)}</span>` : ""}
+      <div class="qty" style="height:36px"><button data-dec="${i}" style="height:34px;width:34px">−</button><span>${l.quantity}</span><button data-inc="${i}" style="height:34px;width:34px">+</button></div></div></div>`;
+  }).join("");
+  return `<div class="page">${topBar(`<button class="link warn" data-act="empty">${t("Очистить", "Clear")}</button>`)}<h1>${t("Мой заказ", "My order")}</h1>
+    ${cards}${lines}<div class="total"><span>${t("К оплате", "To pay")}</span><b>${cartFullTotal() != null ? `<s class="muted" style="font-size:.7em;margin-right:8px">${price(cartFullTotal())}</s>` : ""}${total != null ? price(total) : "—"}</b></div>${renderCheckout()}</div>`;
+}
+
+function renderCheckout() {
+  const c = S.checkout;
+  if (!guestPhone()) return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>
+    <p style="font-weight:600;font-size:14px">${t("Чтобы заказать, войдите или зарегистрируйтесь по номеру телефона — это один раз.", "To order, sign in or register with your phone number — just once.")}</p>${accountForm()}`;
+  const asap = isOpen() && !S.paused, pre = c.later || !asap;
+  // Delivery by Yandex Go only for a pre-order, up to a week ahead; on the day the barista calls and tells the price.
+  const dl = c.delivery && pre;
+  const all = slots(dl ? DELIVERY_DAYS : PREORDER_DAYS);
+  const blocked = S.cart.some(l => !available(l.id, l.flavor)) || overStock().size > 0;
+  const d = Math.min(c.day, Math.max(0, all.length - 1));
+  const reason = blocked ? t("Уберите позиции, которых нет в наличии, или уменьшите количество.", "Remove the items that are out of stock or reduce them.")
+    : cartTotal() == null ? t("У некоторых позиций пока нет цены — такой заказ можно сделать на кассе.", "Some items have no price yet — please order them at the counter.")
+    : pre && !all.length ? t("Нет свободного времени для предзаказа.", "No pre-order times available.") : null;
+  const ok = !reason && c.name.trim() && (!pre || c.slot) && (!dl || c.address.trim());
+  return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div><div class="stack" style="margin-top:12px">
+    <input class="field" id="c-name" placeholder="${t("Ваше имя", "Your name")}" value="${esc(c.name)}">
+    <div class="note">${t("Телефон", "Phone")}: ${phoneText(guestPhone())} · ${t("бариста позвонит, если с заказом что-то не так", "the barista calls if something is wrong")}</div>
+    <textarea class="field" id="c-comment" rows="2" placeholder="${t("Комментарий (необязательно)", "Comment (optional)")}">${esc(c.comment)}</textarea>
+    <div class="label">${t("Когда", "When")}</div>
+    ${asap ? "" : `<div class="warn small" style="font-weight:600">${isOpen() ? t("Бариста сейчас не успевает принимать срочные заказы — можно оформить предзаказ ко времени.", "The barista is too busy right now — you can pre-order for a later time.") : t("Сейчас мы закрыты — можно оформить предзаказ ко времени.", "We are closed now — you can pre-order for a later time.")} ${hoursStatus()}</div>`}
+    <div class="wrap">${asap ? `<button class="chip ${pre ? "" : "on"}" data-act="asap">${t("Как можно скорее", "As soon as possible")}</button>` : ""}<button class="chip ${pre ? "on" : ""}" data-act="later">${t("Ко времени", "For a time")}</button></div>
+    <div class="wrap"><button class="chip ${c.takeaway || dl ? "" : "on"}" data-act="here">${t("В зале", "For here")}</button><button class="chip ${c.takeaway && !dl ? "on" : ""}" data-act="togo">${pre ? t("Самовывоз", "Pickup") : t("С собой", "To go")}</button>${pre ? `<button class="chip ${dl ? "on" : ""}" data-act="delivery">${t("Доставка", "Delivery")}</button>` : ""}</div>
+    ${pre && all.length ? `<div class="wrap">${all.map((list, i) => `<button class="chip ${i === d ? "on" : ""}" data-day="${i}">${dayName(list[0])}</button>`).join("")}</div>
+      <div class="chips" style="position:static;padding-top:0">${all[d].map(s => `<button class="chip ${c.slot === s.getTime() ? "on" : ""}" data-slot="${s.getTime()}">${hhmm(s)}</button>`).join("")}</div>` : ""}
+    ${dl ? `<textarea class="field" id="c-address" rows="2" placeholder="${t("Адрес: улица, дом, подъезд, этаж, квартира", "Address: street, building, entrance, floor, flat")}">${esc(c.address)}</textarea>
+      <div class="note">${t("Доставка Яндекс Go по Владивостоку оплачивается отдельно. В день доставки бариста позвонит, скажет стоимость — её можно оплатить по тому же QR здесь.", "Yandex Go delivery in Vladivostok is paid separately. On the day the barista calls you with the price — pay it by the same QR here.")}</div>` : ""}
+    ${c.error ? `<div class="warn small" style="font-weight:600">${esc(c.error)}</div>` : ""}
+    <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : t("Перейти к оплате", "Go to payment") + (cartTotal() != null ? " · " + price(cartTotal()) : "")}</button>
+    <div class="note ${reason ? "warn" : ""}">${reason || (pre && !c.slot ? t("Выберите время, к которому приготовить заказ.", "Choose when to have the order ready.")
+      : dl && !c.address.trim() ? t("Укажите адрес доставки.", "Enter the delivery address.")
+      : t("Оплата по СБП сразу. После оплаты заказ уйдёт баристе; если чего-то не окажется, бариста предложит замену или вернёт разницу. Наличными и картой — на кассе.",
+        "Pay by SBP right away. Then the order goes to the barista; if something ran out, they offer a replacement or refund the difference. Cash and card — at the counter."))}</div>
+  </div>`;
+}
+
+function renderStatus() {
+  const o = S.myOrder;
+  if (!o) return `<div class="empty"><div class="logo big">DAD</div><p>…</p></div>`;
+  const title = awaitsPrepay(o) ? t("Оплатите заказ — готовить начнём после оплаты", "Please pay — we start cooking once it is paid")
+    : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : STATUS[o.status][S.lang === "ru" ? 0 : 1];
+  const alarming = ["waiting", "rejected", "cancelled", "no_show"].includes(o.status) || awaitsPrepay(o);
+  const reached = o.status === "unpaid" ? null : scheduled(o) || awaitsPrepay(o) ? 0 : { new: 0, waiting: 0, accepted: 1, ready: 2, done: 2 }[o.status];
+  const steps = reached == null ? "" : `<div class="steps">${[t("Отправлен", "Sent"), t("Готовится", "Preparing"), t("Готов", "Ready")].map((s, i) => `<div class="${i <= reached ? "on" : ""}"><i></i>${s}</div>`).join("")}</div>`;
+  let actions = "";
+  if (o.status === "waiting") actions = renderResolve(o);
+  else if (o.status === "unpaid") {
+    // Pay first: the order reaches the barista only after «Я оплатил».
+    actions = `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}${o.total != null ? " · " + price(o.total) : ""}</button>
+      <button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>
+      <button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button>
+      <div class="note center">${t("Неоплаченный заказ отменится сам через 30 минут.", "An unpaid order is cancelled by itself after 30 minutes.")}</div>`;
+  } else if (["new", "accepted", "ready"].includes(o.status)) {
+    actions = o.paid ? `<div class="center" style="font-weight:700">✓ ${t("Оплачено", "Paid")}</div>`
+      : ["card", "cash"].includes(o.payment) ? `<div class="center" style="font-weight:700">${t("Оплата на кассе при получении", "Pay at the counter when you pick up")}</div>`
+      : o.paid_claimed ? `<div class="center" style="font-weight:700">✓ ${t("Вы оплатили — бариста проверит поступление", "You have paid — the barista checks the payment")}</div>`
+      : o.status !== "new" ? `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}</button><button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>` : "";
+  } else actions = `<button class="btn" data-act="neworder">${t("Новый заказ", "New order")}</button>`;
+  return `<div class="stack"><div class="center label muted" style="margin-top:16px">${t("Заказ", "Order")}</div>
+    <div class="num">№${o.number}</div>
+    <div class="center" style="font-weight:900;font-size:18px;text-transform:uppercase;color:${alarming ? "var(--warn)" : "var(--blue)"}">${title}</div>
+    ${o.pickup_at ? `<div class="center" style="font-weight:700">🕒 ${t("Ко времени:", "Ready by:")} ${pickupText(o.pickup_at)}</div>` : ""}
+    ${o.delivery_address ? renderDelivery(o) : ""}
+    ${steps}
+    ${o.status === "waiting" ? "" : `<div class="table">${o.items.map(l => `<div><span>${l.quantity} × ${esc(l.title)}${l.unit === "cut" ? " · " + esc(cutText(l.amount)) : ""}${l.flavor ? " · " + esc(l.flavor) : ""}${l.addons?.length ? " + " + esc(l.addons.map(a => a.name.toLowerCase()).join(", ")) : ""}</span>${l.price != null ? `<span>${price(l.price * l.quantity)}</span>` : ""}</div>`).join("")}
+      <div><span class="muted">${PAYMENTS[o.payment || "sbp"][S.lang === "ru" ? 0 : 1]}</span><b style="font-size:20px">${o.total != null ? price(o.total) : ""}</b></div></div>`}
+    ${actions}</div>${S.pay ? renderPay() : ""}`;
+}
+
+/** Delivery: the address, then the price the barista set after the call and «Оплатить доставку». */
+function renderDelivery(o) {
+  const fee = o.delivery_fee;
+  const state = fee == null ? `<div class="note">${t("В день доставки бариста позвонит и скажет стоимость.", "On the day the barista calls you with the price.")}</div>`
+    : o.delivery_paid ? `<div style="font-weight:700">✓ ${t("Доставка оплачена", "Delivery paid")} · ${price(fee)}</div>`
+    : o.delivery_paid_claimed ? `<div style="font-weight:700">✓ ${t("Вы оплатили доставку — бариста проверит", "You paid for delivery — the barista checks it")}</div>`
+    : `<button class="btn" data-act="paydelivery">${t("Оплатить доставку", "Pay for delivery")} · ${price(fee)}</button>
+       <button class="btn line" data-act="deliverypaid">${t("Я оплатил доставку", "I have paid for delivery")}</button>`;
+  return `<div class="stack" style="border:1.5px solid var(--blue);border-radius:14px;padding:12px">
+    <div style="font-weight:700">🚚 ${t("Доставка Яндекс Go", "Yandex Go delivery")}</div><div>${esc(o.delivery_address)}</div>${state}</div>`;
+}
+
+/** The only question the guest is ever asked: a replacement for what ran out, or go on without it. */
+function renderResolve(o) {
+  S.choice ||= {};
+  const alts = (line) => {
+    const cat = S.menu.sections.flatMap(s => s.categories).find(c => c.id !== "new" && c.items.some(i => i.id === line.item_id));
+    return (cat?.items || []).filter(i => i.id !== line.item_id && !i.flavors && itemAvailable(i)).slice(0, 8);
+  };
+  return `<div class="stack">${o.items.map((l, i) => l.missing ? `<div class="card"><b class="warn" style="text-decoration:line-through">${l.quantity} × ${esc(l.title)}</b>
+      <div class="small">${t("Закончилось. Заменить на:", "Ran out. Replace with:")}</div>
+      <div class="wrap"><button class="chip ${S.choice[i] ? "" : "on"}" data-choice="${i}|">${t("Без замены", "No replacement")}</button>
+      ${alts(l).map(a => `<button class="chip ${S.choice[i] === a.id ? "on" : ""}" data-choice="${i}|${a.id}">${esc(L(a.name))}</button>`).join("")}</div></div>`
+    : `<div>${l.quantity} × ${esc(l.title)} ✓</div>`).join("")}
+    <button class="btn" data-act="resolve">${t("Готово — на кухню", "Done — send to the kitchen")}</button>
+    <div class="note">${t("Если замена дешевле или без замены, разницу вернут при выдаче.", "If the replacement costs less, or you skip it, the difference is refunded at pickup.")}</div>
+    <button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button></div>`;
+}
+
+function renderPay() {
+  // S.pay is the sum to pay: the order, or the delivery the barista priced after the call.
+  const total = typeof S.pay === "number" ? S.pay : S.myOrder?.total;
+  const link = paymentLink(total);
+  return `<div class="sheet"><button class="close" data-act="closepay">←</button><div class="body stack" style="padding-top:72px">
+    <h3 class="center">${t("Оплата по QR", "Pay by QR")}</h3>
+    ${total != null ? `<div class="num" style="font-size:44px">${price(total)}</div>` : ""}
+    <div id="qr" class="qr" data-link="${esc(link)}"></div>
+    <a class="btn" href="${esc(link)}">${t("Открыть в приложении банка", "Open in the bank app")}</a>
+    ${total != null ? `<button class="btn line" data-act="copysum">${t("Скопировать сумму", "Copy the amount")} ${total}</button>
+      <div class="note">${t("Сумма передаётся в банк вместе с QR. Если банк попросит ввести её сам — вставьте скопированную.", "The amount is passed to the bank with the QR. If your bank asks for it, paste the copied amount.")}</div>` : ""}
+    <div class="note">${t("После оплаты вернитесь к заказу и нажмите «Я оплатил».", "After paying, come back and tap “I have paid”.")}</div></div></div>`;
+}
+
+function render() {
+  const keepScroll = window.scrollY;
+  const focus = document.activeElement?.id, caret = document.activeElement?.selectionStart;
+  let html = S.tab === "order" ? renderCart() : S.tab === "account" ? renderAccount() : renderMenu();
+  html += tabs() + (S.item ? renderItem() : "") + (S.item && S.extras ? renderExtras() : "");
+  if (window.morphdom) {
+    // Only what changed is touched: the field being typed in keeps its keyboard (digits stay digits on iPhone),
+    // photos are not loaded again and the QR stays drawn.
+    const next = document.createElement("div"); next.id = "app"; next.innerHTML = html;
+    morphdom($app, next, { onBeforeElUpdated: (from, to) =>
+      !(from === document.activeElement && ["INPUT", "TEXTAREA"].includes(from.tagName)) &&
+      !(from.id === "qr" && from.dataset.link === to.dataset.link) && !from.isEqualNode(to) });
+  } else {
+    $app.innerHTML = html;
+    if (focus) { const el = document.getElementById(focus); if (el) { el.focus(); try { el.setSelectionRange(caret, caret); } catch {} } }
+  }
+  document.documentElement.lang = S.lang;
+  document.body.style.overflow = S.item || S.pay ? "hidden" : "";
+  const qr = document.getElementById("qr");
+  if (qr && !qr.firstChild && window.QRCode) new QRCode(qr, { text: qr.dataset.link, width: 212, height: 212, colorDark: "#1F2B8E", colorLight: "#FFFFFF" });
+  if (!window.morphdom) window.scrollTo(0, keepScroll);
+}
+function toast(text) {
+  const el = document.createElement("div"); el.className = "toast"; el.textContent = text;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1600);
+}
+const errorText = (e) => ({
+  closed: t("Кофейня сейчас закрыта", "The café is closed now"), paused: t("Приём заказов временно приостановлен", "Orders are paused for now"),
+  bad_time: t("Это время уже недоступно — выберите другое", "That time is no longer available — pick another"),
+  login_required: t("Войдите в аккаунт ещё раз", "Please sign in again"),
+  no_price: t("У одной из позиций пока нет цены — обновите меню", "An item has no price yet — refresh the menu"),
+  too_many: t("Сначала оплатите или отмените прошлый заказ", "Pay for or cancel your previous order first"),
+  costs_more: t("Замена дороже оплаченного — выберите другую позицию или доплатите на кассе", "The replacement costs more than you paid — pick another or pay the difference at the counter"),
+  unavailable: t("Пока вы выбирали, некоторые позиции закончились — они отмечены выше.", "Some items ran out while you were choosing — they are marked above."),
+  prepay_required: t("Прошлый заказ с этого номера не забрали, поэтому теперь заказ нужно оплатить по СБП заранее — готовить начнём после оплаты. Мы выбрали СБП, отправьте заказ ещё раз.",
+    "An earlier order from this number was not picked up, so now the order must be paid by SBP in advance. SBP is selected, please send the order again."),
+}[e.code] || t("Не получилось, попробуйте ещё раз", "Something went wrong, please try again"));
+
+/** Polls which phone Telegram confirmed for the code (the guest shares the contact with the bot). */
+async function waitForPhone(code) {
+  for (let i = 0; i < 900 && S.account.code === code && !S.account.checked; i++) {
+    try { const p = await rpc("checked_phone", { p_code: code }); if (p) { S.account.checked = p; render(); return; } } catch {}
+    await new Promise(r => setTimeout(r, 2000));
+  }
+}
+
+/** «Добавить что-нибудь?» over the item: «Нет, спасибо» adds it as it is, «Да» lists the add-ons with a search. */
+function renderExtras() {
+  const item = findItem(S.item.id), x = S.extras, offered = addonsFor(item), st = S.item;
+  const v = item.variants.find(v => v.amount === st.size && (v.milk || null) === st.milk) || item.variants[0], base = sortPrice(item, v, st.flavor);
+  if (x.step === "ask") return `<div class="extras"><div class="panel stack">
+    <h3>${t("Добавить что-нибудь?", "Anything to add?")}</h3>
+    <div class="muted">${esc([...new Set(offered.map(a => a.kind))].join(" · "))} — ${esc(L(item.name))}</div>
+    <button class="btn" data-act="add">${t("Нет, спасибо", "No, thanks")}</button>
+    <button class="btn line" data-act="extras-pick">${t("Да, выбрать добавки", "Yes, choose add-ons")}</button>
+    <button class="link" data-act="extras-close">${t("Отмена", "Cancel")}</button></div></div>`;
+  const { found, similar } = searchAddons(offered, x.q);
+  const extra = offered.filter(a => x.chosen.includes(a.id)).reduce((s, a) => s + a.price, 0);
+  const kinds = [...new Set(found.map(a => a.kind))];
+  return `<div class="extras"><div class="panel tall">
+    <h3>${t("Добавки", "Add-ons")}</h3>
+    <input class="field" id="x-q" placeholder="${t("Найти: карамель, ваниль…", "Search: caramel, vanilla…")}" value="${esc(x.q)}" autocomplete="off">
+    ${x.q.trim() && !found.length ? `<div class="warn small" style="font-weight:600">${t("Такого нет. Попробуйте другое слово.", "Nothing like that. Try another word.")}</div>`
+      : similar ? `<div class="muted small" style="font-weight:600">${t("Точно такого нет — вот похожее:", "Not exactly — here is what is close:")}</div>` : ""}
+    <div class="list">${kinds.map(k => `<div class="label">${esc(k)}</div>` + found.filter(a => a.kind === k).map(a =>
+      `<button class="row" data-extra="${esc(a.id)}"><span style="font-size:20px">${x.chosen.includes(a.id) ? "✓" : "○"}</span>
+        <span class="info"><span class="name">${esc(addonName(a))}</span></span><span class="price" style="${a.price ? "" : "color:var(--muted)"}">${addonPrice(a)}</span></button>`).join("")).join("")}</div>
+    ${x.chosen.length ? `<div class="small" style="font-weight:600">${esc(offered.filter(a => x.chosen.includes(a.id)).map(addonName).join(", "))}</div>` : ""}
+    ${x.page ? `<button class="btn" data-act="extras-done">${t("Готово", "Done")}${extra ? " · +" + price(extra) : ""}</button>`
+      : `<button class="btn" data-act="add">${t("В заказ", "Add to order")}${base != null ? " · " + price((base + extra) * st.qty) : ""}</button>`}
+    <button class="link" data-act="${x.page ? "extras-done-none" : "extras-none"}">${t("Без добавок", "Without add-ons")}</button></div></div>`;
+}
+
+// ── Events ──────────────────────────────────────────────────────────────────
+// Safari's password autofill may fill the fields without an input event: change counts too.
+const onField = (e) => {
+  const id = e.target.id, v = e.target.value;
+  if (id === "q") { S.query = v; render(); }
+  else if (id === "x-q" && S.extras) { S.extras.q = v; render(); }
+  else if (id === "a-phone") { S.account.phone = v; render(); }
+  else if (id === "a-name") { S.account.name = v; render(); }
+  else if (id === "a-pass") { S.account.password = v; render(); }
+  else if (id === "c-name") { S.checkout.name = v; store.set("name", v); render(); }
+  else if (id === "c-comment") { S.checkout.comment = v; }
+  else if (id === "c-address") { S.checkout.address = v.slice(0, 200); store.set("address", S.checkout.address); render(); }
+};
+document.addEventListener("input", onField);
+document.addEventListener("change", onField);
+
+document.addEventListener("click", async (e) => {
+  const b = e.target.closest("button, [data-item]"); if (!b) return;
+  const d = b.dataset, c = S.checkout, a = S.account;
+  if (d.tab) {
+    if (d.tab === "menu" && S.tab === "menu") { S.query = ""; S.item = null; window.scrollTo(0, 0); }
+    S.tab = d.tab; S.item = null; render(); window.scrollTo(0, 0);
+    if (d.tab === "account") { await refreshMyOrders(); render(); }
+    return;
+  }
+  if (d.item) { S.item = { id: d.item }; render(); document.getElementById("sheet")?.scrollTo(0, 0); return; }
+  if (d.section) { S.section = d.section; render(); return; }
+  if (d.cat) { document.getElementById("cat-" + d.cat)?.scrollIntoView({ behavior: "smooth" }); return; }
+  if (d.size) { S.item.size = +d.size; render(); return; }
+  if (d.milk) { S.item.milk = d.milk; render(); return; }
+  if (d.flavor) { S.item.flavor = d.flavor; render(); return; }
+  if (d.inc || d.dec) {
+    const i = +(d.inc ?? d.dec), l = S.cart[i];
+    l.quantity += d.inc ? 1 : -1;
+    if (l.quantity <= 0) S.cart.splice(i, 1); else l.quantity = Math.min(20, l.quantity);
+    store.set("cart", S.cart); render(); return;
+  }
+  if (d.open) {
+    const o = openOrders().find(x => x.id === d.open);
+    if (o) { setRef({ id: o.id, token: o.token }); S.myOrder = o; S.viewing = true; render(); window.scrollTo(0, 0); }
+    return;
+  }
+  if (d.day) { c.day = +d.day; c.slot = null; render(); return; }
+  if (d.slot) { c.slot = +d.slot; render(); return; }
+  if (d.pay) { c.payment = d.pay; store.set("payment", d.pay); render(); return; }
+  if (d.unextra && S.item) { S.item.addons = (S.item.addons || []).filter(x => x !== d.unextra); render(); return; }
+  if (d.extra && S.extras) { const c = S.extras.chosen; S.extras.chosen = c.includes(d.extra) ? c.filter(x => x !== d.extra) : [...c, d.extra]; render(); return; }
+  if (d.choice) { const [i, id] = d.choice.split("|"); S.choice[i] = id || null; render(); return; }
+  switch (d.act) {
+    case "lang": S.lang = S.lang === "ru" ? "en" : "ru"; store.set("lang", S.lang); render(); break;
+    case "clear": S.query = ""; render(); break;
+    case "hint": store.set("hintClosed", true); render(); break;
+    case "close": S.item = null; S.extras = null; render(); break;
+    case "extras-pick": S.extras.step = "pick"; render(); break;
+    // From the item page: the list straight away; «Готово» keeps the choice on the page.
+    case "extras-open": S.extras = { step: "pick", chosen: [...(S.item.addons || [])], q: "", page: true }; render(); break;
+    case "extras-done": S.item.addons = S.extras.chosen; S.item.decided = true; S.extras = null; render(); break;
+    case "extras-done-none": S.item.addons = []; S.item.decided = true; S.extras = null; render(); break;
+    case "extras-close": S.extras = null; render(); break;
+    case "extras-none": S.extras.chosen = []; document.querySelector('[data-act="add"]')?.click(); break;
+    case "minus": S.item.qty = Math.max(1, S.item.qty - 1); render(); break;
+    case "plus": S.item.qty = Math.min(20, S.item.qty + 1); render(); break;
+    case "add": {
+      const item = findItem(S.item.id), st = S.item;
+      const v = item.variants.find(v => v.amount === st.size && (v.milk || null) === st.milk) || item.variants[0];
+      // A drink with add-ons asks «Добавить что-нибудь?» first.
+      if (addonsFor(item).length && !S.extras && !st.decided) { S.extras = { step: "ask", chosen: [], q: "" }; render(); break; }
+      addToCart(item, v, st.qty, st.flavor, S.extras ? S.extras.chosen : st.addons || []); S.item = null; S.extras = null; render(); toast(t("Добавлено в заказ", "Added to the order")); break;
+    }
+    case "empty": S.cart = []; store.set("cart", S.cart); render(); break;
+    // Back from delivery: a day next week is too far for pickup.
+    case "here": c.takeaway = false; if (c.delivery) Object.assign(c, { delivery: false, day: 0, slot: null }); render(); break;
+    case "togo": c.takeaway = true; if (c.delivery) Object.assign(c, { delivery: false, day: 0, slot: null }); render(); break;
+    case "asap": c.later = false; render(); break;
+    case "later": c.later = true; render(); break;
+    case "signin-mode": case "register-mode": case "reset-mode":
+      Object.assign(a, { mode: d.act.split("-")[0], error: null, code: null, checked: null, password: "" }); render(); break;
+    case "telegram": {
+      a.code ||= crypto.randomUUID();
+      window.open(`https://t.me/${S.bot}?start=${a.code}`, "_blank");
+      render(); waitForPhone(a.code); break;
+    }
+    case "auth": {
+      // What is in the fields now (autofill), not only what was typed.
+      a.phone = document.getElementById("a-phone")?.value ?? a.phone;
+      a.password = document.getElementById("a-pass")?.value || a.password;
+      if (a.mode === "signin" && (!a.phone.trim() || !a.password)) { a.error = t("Введите телефон или логин и пароль", "Enter the phone or login and the password"); render(); break; }
+      a.busy = true; a.error = null; render();
+      // Sign-in takes a phone or a login: «root» means root@dad.cafe.
+      const text = a.phone.trim(), phoneLike = /^[\d+()\s-]+$/.test(text), dd = digits(text);
+      const email = a.mode !== "signin" ? (a.checked || dd) + GUEST_DOMAIN
+        : text.includes("@") ? text.toLowerCase() : phoneLike && dd.length >= 10 && dd.length <= 15 ? dd + GUEST_DOMAIN : text.toLowerCase() + "@dad.cafe";
+      try {
+        if (a.mode === "reset") {
+          const res = await fetch(SUPABASE_URL + "/functions/v1/telegram", { method: "POST", headers: { apikey: SUPABASE_KEY, Authorization: "Bearer " + SUPABASE_KEY, "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "reset", code: a.code, password: a.password }) }).then(r => r.json());
+          if (!res.phone) throw Object.assign(new Error(), { text: res.error || "" });
+        }
+        const r = a.mode === "register"
+          ? await api("/auth/v1/signup", { method: "POST", body: { email, password: a.password, data: { name: a.name.trim() } } })
+          : await api("/auth/v1/token?grant_type=password", { method: "POST", body: { email, password: a.password } });
+        if (!r.access_token) throw Object.assign(new Error(), { text: "signup_disabled" });
+        saveSession(parseSession(r));
+        if (!c.name) { c.name = S.session.name; store.set("name", c.name); }
+        a.password = ""; setRef(null); await refreshMyOrders();
+      } catch (err) {
+        const text = err.text || "";
+        a.error = /not_checked|Database error saving/.test(text) ? t("Подтвердите номер в Telegram ещё раз", "Please confirm the phone in Telegram again")
+          : /no_account/.test(text) ? t("Этот номер ещё не зарегистрирован", "This number is not registered yet")
+          : a.mode === "signin" ? t("Неверный телефон, логин или пароль", "Wrong phone, login or password")
+          : /signup_disabled|email_provider_disabled/.test(text) ? t("Регистрация на сервере выключена", "Sign-ups are off on the server")
+          : /already/i.test(text) ? t("Этот номер уже зарегистрирован — войдите", "This phone is already registered — sign in")
+          : /password/i.test(text) ? t("Пароль — минимум 6 символов", "The password needs at least 6 characters")
+          : t("Не получилось, попробуйте ещё раз", "Something went wrong, please try again");
+      }
+      a.busy = false; render(); break;
+    }
+    case "signout": saveSession(null); S.history = []; setRef(null); render(); break;
+    case "place": {
+      c.busy = true; c.error = null; render();
+      const pre = c.later || !(isOpen() && !S.paused);
+      try {
+        const tk = await token();
+        if (!tk) throw Object.assign(new Error(), { code: "login_required" });
+        const dl = c.delivery && pre;
+        const rows = await rpc("place_order", { p_name: c.name.trim(), p_comment: c.comment.trim(), p_takeaway: c.takeaway || dl,
+          p_items: orderLines(), p_payment: "sbp", p_pickup_at: pre && c.slot ? fromLocal(new Date(c.slot)).toISOString() : null, p_phone: "",
+          ...(dl ? { p_address: c.address.trim() } : {}) }, tk);
+        setRef({ id: rows[0].id, token: rows[0].token });
+        S.cart = []; store.set("cart", S.cart); c.comment = ""; c.slot = null;
+        await refreshMyOrder();
+        S.pay = true;  // straight to the QR
+      } catch (err) {
+        if (err.code === "unavailable") { err.ids.forEach(id => S.stop.add(id)); }
+        if (err.code === "prepay_required") { c.payment = "sbp"; store.set("payment", "sbp"); }
+        if (err.code === "bad_time") c.slot = null;
+        if (err.code === "login_required") saveSession(null);
+        c.error = errorText(err);
+      }
+      c.busy = false; render(); break;
+    }
+    case "cancel": try { await guestAction("cancel"); } catch {} render(); break;
+    case "paid": try { await guestAction("paid"); } catch {} render(); break;
+    case "resolve": {
+      const o = S.myOrder;
+      const items = o.items.flatMap((l, i) => {
+        if (!l.missing) return [{ ...l, missing: null }];
+        const alt = S.choice?.[i] && findItem(S.choice[i]);
+        if (!alt) return [];
+        const v = defVariant(alt);
+        return [{ item_id: alt.id, title: alt.name.ru, amount: v.amount, unit: v.unit, milk: null, flavor_id: null, flavor: null, quantity: l.quantity, price: itemPrice(alt, v) }];
+      });
+      try { await guestAction(items.length ? "resolve" : "cancel", items.length ? items : undefined); S.choice = {}; }
+      catch (err) { if (err.code === "unavailable") { err.ids.forEach(id => S.stop.add(id)); S.choice = {}; toast(t("Эта замена тоже закончилась", "That one ran out too")); } }
+      render(); break;
+    }
+    case "neworder": setRef(null); render(); break;
+    case "tocart": S.viewing = false; render(); break;
+    case "pay": S.pay = true; render(); break;
+    case "paydelivery": S.pay = S.myOrder.delivery_fee; render(); break;
+    case "deliverypaid": try { await guestAction("delivery_paid"); } catch {} render(); break;
+    case "delivery": c.delivery = true; render(); break;
+    case "closepay": S.pay = null; render(); break;
+    case "copysum": try { await navigator.clipboard.writeText(String(typeof S.pay === "number" ? S.pay : S.myOrder.total)); toast(t("Сумма скопирована", "Amount copied")); } catch {} break;
+  }
+});
+
+// ── Start ───────────────────────────────────────────────────────────────────
+(async () => {
+  render();
+  // Everything at once: the menu file, the server data and the guest's order load in parallel.
+  const server = loadServer(), mine = refreshMyOrder();
+  const [menu, credits] = await Promise.all([fetch("menu.json").then(r => r.json()), fetch("photo_credits.json").then(r => r.json()).catch(() => ({}))]);
+  S.bundled = menu; PHOTOS = new Set(Object.keys(credits)); merge(); render();
+  await Promise.all([server, mine]); merge(); render();
+  // Keep the order status, stop-list and prices fresh while the page is open.
+  setInterval(async () => {
+    if (document.hidden) return;
+    if (S.session) await refreshMyOrders();
+    if (S.myRef) await refreshMyOrder();
+    if ((S.myRef || S.session) && !S.item && !S.pay && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) render();
+  }, POLL_MS);
+  document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder()]); render(); } });
+})();
+</script>
+</body>
+</html>

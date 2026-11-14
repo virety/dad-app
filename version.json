@@ -1,0 +1,8 @@
+{
+ "versionCode": 20,
+ "versionName": "1.19",
+ "notes": "Исправлен вход на сайте и с номером без +7",
+ "apk": "https://github.com/virety/dad-app/releases/latest/download/DAD.apk",
+ "size": 27084638,
+ "date": "2026-11-14"
+}
