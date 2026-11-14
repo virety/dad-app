@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DAD — азиатская кондитерская и кофейня во Владивостоке · меню и заказ онлайн</title>
+<meta name="description" content="DAD — азиатская кондитерская и кофейня во Владивостоке, ул. Адмирала Фокина, 14. Кустарды, моти, чизкейки, завтраки, кофе и чай. Меню с ценами, заказ заранее и оплата по QR. Тел. +7 904 628-30-13.">
+<meta name="keywords" content="DAD, кофейня Владивосток, кондитерская Владивосток, азиатские десерты, моти, кустард, завтраки, Адмирала Фокина">
+<link rel="canonical" href="https://virety.github.io/dad-app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DAD — азиатская кондитерская и кофейня во Владивостоке">
+<meta property="og:description" content="Меню с ценами, заказ заранее и оплата по QR. Ул. Адмирала Фокина, 14.">
+<meta property="og:url" content="https://virety.github.io/dad-app/">
+<meta property="og:image" content="https://virety.github.io/dad-app/app/icon-512.png">
+<meta property="og:locale" content="ru_RU">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CafeOrCoffeeShop", "name": "DAD", "description": "Азиатская кондитерская и кофейня: кустарды, моти, чизкейки, завтраки, кофе и чай.", "url": "https://virety.github.io/dad-app/", "telephone": "+7 904 628-30-13", "image": "https://virety.github.io/dad-app/app/icon-512.png", "address": {"@type": "PostalAddress", "streetAddress": "ул. Адмирала Фокина, 14", "addressLocality": "Владивосток", "addressCountry": "RU"}, "geo": {"@type": "GeoCoordinates", "latitude": 43.117228, "longitude": 131.883695}, "servesCuisine": ["Азиатская кухня", "Десерты", "Кофе"], "hasMenu": "https://virety.github.io/dad-app/#menu", "acceptsReservations": false, "priceRange": "₽₽", "openingHours": ["Mo 09:00-21:00", "Tu 09:00-21:00", "We 09:00-21:00", "Th 09:00-21:00", "Fr 09:00-22:00", "Sa 09:00-22:00", "Su 09:00-21:00"]}</script>
+<meta name="theme-color" content="#1F2B8E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='29' fill='white' stroke='%231F2B8E' stroke-width='4'/%3E%3Ctext x='32' y='39' font-family='Arial' font-weight='700' font-size='18' text-anchor='middle' fill='%231F2B8E'%3EDAD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1F2B8E;
+    --tint: #EEF0FA;
+    --muted: #7F86BC;
+    --rule: #C9CDEA;
+    --bg: #FFFFFF;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--blue);
+    font-family: Montserrat, system-ui, sans-serif; line-height: 1.45;
+  }
+  main { max-width: 560px; margin: 0 auto; padding: 32px 16px 48px; }
+  .actions { display: grid; gap: 10px; margin: 0 0 28px; }
+  /* The brand plate: «DAD / dreams and dreamers» on blue, as on the café's sign. */
+  .plate { display: inline-block; background: var(--blue); color: #fff; border-radius: 18px; padding: 16px 32px 20px; text-align: left; line-height: 1.05; }
+  .plate b { display: block; font-weight: 500; font-size: 64px; letter-spacing: -1px; }
+  .plate span { display: block; font-weight: 500; font-size: 22px; margin-top: 4px; }
+  .brand { text-align: center; }
+  h1.title { font-size: 22px; text-transform: none; margin: 22px 0 8px; }
+  .btn.line { background: transparent; color: var(--blue); border: 2px solid var(--blue); }
+  .about { text-align: center; font-size: 14px; font-weight: 500; margin: 0 0 22px; }
+  h2.big { font-weight: 900; font-size: 26px; text-transform: uppercase; margin: 40px 0 14px; text-align: center; }
+  .menu h3 { font-weight: 900; font-size: 18px; text-transform: uppercase; margin: 26px 0 6px; border-bottom: 2px solid var(--blue); padding-bottom: 4px; }
+  .menu h4 { font-weight: 800; font-size: 13px; text-transform: uppercase; color: var(--muted); margin: 16px 0 4px; }
+  .menu .dish { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+  .menu .dish b { font-weight: 600; } .menu .dish small { display: block; color: var(--muted); font-size: 12px; font-weight: 500; }
+  .menu .dish span:last-child { white-space: nowrap; font-weight: 700; }
+  @media (min-width: 900px) {
+    main { max-width: 1180px; padding-left: 32px; padding-right: 32px; }
+    .plate b { font-size: 96px; } .plate span { font-size: 30px; } .plate { padding: 22px 44px 28px; border-radius: 24px; }
+    h1.title { font-size: 28px; }
+    .top { max-width: 560px; margin: 0 auto; }
+    .apps { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    .apps .card { margin: 0; }
+    .menu .cols { columns: 2; column-gap: 40px; }
+  }
+  @media (min-width: 1200px) {
+    .menu .cols { columns: 3; }
+    .menu .cat { break-inside: avoid; }
+    footer { max-width: 560px; margin-left: auto; margin-right: auto; }
+  }
+  .logo {
+    width: 84px; height: 84px; border: 3px solid var(--blue); border-radius: 50%;
+    display: grid; place-items: center; margin: 0 auto;
+    font-weight: 500; font-size: 26px; letter-spacing: -0.5px;
+  }
+  .tagline { text-align: center; margin: 10px 0 0; font-weight: 600; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+  h1 { font-weight: 900; font-size: clamp(34px, 9vw, 48px); line-height: 1.05; text-transform: uppercase; text-align: center; margin: 28px 0 10px; }
+  .lead { text-align: center; font-weight: 500; margin: 0 auto 28px; max-width: 420px; }
+  .features { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 0 0 36px; padding: 0; list-style: none; }
+  .features li { border: 1.5px solid var(--blue); border-radius: 999px; padding: 6px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+  .card { border: 2px solid var(--blue); border-radius: 22px; padding: 22px 20px; margin-bottom: 18px; }
+  .card.mine { box-shadow: 0 0 0 4px var(--tint); }
+  .card h2 { margin: 0 0 4px; font-weight: 900; font-size: 22px; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+  .card h2 svg { width: 24px; height: 24px; fill: var(--blue); flex: none; }
+  .meta { margin: 0 0 16px; color: var(--muted); font-weight: 600; font-size: 13px; }
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; min-height: 54px;
+    border-radius: 999px; background: var(--blue); color: #fff; text-decoration: none;
+    font-weight: 800; font-size: 15px; letter-spacing: .5px; text-transform: uppercase;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn.disabled { background: var(--muted); pointer-events: none; }
+  ol { margin: 18px 0 0; padding: 0; list-style: none; counter-reset: step; }
+  ol li { counter-increment: step; display: grid; grid-template-columns: 28px 1fr; gap: 10px; margin-bottom: 10px; font-size: 14px; font-weight: 500; }
+  ol li::before {
+    content: counter(step); width: 26px; height: 26px; border-radius: 50%; background: var(--tint);
+    display: grid; place-items: center; font-weight: 800; font-size: 13px;
+  }
+  .note { font-size: 13px; color: var(--muted); font-weight: 500; margin: 14px 0 0; }
+  .qr { display: none; text-align: center; margin: 30px 0 0; }
+  .qr p { font-size: 13px; color: var(--muted); font-weight: 600; margin: 10px 0 0; }
+  .qr #qrcode { display: inline-block; padding: 12px; border: 2px solid var(--blue); border-radius: 18px; }
+  .qr #qrcode img, .qr #qrcode canvas { display: block; }
+  @media (hover: hover) and (pointer: fine) { .qr { display: block; } }
+  footer { margin-top: 40px; padding-top: 18px; border-top: 2px solid var(--blue); font-size: 14px; font-weight: 500; }
+  footer .row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+  footer .row span:last-child { color: var(--muted); text-align: right; }
+  footer .bye { text-align: center; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin: 26px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+  <div class="brand"><div class="plate" role="img" aria-label="DAD — dreams and dreamers"><b>DAD</b><span>dreams and dreamers</span></div></div>
+  <h1 class="title">Азиатская кондитерская и кофейня во Владивостоке</h1>
+  <p class="lead">Кустарды, моти, чизкейки, завтраки, кофе и чай. Закажите заранее и заберите без очереди.</p>
+  <p class="about">ул. Адмирала Фокина, 14 · <a href="tel:+79046283013" style="color:inherit">+7 904 628-30-13</a></p>
+  <div class="actions">
+    <a class="btn" href="app/">Меню и заказ онлайн</a>
+    <a class="btn line" href="#menu">Меню с ценами</a>
+  </div>
+  <ul class="features">
+    <li>Меню</li><li>Предзаказ</li><li>Оплата по QR</li><li>Аллергены</li><li>RU · EN · 中文</li>
+  </ul>
+  </div>
+
+  <h2 class="big">Приложение DAD</h2>
+  <p class="lead">Меню с фото и КБЖУ, заказ заранее ко времени и оплата по QR — без очереди у кассы.</p>
+  <div class="apps">
+
+  <section class="card" id="android">
+    <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.6 9.48l1.84-3.18a.38.38 0 00-.66-.38l-1.86 3.22a11.4 11.4 0 00-9.84 0L5.22 5.92a.38.38 0 00-.66.38L6.4 9.48A10.8 10.8 0 001 18h22a10.8 10.8 0 00-5.4-8.52zM7 15.25A1.25 1.25 0 118.25 14 1.25 1.25 0 017 15.25zm10 0A1.25 1.25 0 1118.25 14 1.25 1.25 0 0117 15.25z"/></svg>Android</h2>
+    <p class="meta" id="android-meta">Последняя версия</p>
+    <a class="btn" id="android-btn" href="#">Скачать приложение</a>
+    <ol>
+      <li>Нажмите «Скачать» — загрузится файл DAD.apk.</li>
+      <li>Откройте файл. Если телефон спросит, разрешите установку из браузера.</li>
+      <li>Готово. Когда выйдет новая версия, приложение само предложит её скачать — устанавливайте поверх, всё сохранится.</li>
+    </ol>
+  </section>
+
+  <section class="card" id="ios">
+    <h2><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.37 12.63c-.02-2.3 1.88-3.4 1.97-3.46a4.24 4.24 0 00-3.33-1.8c-1.42-.15-2.77.83-3.49.83s-1.83-.81-3-.79a4.44 4.44 0 00-3.76 2.28c-1.6 2.78-.41 6.9 1.15 9.16.76 1.1 1.67 2.34 2.86 2.3 1.15-.05 1.58-.74 2.97-.74s1.78.74 3 .72c1.24-.02 2.02-1.12 2.78-2.23a9.8 9.8 0 001.26-2.58 4.02 4.02 0 01-2.41-3.69zM14.1 5.9a4 4 0 00.94-2.9 4.08 4.08 0 00-2.64 1.36 3.82 3.82 0 00-.96 2.8A3.37 3.37 0 0014.1 5.9z"/></svg>iPhone</h2>
+    <p class="meta" id="ios-meta">Без App Store · то же меню и тот же аккаунт</p>
+    <a class="btn" id="ios-btn" href="app/">Открыть DAD</a>
+    <ol id="ios-steps">
+      <li>Откройте эту страницу в Safari и нажмите «Открыть DAD».</li>
+      <li>Нажмите «Поделиться» ⬆︎ внизу экрана и выберите «На экран „Домой“».</li>
+      <li>Готово: DAD появится рядом с остальными приложениями. Обновления приходят сами, скачивать ничего не нужно.</li>
+    </ol>
+    <p class="note" id="ios-note">Войдите тем же номером и паролем, что и на Android, и ваши заказы будут видны на любом устройстве.</p>
+  </section>
+
+  </div>
+
+  <section class="menu" id="menu">
+    <h2 class="big">Меню</h2>
+    <h3>Кухня</h3><div class="cols"><div class="cat"><h4>Завтраки</h4><div class="dish"><span><b>Бенедикт с беконом</b><small>Два варёных яйца и бекон на поджаренном хлебе тартин под соусом беарнез из желтков и сливочного масла.</small></span><span>272 г · 470 ₽</span></div><div class="dish"><span><b>Бенедикт с лососем</b><small>Два варёных яйца и тонко нарезанная форель на поджаренном хлебе тартин под соусом беарнез из желтков и сливочного масла.</small></span><span>297 г · 580 ₽</span></div><div class="dish"><span><b>Завтрак с авокадо и креветками</b><small>Обжаренные креветки, два варёных яйца и авокадо на голландском соусе со сливками и кокосовыми сливками.</small></span><span>351 г · 820 ₽</span></div><div class="dish"><span><b>Завтрак с яйцом, лососем, шпинатом</b><small>Два варёных яйца, форель, отварной шпинат, салат чука и огурец, сверху киноа.</small></span><span>290 г · 540 ₽</span></div><div class="dish"><span><b>Овсянка с ягодами и сливочным кремом</b><small>Овсянка на молоке со сливочным маслом, клубникой, голубикой и сливочным кремом.</small></span><span>420 г · 380 ₽</span></div><div class="dish"><span><b>Омлет с авокадо</b><small>Запечённый омлет на молоке и сливочном масле под голландским соусом, рядом ломтики авокадо.</small></span><span>337 г · 570 ₽</span></div><div class="dish"><span><b>Рисовая каша с манго и семенами чиа</b><small>Рисовая каша на кокосовом молоке с дольками манго.</small></span><span>311 г · 440 ₽</span></div><div class="dish"><span><b>Скрембл с беконом</b><small>Скрембл из двух яиц на сливочном масле на поджаренном хлебе тартин.</small></span><span>321 г</span></div><div class="dish"><span><b>Скрембл с лососем</b><small>Скрембл из двух яиц на сливочном масле на поджаренном хлебе тартин.</small></span><span>346 г · 640 ₽</span></div><div class="dish"><span><b>Скрембл с Том Ям</b><small>Скрембл из двух яиц со сливками и пастой том ям — пикантный, с тайской кислинкой.</small></span><span>237 г · 380 ₽</span></div><div class="dish"><span><b>Сырники с соусом из голубой матчи</b><small>Сырники из творога с ванилью, обжаренные до золотистой корочки.</small></span><span>197 г</span></div><div class="dish"><span><b>Турецкий завтрак</b><small>Два яйца на соусе из сливочного сыра и сливок, авокадо с семенами чиа и микс салатных листьев.</small></span><span>338 г · 450 ₽</span></div></div><div class="cat"><h4>Салаты</h4><div class="dish"><span><b>Не цезарь с курицей и авокадо</b><small>Айсберг и латук в соусе цезарь с каперсами и анчоусами, курица в маринаде калби, авокадо и черри.</small></span><span>320 г · 480 ₽</span></div><div class="dish"><span><b>Не цезарь с креветкой и авокадо</b><small>Айсберг и латук в соусе цезарь с каперсами и анчоусами, обжаренные креветки, авокадо и черри.</small></span><span>300 г · 600 ₽</span></div><div class="dish"><span><b>Зелёный салат с авокадо</b><small>Шпинат, салатные листья, красная капуста, огурец, кабачок, брокколи и эдамаме, в центре половинка авокадо с бальзамической заправкой на меду.</small></span><span>384 г · 700 ₽</span></div><div class="dish"><span><b>Салат с огурцом, кабачком и песто</b><small>Салатные листья с лентами огурца и кабачка, рикоттой и пармезаном.</small></span><span>290 г · 480 ₽</span></div></div><div class="cat"><h4>Поке и боулы</h4><div class="dish"><span><b>Поке с курицей</b><small>Рис с рисовым уксусом, курица в маринаде калби, салат чука, вакаме, маринованный огурец и эдамаме.</small></span><span>327 г · 640 ₽</span></div><div class="dish"><span><b>Поке с тунцом</b><small>Рис с рисовым уксусом, тунец в соевой заправке с имбирём и кунжутным маслом, чука, вакаме, маринованный огурец и эдамаме.</small></span><span>318 г · 670 ₽</span></div><div class="dish"><span><b>Поке с лососем</b><small>Рис с рисовым уксусом, лосось в соевой заправке с имбирём и кунжутным маслом, чука, вакаме, маринованный огурец и эдамаме.</small></span><span>318 г · 690 ₽</span></div><div class="dish"><span><b>Боул с тунцом</b><small>Рис с рисовым уксусом, тунец в соевой заправке, обжаренные грибы эноки, шпинат, чука и эдамаме.</small></span><span>384 г · 770 ₽</span></div><div class="dish"><span><b>Боул с форелью</b><small>Киноа с песто, форель в соевой заправке, хумус с карри и кокосовым молоком, шпинат и эдамаме.</small></span><span>414 г · 840 ₽</span></div></div><div class="cat"><h4>Супы</h4><div class="dish"><span><b>Крем-суп грибной</b><small>Крем-суп из шампиньонов с картофелем, луком и сливками.</small></span><span>393 г · 550 ₽</span></div><div class="dish"><span><b>Том Кха с курицей</b><small>Бульон на кокосовом молоке и сливках с пастой том кха, имбирём, лемонграссом и листьями лайма.</small></span><span>392 г · 540 ₽</span></div><div class="dish"><span><b>Том Ям с морепродуктами</b><small>Острый бульон на кокосовом молоке с пастой том ям, лемонграссом и листьями лайма.</small></span><span>427 г · 600 ₽</span></div></div><div class="cat"><h4>Паста</h4><div class="dish"><span><b>Паста с цыплёнком, песто и адыгейским сыром</b><small>Спагетти в сливочном соусе с песто из базилика, шпината и кедровых орехов.</small></span><span>330 г · 540 ₽</span></div><div class="dish"><span><b>Паста том ям с беконом</b><small>Спагетти в сливочном соусе с пастой том ям, беконом, шампиньонами и черри — острые и ароматные.</small></span><span>305 г · 520 ₽</span></div><div class="dish"><span><b>Розовая паста с лососем и авокадо</b><small>Спагетти в сливочном соусе со свекольным муссом — отсюда розовый цвет.</small></span><span>369 г · 570 ₽</span></div></div><div class="cat"><h4>Горячее</h4><div class="dish"><span><b>Гребешок на свекольном креме с чёрным рисом</b><small>Обжаренные гребешки на свекольном муссе с тофу, кедровыми орехами и мятой, рядом чёрный рис.</small></span><span>371 г · 810 ₽</span></div><div class="dish"><span><b>Кальмар гриль на пюре из шпината</b><small>Обжаренный кальмар на сливочном пюре из шпината и картофеля с чесноком.</small></span><span>296 г · 600 ₽</span></div><div class="dish"><span><b>Креветка с морковным кремом</b><small>Обжаренные креветки на креме из моркови и зелёного горошка со сливками и кокосовым маслом.</small></span><span>333 г · 740 ₽</span></div><div class="dish"><span><b>Куриная грудка с брокколи</b><small>Нежная куриная грудка су-вид под соусом демиглас.</small></span><span>304 г · 500 ₽</span></div><div class="dish"><span><b>Лосось с чёрным рисом и вялеными томатами</b><small>Запечённая форель с чёрным рисом и вялеными черри с травами.</small></span><span>407 г · 810 ₽</span></div></div></div><h3>Десерты</h3><div class="cols"><div class="cat"><h4>Кустарды</h4><div class="dish"><span><b>Кустард</b><small>Азиатский заварной чизкейк с мягким центром и хрустящей корочкой.</small></span><span>1/4 · 480 ₽</span></div><div class="dish"><span><b>Кустард с брусникой</b><small>Классический кустард со свежей брусникой и сиропом фиалки.</small></span><span>1/4</span></div><div class="dish"><span><b>Кустард с клубникой / голубикой</b><small>Классический кустард: влажная гладкая текстура, ягоды для свежести и естественной сладости.</small></span><span>1/4</span></div><div class="dish"><span><b>Карамельный кустард</b><small>Вкус топлёного молока с шоколадной карамелью, посыпан алкализованным какао.</small></span><span>1/4</span></div><div class="dish"><span><b>Японский чизз</b><small>Воздушный чизз с творожной зернистой текстурой — что-то между запеканкой и чизкейком.</small></span><span>1/4</span></div></div><div class="cat"><h4>КремЧизы</h4><div class="dish"><span><b>КремЧиз классический</b><small>Внизу классический кустард, сверху воздушный крем на маскарпоне — немного похоже на тирамису.</small></span><span>1/4</span></div><div class="dish"><span><b>КремЧиз лаванда</b><small>Кустард в основе и крем на маскарпоне с лавандовым сиропом — как лавандовое тирамису.</small></span><span>1/4</span></div><div class="dish"><span><b>КремЧиз шоколадный</b><small>Шоколадный кустард и крем из маскарпоне с бельгийским тёмным шоколадом и цедрой апельсина — по вкусу как «Птичье молоко».</small></span><span>1/4</span></div><div class="dish"><span><b>КремЧиз матча</b><small>Кустард с нашей фирменной зелёной матчей, воздушный крем на маскарпоне и посыпка из матчи.</small></span><span>1/4</span></div><div class="dish"><span><b>КремЧиз Эрл Грей</b><small>Основа из шоколадного печенья и бисквита, пропитанного чаем эрл грей, залита чизкейком с белым шоколадом, сверху крошка печенья.</small></span><span>1/4</span></div></div><div class="cat"><h4>Торты</h4><div class="dish"><span><b>Малина-фисташка</b><small>Малиновый чизкейк с ярким вкусом фисташки и освежающей кислинкой малины, украшен сливочным кремом из фисташки.</small></span><span>1/4</span></div><div class="dish"><span><b>Дубайский чиз</b><small>Основа из двух видов печенья, обжаренное тесто катаифи с фисташковой пастой и творожный сыр с шоколадом.</small></span><span>1/4</span></div><div class="dish"><span><b>Сникерс</b><small>Чизкейк с арахисом и нежным шоколадным кремом, сверху солёная карамель с арахисом.</small></span><span>1/4</span></div><div class="dish"><span><b>Медовик</b><small>Многослойный десерт из медовых коржей с прослойками творожного крема.</small></span><span></span></div><div class="dish"><span><b>Карпатка</b><small>Заварное тесто с кремом на молоке и яйцах и прослойкой из смородины и малины.</small></span><span>1/4</span></div><div class="dish"><span><b>Наполеон</b><small>Многослойный десерт из слоёного теста, пропитанный варёной сгущёнкой.</small></span><span></span></div></div><div class="cat"><h4>Моти</h4><div class="dish"><span><b>Моти</b><small>Японский десерт из тонкого рисового теста со сливочным кремом и натуральным фруктовым пюре.</small></span><span></span></div><div class="dish"><span><b>Моти дубай</b><small>Рисовое тесто, шоколадный крем и хрустящий катаифи с фисташковой пастой.</small></span><span></span></div></div><div class="cat"><h4>Пирожные и печенье</h4><div class="dish"><span><b>Эгг тарт</b><small>Азиатская корзиночка из слоёного теста со сливочно-яичной начинкой: хрустящая снаружи, мягкая внутри.</small></span><span></span></div><div class="dish"><span><b>Меренга</b><small>Песочная основа, лимонная прослойка и слегка обожжённые взбитые белки с цедрой лимона.</small></span><span>целиком</span></div><div class="dish"><span><b>Баттер куки</b><small>Воздушный мусс из маскарпоне на песочной основе, украшен вишней.</small></span><span>1/4</span></div><div class="dish"><span><b>Брауни</b><small>Протеиновый брауни без глютена с насыщенным шоколадным вкусом.</small></span><span></span></div><div class="dish"><span><b>Матча печенье</b><small>Веганское печенье на кокосовом масле с миндальной и пшеничной мукой и чаем матча.</small></span><span></span></div></div></div><h3>Бар</h3><div class="cols"><div class="cat"><h4>Кофе</h4><div class="dish"><span><b>Ристретто</b><small>Самая короткая и плотная порция эспрессо — 20 мл.</small></span><span>20 мл</span></div><div class="dish"><span><b>Эспрессо</b><small>Классическая порция эспрессо, 20 мл.</small></span><span>20 мл</span></div><div class="dish"><span><b>Двойной эспрессо</b><small>Двойная порция эспрессо, 40 мл.</small></span><span>40 мл</span></div><div class="dish"><span><b>Американо</b><small>Эспрессо, сваренный прямо в горячую воду.</small></span><span>200 мл</span></div><div class="dish"><span><b>Лунго</b><small>Двойная порция кофе, пролитая дольше обычного — 100 мл.</small></span><span>100 мл</span></div><div class="dish"><span><b>Капучино</b><small>Двойной эспрессо с молоком, взбитым в плотную однородную пену.</small></span><span>300 мл</span></div><div class="dish"><span><b>Латте</b><small>Эспрессо с большим количеством горячего молока и тонким слоем пены.</small></span><span>300 мл</span></div><div class="dish"><span><b>Раф</b><small>Эспрессо, взбитый паром со сливками 10%, ванильным и обычным сахаром.</small></span><span>300 мл</span></div><div class="dish"><span><b>Флэт уайт</b><small>Двойной эспрессо и 150 мл молока с бархатистой пеной.</small></span><span>200 мл</span></div><div class="dish"><span><b>Американо на молоке</b><small>Двойной эспрессо с горячим молоком вместо воды.</small></span><span>300 мл</span></div><div class="dish"><span><b>Американо с молоком</b><small>Американо из двойного эспрессо с добавлением молока — горячего или холодного на ваш выбор.</small></span><span>300 мл</span></div></div><div class="cat"><h4>Авторские напитки</h4><div class="dish"><span><b>Латте Сингапур</b><small>Двойной эспрессо с молоком, кокосовым молоком и сиропом из лемонграсса.</small></span><span>300 мл</span></div><div class="dish"><span><b>Апельсиновый цвет</b><small>Двойной эспрессо с молоком и цитрусовым кордиалом на юдзу, цедре лимона и апельсина.</small></span><span>220 мл</span></div><div class="dish"><span><b>Матча латте</b><small>Матча на выбор — классическая, анчан, тыквенная, свекольная или питахайя — с горячим молоком.</small></span><span>300 мл</span></div><div class="dish"><span><b>Лотос кофе</b><small>Холодный: тоник с кордиалом из лотоса, личи и кардамона, лёд и эспрессо сверху.</small></span><span>300 мл</span></div><div class="dish"><span><b>Бамбл апельсин</b><small>Холодный: апельсиновый сок с карамельным сиропом, лёд и двойной эспрессо сверху.</small></span><span>400 мл</span></div><div class="dish"><span><b>Бамбл вишня</b><small>Холодный: вишнёвый сок с вишнёвым сиропом, лёд и двойной эспрессо сверху.</small></span><span>400 мл</span></div></div><div class="cat"><h4>Какао</h4><div class="dish"><span><b>Какао с бобами тонка и кокосовой пастой</b><small>Какао на сливках и кокосовом молоке с сиропом из бобов тонка.</small></span><span>250 мл</span></div><div class="dish"><span><b>Какао со специями</b><small>Какао на сливках и молоке со смесью согревающих специй.</small></span><span>250 мл</span></div><div class="dish"><span><b>Классический какао</b><small>Какао на сливках и молоке — густое и нежное, как в детстве, только насыщеннее.</small></span><span>250 мл</span></div><div class="dish"><span><b>Горячий шоколад</b><small>Концентрированный напиток: 40 г какао на 50 мл воды, порция 70 мл.</small></span><span>70 мл</span></div></div><div class="cat"><h4>Чай</h4><div class="dish"><span><b>Чай в чайнике</b><small>Листовой чай в чайнике на 650 мл: настаиваем 5 минут.</small></span><span>650 мл</span></div><div class="dish"><span><b>Глинтвейн безалкогольный</b><small>Чайник 650 мл: чай «Глинтвейн» с мёдом.</small></span><span>650 мл</span></div><div class="dish"><span><b>Зелёный шантарам</b><small>Чайник 650 мл: чай «Шантарам» с мёдом и сушёной клубникой.</small></span><span>650 мл</span></div><div class="dish"><span><b>Таёжный</b><small>Чайник 650 мл: чай «Сосновый бор» с мёдом, вареньем из сосновых шишек и пюре лимонника.</small></span><span>650 мл</span></div><div class="dish"><span><b>Чай в стакане</b><small>Пакетированный чай в стакане 300 мл.</small></span><span>300 мл</span></div></div><div class="cat"><h4>Чайные лимонады</h4><div class="dish"><span><b>Сэн Дзен</b><small>Холодный лимонад на синем чае анчан с напитком из виноградного сока, яблочного уксуса и мёда, имбирём, лимоном, лемонграссом и японской содовой «Сангария».</small></span><span>270 мл</span></div><div class="dish"><span><b>Баззи Ли</b><small>Холодный лимонад на жасминовом чае с алоэ и базиликом, лаймом и сиропом из лаймовых листьев.</small></span><span>270 мл</span></div><div class="dish"><span><b>Шао Милки</b><small>Холодный молочный улун с кокосовым напитком, сиропом из лемонграсса и йогуртовой содовой «Сангария».</small></span><span>270 мл</span></div><div class="dish"><span><b>Да Хун Панда</b><small>Холодный улун Да Хун Пао с кокосовым напитком с чёрным кунжутом.</small></span><span>270 мл</span></div></div><div class="cat"><h4>Согревающие азиатские напитки</h4><div class="dish"><span><b>Aloe Nuvo, чайник</b><small>Горячий чайник 600 мл: молочный улун с алоэ и лаймовым листом, сиропом из лемонграсса и лаймом.</small></span><span>600 мл</span></div><div class="dish"><span><b>Blue Peach, чайник</b><small>Горячий чайник 600 мл: синий чай анчан с персиковым напитком, йогуртовой содовой «Сангария», лаймом и лемонграссом.</small></span><span>600 мл</span></div></div><div class="cat"><h4>Бабл Мания</h4><div class="dish"><span><b>Мангуста</b><small>Молочный улун с пюре манго, соком папайи и сиропами ванили и попкорна.</small></span><span>300 мл</span></div><div class="dish"><span><b>Пичолли</b><small>Синий чай анчан с персиковым и кокосовым напитками и сиропом из лемонграсса.</small></span><span>300 мл</span></div><div class="dish"><span><b>Тоффи кофе</b><small>Сок лонгана с кокосовым напитком, сиропами бобов тонка и попкорна, эспрессо сверху.</small></span><span>300 мл</span></div><div class="dish"><span><b>Гуава мама</b><small>Жасминовый чай с соками гуавы и ананаса, лаймом и сиропом личи.</small></span><span>300 мл</span></div></div><div class="cat"><h4>Смузи и краши</h4><div class="dish"><span><b>Страстный манго</b><small>Манговый сорбет, свежая маракуйя, нектар манго и йогурт, взбитые со льдом.</small></span><span>300 мл</span></div><div class="dish"><span><b>Малиновая эйфория</b><small>Малина, банан, нектар манго и йогурт с сиропом маракуйи, взбитые со льдом.</small></span><span>300 мл</span></div><div class="dish"><span><b>Шоколадная ягода</b><small>Сорбет из черники, малины и ежевики с жидким шоколадом, йогуртом, клубничным и кокосовым сиропами.</small></span><span>300 мл</span></div><div class="dish"><span><b>Ягодный краш</b><small>Ягодный сорбет с гранатовым морсом и ежевичным сиропом, взбитые со льдом.</small></span><span>300 мл</span></div><div class="dish"><span><b>Манго танго краш</b><small>Манговый сорбет с нектаром манго, ананасовым соком и сиропом маракуйи, взбитые со льдом.</small></span><span>300 мл</span></div></div><div class="cat"><h4>Милкшейки</h4><div class="dish"><span><b>Манго с апельсиновым джемом</b><small>Сливочное мороженое, нектар манго и молоко с апельсиновым джемом и капелькой имбиря.</small></span><span>300 мл</span></div></div></div>
+    <p class="lead"><a href="app/" style="color:inherit">Открыть меню с фото →</a></p>
+  </section>
+
+  <div class="qr">
+    <div id="qrcode"></div>
+    <p>Наведите камеру телефона, чтобы открыть эту страницу</p>
+  </div>
+
+  <footer>
+    <div class="row"><span>Адрес</span><span>Владивосток, ул. Адмирала Фокина, 14</span></div>
+    <div class="row"><span>Пн–Чт</span><span>9:00–21:00</span></div><div class="row"><span>Пт–Сб</span><span>9:00–22:00</span></div><div class="row"><span>Вс</span><span>9:00–21:00</span></div>
+    <div class="row"><span>Телефон</span><a href="tel:+79046283013" style="color:inherit">+7 904 628-30-13</a></div>
+    <div class="row"><span>Меню на сайте</span><a href="app/" style="color:inherit">открыть в браузере</a></div>
+    <p class="bye">Приятного аппетита!</p>
+    <p style="text-align:center;font-size:12px;margin-top:8px"><a href="app/admin.html" style="color:var(--muted)">Вход для сотрудников</a></p>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // Ссылка на iPhone-версию в App Store или TestFlight. Пусто — веб-версия app/ (ставится на экран «Домой»).
+  const IOS_URL = "";
+
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const android = document.getElementById("android");
+  const ios = document.getElementById("ios");
+  // The guest's own platform goes first.
+  if (isIOS) { android.before(ios); ios.classList.add("mine"); }
+  if (isAndroid) android.classList.add("mine");
+
+  if (IOS_URL) {
+    const btn = document.getElementById("ios-btn");
+    btn.href = IOS_URL;
+    btn.classList.remove("disabled");
+    btn.textContent = IOS_URL.includes("testflight") ? "Установить через TestFlight" : "Открыть в App Store";
+    document.getElementById("ios-meta").textContent = "Бесплатно";
+    document.getElementById("ios-steps").remove();
+    document.getElementById("ios-note").textContent = IOS_URL.includes("testflight")
+      ? "Сначала установите TestFlight из App Store, затем нажмите кнопку ещё раз."
+      : "Обновления придут через App Store автоматически.";
+  }
+
+  // version.json is written by publish.py together with each release.
+  fetch("version.json", { cache: "no-store" })
+    .then(r => r.json())
+    .then(v => {
+      document.getElementById("android-btn").href = v.apk;
+      const parts = ["Версия " + v.versionName];
+      if (v.date) parts.push(new Date(v.date).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }));
+      if (v.size) parts.push(Math.round(v.size / 1048576) + " МБ");
+      document.getElementById("android-meta").textContent = parts.join(" · ");
+    })
+    .catch(() => {});
+
+  if (window.QRCode) {
+    new QRCode(document.getElementById("qrcode"), { text: location.href.split("#")[0], width: 168, height: 168, colorDark: "#1F2B8E", colorLight: "#FFFFFF" });
+  }
+</script>
+</body>
+</html>

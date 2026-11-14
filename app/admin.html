@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DAD Админка</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #1F2B8E; --tint: #EEF0FA; --muted: #7F86BC; --rule: #C9CDEA; --hair: rgba(31,43,142,.15);
+    --warn: #C8551E; --ok: #2E7D4F; --bg: #FFFFFF; --side: #F6F7FC;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--blue); font-family: Montserrat, system-ui, sans-serif; font-size: 14px; line-height: 1.4; }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  input, textarea, select { font: inherit; color: var(--blue); }
+  a { color: inherit; }
+  .layout { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  nav { background: var(--side); border-right: 1px solid var(--hair); padding: 20px 14px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 4px; }
+  nav .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 18px; margin: 0 6px 18px; }
+  .logo { width: 40px; height: 40px; border: 2.5px solid var(--blue); border-radius: 50%; display: grid; place-items: center; font-weight: 500; font-size: 13px; flex: none; }
+  nav button { text-align: left; padding: 10px 12px; border-radius: 10px; font-weight: 600; }
+  nav button.on { background: var(--blue); color: #fff; }
+  nav button:not(.on):hover { background: var(--tint); }
+  nav .who { margin-top: auto; font-size: 12px; color: var(--muted); padding: 0 8px; }
+  main { padding: 28px 32px 64px; min-width: 0; }
+  h1 { font-weight: 900; font-size: 28px; text-transform: uppercase; margin: 0 0 4px; letter-spacing: -.5px; }
+  h2 { font-weight: 900; font-size: 17px; text-transform: uppercase; margin: 26px 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+  .muted { color: var(--muted); } .warn { color: var(--warn); } .ok { color: var(--ok); }
+  .small { font-size: 12px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; background: var(--blue); color: #fff; font-weight: 800; border-radius: 999px; padding: 10px 20px; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .btn.line { background: transparent; color: var(--blue); border: 1.5px solid var(--blue); }
+  .btn.danger { background: transparent; color: var(--warn); border: 1.5px solid var(--warn); }
+  .btn.sm { padding: 6px 14px; font-size: 13px; }
+  .link { font-weight: 700; text-decoration: underline; }
+  .field, select.field { width: 100%; border: 1.5px solid var(--rule); border-radius: 10px; padding: 9px 12px; background: #fff; outline: 0; }
+  .field:focus { border-color: var(--blue); }
+  textarea.field { resize: vertical; min-height: 64px; }
+  label.f { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin: 10px 0 4px; }
+  .row { display: flex; gap: 12px; align-items: center; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip { border: 1.5px solid var(--blue); border-radius: 999px; padding: 5px 12px; font-weight: 600; font-size: 13px; background: #fff; }
+  .chip.on { background: var(--blue); color: #fff; }
+  .chip.off { border-color: var(--rule); color: var(--muted); text-decoration: line-through; }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 800; padding: 8px 10px; border-bottom: 1.5px solid var(--rule); }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
+  tr.click:hover td { background: var(--tint); cursor: pointer; }
+  tr.cat td { background: var(--side); font-weight: 800; text-transform: uppercase; font-size: 12px; }
+  .thumb { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; background: var(--tint); display: block; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 800; text-transform: uppercase; border-radius: 999px; padding: 2px 8px; background: var(--tint); margin-left: 4px; }
+  .tag.w { background: var(--warn); color: #fff; }
+  .split { display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 28px; align-items: start; }
+  .panel { border: 1.5px solid var(--rule); border-radius: 16px; padding: 18px 20px; position: sticky; top: 16px; max-height: calc(100vh - 32px); overflow: auto; background: #fff; }
+  .panel h2:first-child { margin-top: 0; }
+  .card { border: 1.5px solid var(--rule); border-radius: 14px; padding: 14px 16px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .tile { border: 1.5px solid var(--blue); border-radius: 14px; padding: 10px 12px; }
+  .tile b { display: block; font-size: 22px; font-weight: 900; }
+  .tile span { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .bar { height: 6px; border-radius: 3px; background: var(--tint); overflow: hidden; margin-top: 3px; }
+  .bar i { display: block; height: 100%; background: var(--blue); border-radius: 3px; }
+  .chart { display: flex; align-items: flex-end; gap: 3px; height: 160px; border-bottom: 1.5px solid var(--rule); }
+  .chart div { flex: 1; background: var(--blue); border-radius: 3px 3px 0 0; min-height: 2px; position: relative; }
+  .chart div:hover::after { content: attr(data-t); position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background: var(--blue); color: #fff; font-size: 11px; padding: 3px 6px; border-radius: 6px; white-space: nowrap; }
+  .error { color: var(--warn); font-weight: 600; margin-top: 8px; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .login { max-width: 380px; margin: 12vh auto; padding: 0 16px; }
+  .switch { position: relative; width: 40px; height: 22px; border-radius: 11px; background: var(--rule); flex: none; }
+  .switch.on { background: var(--blue); }
+  .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: left .15s; }
+  .switch.on::after { left: 21px; }
+  .photo-big { width: 100%; height: 200px; object-fit: cover; border-radius: 12px; background: var(--tint); display: block; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--blue); color: #fff; padding: 10px 18px; border-radius: 999px; font-weight: 700; z-index: 9; }
+  @media (max-width: 1100px) { .split { grid-template-columns: 1fr; } .panel { position: static; max-height: none; } }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } nav { position: static; height: auto; flex-direction: row; flex-wrap: wrap; } nav .who { display: none; } main { padding: 20px 16px; } .grid3 { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+/*
+ * DAD admin for a computer: the owner's and managers' screens of the apps (menu, prices, photos, what is left, stop-list,
+ * promotions and messages, add-ons, opening hours, statistics) on the same Supabase — see supabase/setup.sql.
+ * The same sign-in as the apps (phone or «root»); it shares the session with the web app on this site.
+ */
+const SUPABASE_URL = "https://dmuhzirtkdbklperdzrz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_HV8qr5U5vh4tW8BEiAfjuw_HFjlVtl_";
+const GUEST_DOMAIN = "@guest.dad.cafe";
+const PHOTO_BUCKET = "menu-photos";
+const CUTS = [8, 6, 4, 1];
+const ALLERGENS = {
+  gluten: "Глютен", crustaceans: "Ракообразные", molluscs: "Моллюски", fish: "Рыба", eggs: "Яйца", milk: "Молоко/лактоза",
+  soy: "Соя", peanuts: "Арахис", nuts: "Орехи", sesame: "Кунжут", mustard: "Горчица", celery: "Сельдерей", sulfites: "Сульфиты",
+};
+const DAYS = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const price = (p) => p == null ? "—" : Number(p).toLocaleString("ru-RU") + " ₽";
+const cutText = (a) => a === 1 ? "целиком" : "1/" + a;
+const unitText = (u) => u === "ml" ? "мл" : u === "pc" ? "шт" : u === "cut" ? "" : "г";
+
+const S = {
+  session: store.get("session", null), role: null, tab: store.get("adminTab", "menu"),
+  bundled: null, custom: [], prices: {}, photos: {}, stop: new Set(), stock: {}, addons: [], promos: [], hours: null, paused: false,
+  query: "", edit: null, addon: null, promo: null, audience: null, stats: null, statsFrom: null, statsTo: null, credits: {},
+  login: { text: "", password: "", error: null, busy: false },
+};
+
+// ── Supabase ────────────────────────────────────────────────────────────────
+async function api(path, { method = "GET", body, token, prefer, raw, type, extra } = {}) {
+  const headers = { apikey: SUPABASE_KEY, Authorization: "Bearer " + (token || SUPABASE_KEY), ...extra };
+  if (body !== undefined) headers["Content-Type"] = type || "application/json";
+  if (prefer) headers.Prefer = prefer;
+  const r = await fetch(SUPABASE_URL + path, { method, headers, cache: "no-store",
+    body: body === undefined ? undefined : raw ? body : JSON.stringify(body) });
+  const text = await r.text();
+  if (!r.ok) { const e = new Error(text); e.status = r.status; throw e; }
+  return text ? JSON.parse(text) : null;
+}
+function parseSession(r) {
+  return { access: r.access_token, refresh: r.refresh_token, expires: Date.now() + r.expires_in * 1000,
+    email: r.user?.email, id: r.user?.id, name: r.user?.user_metadata?.name || "" };
+}
+async function token() {
+  const s = S.session;
+  if (!s) return null;
+  if (s.expires > Date.now() + 60e3) return s.access;
+  try {
+    const r = await api("/auth/v1/token?grant_type=refresh_token", { method: "POST", body: { refresh_token: s.refresh } });
+    S.session = { ...parseSession(r), name: parseSession(r).name || s.name }; store.set("session", S.session);
+    return S.session.access;
+  } catch { S.session = null; store.set("session", null); return null; }
+}
+async function authed(path, opts = {}) {
+  const tk = await token();
+  if (!tk) { S.role = null; render(); throw new Error("Войдите заново"); }
+  return api(path, { ...opts, token: tk });
+}
+const rpc = (name, args) => authed("/rest/v1/rpc/" + name, { method: "POST", body: args });
+const upsert = (table, rows) => authed("/rest/v1/" + table, { method: "POST", body: rows, prefer: "resolution=merge-duplicates,return=minimal" });
+const enc = encodeURIComponent;
+const isAdmin = () => S.role === "admin" || S.role === "manager";
+
+/** Readable text of a server error. */
+function problem(e) {
+  const t = e?.message || String(e);
+  if (/too_many/.test(t)) return "Не больше 3 рассылок в сутки.";
+  if (/forbidden|row-level|permission|42501/.test(t)) return "Нет прав на это действие.";
+  if (/Failed to fetch|NetworkError/.test(t)) return "Нет связи с сервером.";
+  const m = t.match(/"message":"([^"]+)"/);
+  return m ? m[1] : t.slice(0, 200);
+}
+function toast(text) {
+  document.querySelector(".toast")?.remove();
+  const d = document.createElement("div"); d.className = "toast"; d.textContent = text; document.body.append(d);
+  setTimeout(() => d.remove(), 2600);
+}
+
+// ── Translation RU → EN / 中文 (MyMemory, free, no key; only menu text is sent) ──
+async function translate(text, to) {
+  const source = text.trim(); if (!source) return "";
+  const parts = []; let cur = "";
+  for (const s of source.split(/(?<=[.!?…])\s+/)) {
+    if (cur && new TextEncoder().encode(cur + " " + s).length > 450) { parts.push(cur); cur = s; } else cur = cur ? cur + " " + s : s;
+  }
+  if (cur) parts.push(cur);
+  const out = [];
+  for (const p of parts) {
+    try {
+      const r = await fetch(`https://api.mymemory.translated.net/get?q=${enc(p)}&langpair=ru|${to}`).then(r => r.json());
+      if (r.quotaFinished || !r.responseData?.translatedText) return null;
+      out.push(r.responseData.translatedText);
+    } catch { return null; }
+  }
+  return out.join(" ");
+}
+/** The English (and Chinese) field follows the Russian one a moment after typing stops, unless typed by hand. */
+const timers = {};
+function autoTranslate(ruId, targets) {
+  const ru = document.getElementById(ruId); if (!ru) return;
+  const initial = ru.value;
+  for (const [id] of targets) document.getElementById(id)?.addEventListener("input", e => { e.target.dataset.hand = "1"; });
+  ru.addEventListener("input", () => {
+    clearTimeout(timers[ruId]);
+    timers[ruId] = setTimeout(async () => {
+      if (!ru.value.trim() || ru.value === initial) return;
+      for (const [id, lang] of targets) {
+        const f = document.getElementById(id);
+        if (!f || f.dataset.hand) continue;
+        const v = await translate(ru.value, lang);
+        if (v != null && !f.dataset.hand) f.value = v;
+      }
+    }, 800);
+  });
+}
+
+// ── Data ────────────────────────────────────────────────────────────────────
+async function loadAll() {
+  const [bundled, custom, prices, photos, stop, stock, addons, promos, settings, credits] = await Promise.all([
+    S.bundled ? Promise.resolve(S.bundled) : fetch("menu.json").then(r => r.json()),
+    api("/rest/v1/menu_items?select=*&order=created_at.asc"),
+    api("/rest/v1/prices?select=item_id,amount,price"),
+    api("/rest/v1/photos?select=item_id,path"),
+    api("/rest/v1/stoplist?select=item_id"),
+    api("/rest/v1/stock?select=item_id,cut,left_units").catch(() => []),
+    api("/rest/v1/addons?select=*&order=kind.asc,name.asc").catch(() => []),
+    api("/rest/v1/promos?select=*&order=created_at.asc").catch(() => []),
+    api("/rest/v1/settings?select=key,value&key=in.(orders_paused,hours)"),
+    Object.keys(S.credits).length ? Promise.resolve(S.credits) : fetch("photo_credits.json").then(r => r.json()).catch(() => ({})),
+  ]);
+  S.bundled = bundled; S.custom = custom; S.credits = credits;
+  S.prices = {}; for (const p of prices) (S.prices[p.item_id] ||= {})[p.amount] = p.price;
+  S.photos = Object.fromEntries(photos.map(r => [r.item_id, r.path]));
+  S.stop = new Set(stop.map(r => r.item_id));
+  S.stock = Object.fromEntries(stock.map(r => [r.item_id, r]));
+  S.addons = addons; S.promos = promos;
+  const v = Object.fromEntries(settings.map(r => [r.key, r.value]));
+  S.paused = v.orders_paused === true;
+  S.hours = Array.isArray(v.hours) && v.hours.length === 7 ? v.hours : null;
+}
+
+/** Every item with where it is listed: admin edits (menu_items) replace bundled ones; added items are in their category. */
+function catalog() {
+  const bundledIds = new Set(), rows = [];
+  const byId = Object.fromEntries(S.custom.map(c => [c.id, c]));
+  for (const s of S.bundled.sections) for (const c of s.categories) for (const item of c.items) {
+    bundledIds.add(item.id);
+    const e = byId[item.id];
+    rows.push({ item: e ? e.item : item, base: item, section: e?.section_id || s.id, category: e?.category_id || c.id, bundled: true, edited: !!e });
+  }
+  for (const c of S.custom) if (!bundledIds.has(c.id)) rows.push({ item: c.item, section: c.section_id, category: c.category_id, bundled: false, edited: false, created: c.created_at });
+  return rows;
+}
+const sections = () => S.bundled.sections.map(s => ({ id: s.id, title: s.title.ru, categories: s.categories.map(c => ({ id: c.id, title: c.title.ru })) }));
+const categoryTitle = (sid, cid) => sections().find(s => s.id === sid)?.categories.find(c => c.id === cid)?.title || cid;
+const photoUrl = (id) => S.photos[id] ? `${SUPABASE_URL}/storage/v1/object/public/${PHOTO_BUCKET}/${S.photos[id]}` : S.credits[id] ? `photos/${id}.jpg` : null;
+const thumbUrl = (id) => S.photos[id] ? `${SUPABASE_URL}/storage/v1/object/public/${PHOTO_BUCKET}/t/${S.photos[id]}` : S.credits[id] ? `photos/t/${id}.jpg` : null;
+const amounts = (item) => [...new Set(item.variants.map(v => v.amount))];
+const priceOf = (item, amount, flavor) => (flavor && S.prices[item.id + ":" + flavor]?.[amount])
+  ?? S.prices[item.id]?.[amount] ?? item.variants.find(v => v.amount === amount)?.price ?? item.price ?? null;
+const isCut = (item) => item.variants.some(v => v.unit === "cut");
+const amountText = (item, a) => { const v = item.variants.find(v => v.amount === a); return v.unit === "cut" ? cutText(a) : v.unit === "pc" ? "шт" : a + " " + unitText(v.unit); };
+
+// ── Shell ───────────────────────────────────────────────────────────────────
+const TABS = [
+  ["menu", "Меню и цены", true], ["stock", "Остатки и стоп-лист", false], ["promos", "Акции и рассылка", true],
+  ["addons", "Добавки", true], ["hours", "Часы работы", true], ["stats", "Статистика", "owner"],
+];
+function render() {
+  const root = document.getElementById("root");
+  if (!S.session || !S.role) { root.innerHTML = renderLogin(); return; }
+  const tabs = TABS.filter(([, , need]) => need === false || (need === true && isAdmin()) || (need === "owner" && S.role === "admin"));
+  if (!tabs.some(t => t[0] === S.tab)) S.tab = tabs[0][0];
+  const body = { menu: renderMenu, stock: renderStock, promos: renderPromos, addons: renderAddons, hours: renderHours, stats: renderStats }[S.tab]();
+  const y = window.scrollY, panel = document.querySelector(".panel")?.scrollTop;
+  root.innerHTML = `<div class="layout"><nav><div class="brand"><div class="logo">DAD</div>Админка</div>
+    ${tabs.map(([id, title]) => `<button class="${S.tab === id ? "on" : ""}" data-tab="${id}">${title}</button>`).join("")}
+    <div class="who">${esc(S.session.name || S.session.email.replace(GUEST_DOMAIN, "").replace("@dad.cafe", ""))} · ${{ admin: "владелец", manager: "управляющий", staff: "бариста" }[S.role]}<br>
+      <button class="link" data-act="signout">Выйти</button> · <a href="./">меню гостя</a></div></nav><main>${body}</main></div>`;
+  window.scrollTo(0, y);
+  const p = document.querySelector(".panel"); if (p && panel) p.scrollTop = panel;
+  afterRender();
+}
+function renderLogin() {
+  const l = S.login;
+  return `<div class="login"><div class="logo" style="width:72px;height:72px;font-size:22px;margin:0 auto 16px">DAD</div>
+    <h1 style="text-align:center">Админка</h1><p class="sub" style="text-align:center">Для владельца, управляющих и бариста — тот же вход, что в приложении.</p>
+    ${S.session && !S.role ? `<p class="error">У этого аккаунта нет прав сотрудника. Войдите другим.</p>` : ""}
+    <form id="login"><label class="f">Телефон или логин</label><input class="field" id="l-text" autocomplete="username" value="${esc(l.text)}" autofocus>
+    <label class="f">Пароль</label><input class="field" id="l-pass" type="password" autocomplete="current-password">
+    ${l.error ? `<div class="error">${esc(l.error)}</div>` : ""}
+    <div style="margin-top:16px"><button class="btn" style="width:100%" ${l.busy ? "disabled" : ""}>${l.busy ? "…" : "Войти"}</button></div></form></div>`;
+}
+async function signIn(text, password) {
+  const dd = text.replace(/\D/g, ""), phone = /^[\d\s()+-]+$/.test(text.trim());
+  const digits = dd.length === 11 && dd[0] === "8" ? "7" + dd.slice(1) : dd.length === 10 ? "7" + dd : dd;
+  const email = text.includes("@") ? text.trim().toLowerCase() : phone && digits.length >= 10 ? digits + GUEST_DOMAIN : text.trim().toLowerCase() + "@dad.cafe";
+  const r = await api("/auth/v1/token?grant_type=password", { method: "POST", body: { email, password } });
+  S.session = parseSession(r); store.set("session", S.session);
+}
+async function loadRole() {
+  try { const rows = await authed("/rest/v1/staff?select=role"); S.role = rows[0]?.role || null; } catch { S.role = null; }
+}
+
+// ── Menu and prices ─────────────────────────────────────────────────────────
+function renderMenu() {
+  const q = S.query.trim().toLowerCase();
+  const rows = catalog().filter(r => !q || [r.item.name.ru, r.item.name.en].some(n => n?.toLowerCase().includes(q)));
+  let html = "";
+  for (const s of sections()) for (const c of s.categories) {
+    const list = rows.filter(r => r.section === s.id && r.category === c.id);
+    if (!list.length) continue;
+    html += `<tr class="cat"><td colspan="4">${esc(s.title)} · ${esc(c.title)}</td></tr>` + list.map(r => {
+      const it = r.item, photo = photoUrl(it.id);
+      const prices = amounts(it).map(a => `${amountText(it, a)} ${price(priceOf(it, a))}`).join(" · ");
+      const stopped = S.stop.has(it.id), left = S.stock[it.id];
+      return `<tr class="click" data-edit="${esc(it.id)}"><td style="width:56px">${photo ? `<img class="thumb" src="${esc(thumbUrl(it.id))}" data-full="${esc(photo)}" loading="lazy" alt="" onerror="if(this.src!==this.dataset.full)this.src=this.dataset.full;else this.style.visibility='hidden'">` : `<div class="thumb"></div>`}</td>
+        <td><b>${esc(it.name.ru)}</b>${it.hidden ? '<span class="tag w">скрыто</span>' : ""}${stopped ? '<span class="tag w">стоп</span>' : ""}${!r.bundled ? '<span class="tag">добавлено</span>' : r.edited ? '<span class="tag">изменено</span>' : ""}
+          <div class="small muted">${esc(it.name.en || "")}${it.flavors ? ` · ${it.flavors.length} вкусов/сортов` : ""}</div></td>
+        <td class="small">${esc(prices)}</td><td class="small">${left ? `осталось ${stockText(left)}` : ""}</td></tr>`;
+    }).join("");
+  }
+  return `<h1>Меню и цены</h1><p class="sub">Изменения сразу видят гости в приложениях и на сайте.</p>
+    <div class="split"><div><div class="row" style="margin-bottom:12px"><input class="field" id="q" placeholder="Поиск по меню" value="${esc(S.query)}" style="max-width:360px">
+      <button class="btn" data-act="new-item">+ Новая позиция</button></div>
+      <table><thead><tr><th></th><th>Позиция</th><th>Цены</th><th>Остаток</th></tr></thead><tbody>${html}</tbody></table></div>
+    <div>${S.edit ? renderEditor() : `<div class="panel muted">Выберите позицию слева, чтобы изменить название, описание, цены или фото.</div>`}</div></div>`;
+}
+
+/** The form's state: e = { id, isNew, row, section, category, unit, portions, … } kept between redraws. */
+function startEdit(id) {
+  const row = catalog().find(r => r.item.id === id);
+  const it = row.item, cuts = it.variants.every(v => v.unit === "cut") ? it.variants.map(v => v.amount) : null;
+  const single = !cuts && it.variants.length === 1 ? it.variants[0] : null;
+  S.edit = { id, isNew: false, row, section: row.section, category: row.category, simple: !!(cuts || single),
+    unit: cuts ? "cut" : single?.unit || "g", portions: cuts || [], amount: single && single.unit !== "pc" ? single.amount : "",
+    allergens: new Set((single || it.variants[0]).allergens || []), error: null, busy: false };
+}
+function startNew() {
+  const s = sections()[0];
+  S.edit = { id: null, isNew: true, row: null, section: s.id, category: "", simple: true, unit: "g", portions: [...CUTS], amount: "",
+    allergens: new Set(), error: null, busy: false };
+}
+const val = (id) => document.getElementById(id)?.value ?? "";
+/** Reads the typed fields into the form state before a redraw. */
+function keepEditor() {
+  const e = S.edit; if (!e || !document.getElementById("e-name-ru")) return;
+  e.typed = Object.fromEntries([...document.querySelectorAll(".panel [id^=e-]")].map(f => [f.id, f.value]));
+}
+function renderEditor() {
+  const e = S.edit, it = e.row?.item, typed = e.typed || {};
+  const v = (id, fallback) => esc(typed[id] ?? fallback ?? "");
+  const secs = sections(), cats = secs.find(s => s.id === e.section)?.categories || [];
+  const units = e.section === "desserts" ? [["pc", "штучно / целиком"], ["cut", "порциями"]] : [["g", "граммы"], ["ml", "мл"], ["pc", "штука"]];
+  // One price per portion of a cake, per size of a drink, or one for a single serving ("one").
+  const priceFields = e.simple && e.unit !== "cut" ? [["one", "Цена", it && !isCut(it) ? priceOf(it, it.variants[0].amount) : ""]]
+    : (e.simple ? CUTS.filter(a => e.portions.includes(a)) : amounts(it)).map(a => [a, e.simple ? cutText(a) : amountText(it, a), it ? priceOf(it, a) : ""]);
+  const single = it && !isCut(it) && it.variants.length === 1 ? it.variants[0] : null;
+  const n = single?.nutrition;
+  const photo = it && photoUrl(it.id);
+  return `<div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${e.isNew ? "Новая позиция" : "Редактирование"}</h2>
+      <button class="link" data-act="close-edit">Закрыть</button></div>
+    ${e.isNew ? "" : `<div style="margin:14px 0">${photo ? `<img class="photo-big" src="${esc(photo)}" alt="">` : `<div class="photo-big"></div>`}
+      <label class="btn line sm" style="margin-top:8px">Загрузить фото<input type="file" accept="image/*" hidden data-photo="${esc(it.id)}"></label></div>`}
+    <div class="grid2"><div><label class="f">Раздел</label><select class="field" id="e-section">${secs.map(s => `<option value="${s.id}" ${s.id === e.section ? "selected" : ""}>${esc(s.title)}</option>`).join("")}</select></div>
+      <div><label class="f">Категория</label><select class="field" id="e-category"><option value="">—</option>${cats.map(c => `<option value="${c.id}" ${c.id === e.category ? "selected" : ""}>${esc(c.title)}</option>`).join("")}</select></div></div>
+    <label class="f">Название · русский *</label><input class="field" id="e-name-ru" value="${v("e-name-ru", it?.name.ru)}">
+    <div class="grid2"><div><label class="f">English · переводится сам</label><input class="field" id="e-name-en" value="${v("e-name-en", it?.name.en)}"></div>
+      <div><label class="f">中文 · переводится сам</label><input class="field" id="e-name-zh" value="${v("e-name-zh", it?.name.zh)}"></div></div>
+    <label class="f">Описание · русский</label><textarea class="field" id="e-desc-ru">${v("e-desc-ru", it?.description?.ru)}</textarea>
+    <div class="grid2"><div><label class="f">English</label><textarea class="field" id="e-desc-en">${v("e-desc-en", it?.description?.en)}</textarea></div>
+      <div><label class="f">中文</label><textarea class="field" id="e-desc-zh">${v("e-desc-zh", it?.description?.zh)}</textarea></div></div>
+    <label class="f">Состав · русский</label><input class="field" id="e-ingr-ru" value="${v("e-ingr-ru", it?.ingredients?.ru)}">
+    <label class="f">Состав · English</label><input class="field" id="e-ingr-en" value="${v("e-ingr-en", it?.ingredients?.en)}">
+    ${e.simple ? `<h2>Порция</h2><div class="chips">${units.map(([u, t]) => `<button class="chip ${e.unit === u ? "on" : ""}" data-unit="${u}">${t}</button>`).join("")}</div>
+      ${e.unit === "cut" ? `<div class="note">На сколько частей режем (можно несколько):</div><div class="chips" style="margin-top:6px">${CUTS.map(a => `<button class="chip ${e.portions.includes(a) ? "on" : ""}" data-portion="${a}">${cutText(a)}</button>`).join("")}</div>`
+        : e.unit !== "pc" ? `<label class="f">${e.unit === "ml" ? "Объём, мл" : "Вес, г"}</label><input class="field" id="e-amount" type="number" min="1" value="${v("e-amount", e.amount)}" style="max-width:160px">` : ""}
+      ${e.unit !== "cut" ? `<label class="f">КБЖУ на порцию (если есть)</label><div class="grid3" style="grid-template-columns:repeat(4,1fr)">
+        ${[["kcal", "Ккал"], ["protein", "Б"], ["fat", "Ж"], ["carbs", "У"]].map(([k, t]) => `<input class="field" id="e-n-${k}" placeholder="${t}" value="${v("e-n-" + k, n?.[k])}">`).join("")}</div>` : ""}
+      <label class="f">Аллергены</label><div class="chips">${Object.entries(ALLERGENS).map(([k, t]) => `<button class="chip ${e.allergens.has(k) ? "on" : ""}" data-allergen="${k}">${t}</button>`).join("")}</div>`
+      : `<p class="note">У этого напитка несколько объёмов или видов молока: КБЖУ и аллергены остаются как в меню.</p>`}
+    <h2>Цены, ₽</h2><div class="grid3">${priceFields.map(([a, label, p]) => `<div><label class="f">${esc(label)}</label><input class="field" type="number" min="0" id="e-price-${a}" value="${v("e-price-" + a, p)}"></div>`).join("")}</div>
+    <p class="note">Пусто — без цены: такую позицию гость закажет только на кассе.</p>
+    ${it?.flavors ? `<h2>${it.flavors.some(f => f.group) ? "Сорта" : "Вкусы"}: своя цена и фото</h2><p class="note">Пусто — как у позиции.</p>
+      <table>${it.flavors.map(f => `<tr><td>${photoUrl(it.id + ":" + f.id) ? `<img class="thumb" src="${esc(photoUrl(it.id + ":" + f.id))}" alt="">` : `<div class="thumb"></div>`}</td><td>${esc(f.name.ru)}${f.group ? `<div class="small muted">${esc(f.group.ru)}</div>` : ""}</td>
+        ${amounts(it).map(a => `<td><input class="field" type="number" min="0" id="e-fp-${f.id}-${a}" placeholder="${amounts(it).length > 1 ? esc(amountText(it, a)) : ""}" value="${v(`e-fp-${f.id}-${a}`, S.prices[it.id + ":" + f.id]?.[a])}" style="width:96px"></td>`).join("")}
+        <td><label class="link small" style="cursor:pointer">фото<input type="file" accept="image/*" hidden data-photo="${esc(it.id + ":" + f.id)}"></label></td></tr>`).join("")}</table>` : ""}
+    ${e.error ? `<div class="error">${esc(e.error)}</div>` : ""}
+    <div class="row" style="margin-top:18px;flex-wrap:wrap"><button class="btn" data-act="save-item" ${e.busy ? "disabled" : ""}>${e.busy ? "…" : e.isNew ? "Добавить в меню" : "Сохранить"}</button>
+      ${e.isNew ? `<label class="btn line">Фото…<input type="file" accept="image/*" hidden id="e-newphoto"></label>` : ""}
+      ${!e.isNew && it.hidden ? `<button class="btn line" data-act="unhide">Вернуть в меню</button>` : ""}
+      ${!e.isNew && !it.hidden ? `<button class="btn danger" data-act="hide">${e.row.bundled ? "Убрать из меню" : "Удалить"}</button>` : ""}
+      ${!e.isNew && e.row.edited ? `<button class="link" data-act="restore">Вернуть как было</button>` : ""}</div>
+    ${e.isNew ? `<p class="note">Сначала позиция будет в «Новинках» 14 дней, потом переедет в выбранную категорию.</p>` : ""}</div>`;
+}
+const loc = (ru, en, zh) => { ru = ru.trim(); return ru ? { ru, en: en.trim() || ru, ...(zh.trim() ? { zh: zh.trim() } : {}) } : null; };
+async function saveItem() {
+  keepEditor();
+  const e = S.edit, it = e.row?.item, t = e.typed;
+  e.section = t["e-section"]; e.category = t["e-category"];
+  const name = loc(t["e-name-ru"], t["e-name-en"], t["e-name-zh"]);
+  if (!name) { e.error = "Введите название."; return render(); }
+  if (!e.category) { e.error = "Выберите категорию."; return render(); }
+  let variants = it?.variants;
+  if (e.simple) {
+    const allergens = Object.keys(ALLERGENS).filter(k => e.allergens.has(k));
+    const old = it?.variants || [];
+    const mayContain = [...new Set(old.flatMap(v => v.mayContain || []))].filter(a => !e.allergens.has(a));
+    if (e.unit === "cut") {
+      if (!e.portions.length) { e.error = "Выберите хотя бы одну порцию."; return render(); }
+      variants = CUTS.filter(a => e.portions.includes(a)).map(a => {
+        const was = old.find(v => v.unit === "cut" && v.amount === a);
+        return { amount: a, unit: "cut", ...(was?.nutrition ? { nutrition: was.nutrition } : {}), allergens, mayContain };
+      });
+    } else {
+      const amount = e.unit === "pc" ? 1 : parseInt(t["e-amount"]);
+      if (!amount) { e.error = "Укажите " + (e.unit === "ml" ? "объём." : "вес."); return render(); }
+      const num = (k) => { const x = parseFloat((t["e-n-" + k] || "").replace(",", ".")); return isNaN(x) ? null : x; };
+      const nutrition = num("kcal") != null ? { kcal: Math.round(num("kcal")), protein: num("protein") || 0, fat: num("fat") || 0, carbs: num("carbs") || 0 } : null;
+      const was = old.length === 1 ? old[0] : null;
+      const per100 = was?.per100 && was.amount === amount && JSON.stringify(was.nutrition) === JSON.stringify(nutrition) ? was.per100 : null;
+      variants = [{ amount, unit: e.unit, ...(nutrition ? { nutrition } : {}), ...(per100 ? { per100 } : {}), allergens, mayContain }];
+    }
+  }
+  const item = { ...(it || {}), id: it?.id || "c" + Math.floor(Date.now() / 1000), name, variants, price: null,
+    description: loc(t["e-desc-ru"], t["e-desc-en"], t["e-desc-zh"]), ingredients: loc(t["e-ingr-ru"], t["e-ingr-en"], "") };
+  for (const k of ["description", "ingredients"]) if (!item[k]) delete item[k];
+  delete item.price;
+  // Prices: one per size; empty removes the price (then guests order it at the counter).
+  const priceRows = [], drop = [];
+  const setPrice = (id, a, raw) => { const p = parseInt(raw); if (raw !== undefined && raw !== "" && !isNaN(p)) priceRows.push({ item_id: id, amount: a, price: p }); else if (raw === "") drop.push([id, a]); };
+  for (const a of amounts(item)) setPrice(item.id, a, e.simple && e.unit !== "cut" ? t["e-price-one"] : t["e-price-" + a]);
+  for (const f of item.flavors || []) for (const a of amounts(item)) {
+    const raw = t[`e-fp-${f.id}-${a}`]; if (raw === undefined) continue;
+    if (raw === "") { if (S.prices[item.id + ":" + f.id]?.[a] != null) drop.push([item.id + ":" + f.id, a]); } else setPrice(item.id + ":" + f.id, a, raw);
+  }
+  e.busy = true; e.error = null; render();
+  try {
+    const row = { id: item.id, section_id: e.section, category_id: e.category, item };
+    if (e.isNew) await authed("/rest/v1/menu_items", { method: "POST", body: [row], prefer: "return=minimal" });
+    else await upsert("menu_items", [row]);
+    if (priceRows.length) await upsert("prices", priceRows);
+    for (const [id, a] of drop) if (S.prices[id]?.[a] != null || id === item.id) await authed(`/rest/v1/prices?item_id=eq.${enc(id)}&amount=eq.${a}`, { method: "DELETE" });
+    const newPhoto = document.getElementById("e-newphoto")?.files?.[0];
+    if (e.isNew && newPhoto) await uploadPhoto(item.id, newPhoto);
+    await loadAll();
+    toast(e.isNew ? "Добавлено в меню" : "Сохранено");
+    startEdit(item.id);
+  } catch (err) { e.error = problem(err); e.busy = false; }
+  render();
+}
+async function setHidden(hidden) {
+  const e = S.edit, item = { ...e.row.item, hidden };
+  try {
+    if (!hidden || e.row.bundled) await upsert("menu_items", [{ id: item.id, section_id: e.row.section, category_id: e.row.category, item }]);
+    else await authed(`/rest/v1/menu_items?id=eq.${enc(item.id)}`, { method: "DELETE" });
+    await loadAll(); toast(hidden ? "Убрано из меню" : "Вернулось в меню");
+    if (!hidden || e.row.bundled) startEdit(item.id); else S.edit = null;
+  } catch (err) { e.error = problem(err); }
+  render();
+}
+/** A photo for an item or a flavor ("mochi:banana"): made smaller in the browser, then put into storage. */
+async function uploadPhoto(id, file) {
+  const img = await createImageBitmap(file);
+  const jpeg = async (scale, quality) => {
+    const c = document.createElement("canvas"); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+    c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+    return new Promise(ok => c.toBlob(ok, "image/jpeg", quality));
+  };
+  const path = `${id.replace(/:/g, "_")}-${Math.floor(Date.now() / 1000)}.jpg`;
+  // A new name every time, so phones may keep it for a year; the small copy (t/…) is what the menu lists show.
+  const extra = { "cache-control": "max-age=31536000" };
+  await authed(`/storage/v1/object/${PHOTO_BUCKET}/${path}`, { method: "POST", body: await jpeg(Math.min(1, 1400 / Math.max(img.width, img.height)), 0.82), raw: true, type: "image/jpeg", extra });
+  await authed(`/storage/v1/object/${PHOTO_BUCKET}/t/${path}`, { method: "POST", body: await jpeg(Math.min(1, 360 / Math.min(img.width, img.height)), 0.78), raw: true, type: "image/jpeg", extra });
+  await upsert("photos", [{ item_id: id, path }]);
+}
+
+// ── What is left and the stop-list ──────────────────────────────────────────
+function stockText(row) {
+  if (!row.cut) return row.left_units + " шт";
+  const w = Math.floor(row.left_units / 24), e = Math.floor((row.left_units % 24) / 3);
+  return w && e ? `${w} целый и ${e}/8` : w ? `${w} ${w === 1 ? "целый" : "целых"}` : `${e}/8`;
+}
+function renderStock() {
+  const q = S.query.trim().toLowerCase();
+  const rows = catalog().filter(r => !r.item.hidden && (!q || r.item.name.ru.toLowerCase().includes(q)));
+  const line = (title, key, counted) => {
+    const left = S.stock[key], on = !S.stop.has(key);
+    return `<tr><td>${esc(title)}</td>
+      <td><button class="switch ${on ? "on" : ""}" data-stop="${esc(key)}" title="${on ? "В наличии" : "В стоп-листе"}"></button></td>
+      <td class="small ${on ? "" : "warn"}">${on ? "в наличии" : "стоп-лист"}</td>
+      <td>${counted ? `<div class="row">${counted === "cut"
+        ? `<input class="field" type="number" min="0" style="width:70px" id="w-${esc(key)}" value="${left ? Math.floor(left.left_units / 24) : ""}" placeholder="целых"> целых +
+           <input class="field" type="number" min="0" max="7" style="width:64px" id="e8-${esc(key)}" value="${left ? Math.floor((left.left_units % 24) / 3) : ""}" placeholder="0"> × 1/8`
+        : `<input class="field" type="number" min="0" style="width:80px" id="w-${esc(key)}" value="${left ? left.left_units : ""}" placeholder="шт"> шт`}
+        <button class="btn sm" data-count="${esc(key)}" data-cut="${counted === "cut" ? 1 : 0}">OK</button>
+        ${left ? `<button class="link small" data-uncount="${esc(key)}">не считать</button>` : ""}
+        ${left ? `<span class="small ${left.left_units ? "" : "warn"}">сейчас: ${left.left_units ? stockText(left) : "закончилось"}</span>` : ""}</div>` : ""}</td></tr>`;
+  };
+  let html = "";
+  for (const s of sections()) for (const c of s.categories) {
+    const list = rows.filter(r => r.section === s.id && r.category === c.id);
+    if (!list.length) continue;
+    html += `<tr class="cat"><td colspan="4">${esc(s.title)} · ${esc(c.title)}</td></tr>`;
+    for (const r of list) {
+      const counted = s.id === "desserts" ? (isCut(r.item) ? "cut" : "pc") : null;
+      html += line(r.item.name.ru, r.item.id, r.item.flavors ? null : counted);
+      for (const f of r.item.flavors || []) html += line("   · " + f.name.ru, r.item.id + ":" + f.id, counted);
+    }
+  }
+  return `<h1>Остатки и стоп-лист</h1><p class="sub">Утром введите, сколько десертов на витрине: заказы будут списывать сами, на нуле позиция пропадёт у гостей.</p>
+    <div class="card row" style="justify-content:space-between;margin-bottom:16px"><div><b>Приём заказов из приложения</b>
+      <div class="small ${S.paused ? "warn" : "muted"}">${S.paused ? "На паузе — гости видят «закажите на кассе»" : "Включён"}</div></div>
+      <button class="switch ${S.paused ? "" : "on"}" data-act="pause"></button></div>
+    <input class="field" id="q" placeholder="Поиск по меню" value="${esc(S.query)}" style="max-width:360px;margin-bottom:12px">
+    <table><thead><tr><th>Позиция</th><th></th><th></th><th>Остаток (десерты)</th></tr></thead><tbody>${html}</tbody></table>`;
+}
+
+// ── Promotions and messages ─────────────────────────────────────────────────
+function promoHours(p) {
+  const s = (x) => x.slice(0, 5).replace(/^0/, "");
+  return p.start_time.startsWith("00:00") ? (p.end_time ? "до " + s(p.end_time) : "весь день") : p.end_time ? `${s(p.start_time)}–${s(p.end_time)}` : "с " + s(p.start_time);
+}
+function promoDays(p) {
+  const d = [...p.days].sort();
+  return d.length === 7 ? "каждый день" : d.join() === "1,2,3,4,5" ? "по будням" : d.join() === "6,7" ? "по выходным" : d.map(x => DAYS[x - 1]).join(", ");
+}
+function targetsText(targets) {
+  const names = targets.map(t => {
+    const id = t.replace(/^-?(cat|item):/, "");
+    if (t.startsWith("cat:")) return sections().flatMap(s => s.categories).find(c => c.id === id)?.title;
+    const n = catalog().find(r => r.item.id === id)?.item.name.ru;
+    return t.startsWith("-") ? n && "кроме " + n : n;
+  }).filter(Boolean);
+  return names.join(", ") || "ничего не выбрано";
+}
+/** Category chips; under a chosen category its items can be left out; or single items picked. */
+function targetPicker(targets, onlySection) {
+  return sections().filter(s => !onlySection || s.id === onlySection).map(s => `<div style="margin-top:10px"><div class="small muted" style="font-weight:800">${esc(s.title)}</div>
+    ${s.categories.filter(c => c.id !== "new").map(c => {
+      const whole = targets.includes("cat:" + c.id), items = catalog().filter(r => r.section === s.id && r.category === c.id && !r.item.hidden);
+      const open = whole || items.some(r => targets.includes("item:" + r.item.id)) || S.expanded?.has(c.id);
+      return `<div style="margin:6px 0"><button class="chip ${whole ? "on" : ""}" data-target="cat:${c.id}">${esc(c.title)} — всё</button>
+        ${open ? `<div class="chips" style="margin:6px 0 0 14px">${items.map(r => whole
+          ? `<button class="chip ${targets.includes("-item:" + r.item.id) ? "off" : "on"}" data-target="-item:${esc(r.item.id)}">${esc(r.item.name.ru)}</button>`
+          : `<button class="chip ${targets.includes("item:" + r.item.id) ? "on" : ""}" data-target="item:${esc(r.item.id)}">${esc(r.item.name.ru)}</button>`).join("")}</div>`
+          : `<button class="link small" data-expand="${c.id}">отдельные…</button>`}</div>`;
+    }).join("")}</div>`).join("");
+}
+function toggleTarget(list, t) {
+  if (t.startsWith("cat:")) {
+    const id = t.slice(4), items = catalog().filter(r => r.category === id).map(r => r.item.id);
+    list = list.filter(x => !items.some(i => x === "item:" + i || x === "-item:" + i));
+  }
+  return list.includes(t) ? list.filter(x => x !== t) : [...list, t];
+}
+function renderPromos() {
+  const p = S.promo, a = S.audience;
+  return `<h1>Акции и рассылка</h1><p class="sub">Скидки по времени. Сервер сам применяет скидку к заказу; гости видят старую и новую цену.</p>
+    <div class="split"><div>
+      <button class="btn" data-act="new-promo">+ Новая акция</button>
+      <table style="margin-top:12px"><thead><tr><th>Акция</th><th>Когда</th><th>На что</th><th></th></tr></thead><tbody>
+      ${S.promos.map(x => `<tr class="click" data-promo="${esc(x.id)}"><td><b>${esc(x.title)}</b> <span class="tag w">−${x.percent}%</span></td>
+        <td class="small">${promoDays(x)} · ${promoHours(x)}${x.until_date ? " · до " + x.until_date : ""}</td><td class="small">${esc(targetsText(x.targets))}</td>
+        <td class="small ${x.active ? "ok" : "muted"}">${x.active ? "включена" : "выключена"}${x.announce ? " · с рассылкой" : ""}</td></tr>`).join("")
+        || `<tr><td colspan="4" class="muted">Пока нет акций. Например: «−30% на десерты с 20:00».</td></tr>`}</tbody></table>
+      <h2>Рассылка в Telegram</h2>
+      <div class="card"><div><b>Подписаны: ${a ? a.yes : "…"}</b> · отказались: ${a ? a.no : "…"} · ещё не спрашивали: ${a ? a.unasked : "…"}</div>
+        <p class="note">По закону о рекламе акции можно присылать только тем, кто согласился. Новых гостей бот спрашивает сам после подтверждения номера; тех, кто зарегистрировался раньше, можно спросить один раз.</p>
+        ${a?.unasked ? `<button class="btn line sm" data-act="ask-consent">Спросить ${a.unasked} гостей о подписке</button>` : ""}
+        <label class="f">Текст сообщения</label><textarea class="field" id="b-text" rows="3" placeholder="Например: «Сегодня с 20:00 −30% на все десерты 🍰»">${esc(S.broadcastText || "")}</textarea>
+        <div style="margin-top:10px"><button class="btn" data-act="broadcast" ${a?.yes ? "" : "disabled"}>Отправить подписчикам · ${a ? a.yes : 0}</button></div>
+        <p class="note">Не больше 3 рассылок в сутки. Гость может отписаться командой /stop.</p></div>
+    </div><div>${p ? renderPromoEditor() : `<div class="panel muted">Выберите акцию или создайте новую.</div>`}</div></div>`;
+}
+function renderPromoEditor() {
+  const p = S.promo, t = p.typed || {};
+  const v = (id, f) => esc(t[id] ?? f ?? "");
+  return `<div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${p.id ? "Акция" : "Новая акция"}</h2><button class="link" data-act="close-promo">Закрыть</button></div>
+    <label class="f">Название *</label><input class="field" id="p-title" value="${v("p-title", p.title)}" placeholder="Вечерние десерты">
+    <label class="f">English · переводится сам</label><input class="field" id="p-title-en" value="${v("p-title-en", p.title_en)}">
+    <div class="grid3"><div><label class="f">Скидка, % *</label><input class="field" id="p-percent" type="number" min="1" max="90" value="${v("p-percent", p.percent)}"></div>
+      <div><label class="f">С</label><input class="field" id="p-from" type="time" value="${v("p-from", p.start_time?.slice(0, 5))}"></div>
+      <div><label class="f">До (пусто — до закрытия)</label><input class="field" id="p-to" type="time" value="${v("p-to", p.end_time?.slice(0, 5))}"></div></div>
+    <label class="f">Дни</label><div class="chips">${DAYS.map((d, i) => `<button class="chip ${p.days.includes(i + 1) ? "on" : ""}" data-day="${i + 1}">${d}</button>`).join("")}</div>
+    <label class="f">Последний день (необязательно)</label><input class="field" id="p-until" type="date" value="${v("p-until", p.until_date)}" style="max-width:200px">
+    <p class="note">Скидка действует на заказы, сделанные в это время, и на предзаказ к этому же времени сегодня.</p>
+    <h2>На что</h2>${targetPicker(p.targets)}
+    <h2>Сообщение в Telegram</h2><p class="note">Необязательно. Бот пришлёт его подписчикам за 15 минут до начала, раз в день.</p>
+    <textarea class="field" id="p-announce" placeholder="С 20:00 −30% на десерты 🍰">${v("p-announce", p.announce)}</textarea>
+    <div style="margin-top:10px"><button class="chip ${p.active ? "on" : ""}" data-act="promo-active">Акция включена</button></div>
+    ${p.error ? `<div class="error">${esc(p.error)}</div>` : ""}
+    <div class="row" style="margin-top:16px"><button class="btn" data-act="save-promo">Сохранить</button>${p.id ? `<button class="btn danger" data-act="delete-promo">Удалить</button>` : ""}</div></div>`;
+}
+const keepForm = (obj, prefix) => { if (obj) obj.typed = Object.fromEntries([...document.querySelectorAll(`.panel [id^=${prefix}]`)].map(f => [f.id, f.value])); };
+async function savePromo() {
+  keepForm(S.promo, "p-");
+  const p = S.promo, t = p.typed, pct = parseInt(t["p-percent"]);
+  const row = { title: t["p-title"].trim(), title_en: t["p-title-en"].trim() || null, percent: pct, targets: p.targets, days: [...p.days].sort(),
+    start_time: t["p-from"] || "00:00", end_time: t["p-to"] || null, until_date: t["p-until"] || null, announce: t["p-announce"].trim() || null, active: p.active };
+  if (p.id) row.id = p.id;
+  if (!row.title || !(pct >= 1 && pct <= 90) || !row.days.length || !row.targets.some(x => !x.startsWith("-"))) {
+    p.error = "Заполните название, скидку 1–90%, дни и выберите, на что акция."; return render();
+  }
+  try { await upsert("promos", [row]); await loadAll(); S.promo = null; toast("Акция сохранена"); } catch (e) { p.error = problem(e); }
+  render();
+}
+
+// ── Add-ons ─────────────────────────────────────────────────────────────────
+function renderAddons() {
+  const a = S.addon;
+  const kinds = [...new Set(S.addons.map(x => x.kind))].sort();
+  return `<h1>Добавки</h1><p class="sub">Сиропы, варенье, специи к напиткам. Гость выбирает их на странице напитка.</p>
+    <div class="split"><div><button class="btn" data-act="new-addon">+ Новая добавка</button>
+      <table style="margin-top:12px"><thead><tr><th>Добавка</th><th>Цена</th><th>Где</th></tr></thead><tbody>
+      ${kinds.map(k => `<tr class="cat"><td colspan="3">${esc(k)}</td></tr>` + S.addons.filter(x => x.kind === k).map(x => `<tr class="click" data-addon="${esc(x.id)}">
+        <td><b>${esc(x.name)}</b>${x.hidden ? '<span class="tag w">нет в наличии</span>' : ""}<div class="small muted">${esc(x.name_en || "")}</div></td>
+        <td>${x.price ? "+" + price(x.price) : "бесплатно"}</td><td class="small">${esc(targetsText(x.targets))}</td></tr>`).join("")).join("")
+        || `<tr><td colspan="3" class="muted">Пока пусто.</td></tr>`}</tbody></table></div>
+    <div>${a ? renderAddonEditor() : `<div class="panel muted">Выберите добавку или создайте новую.</div>`}</div></div>`;
+}
+function renderAddonEditor() {
+  const a = S.addon, t = a.typed || {}, v = (id, f) => esc(t[id] ?? f ?? "");
+  const kinds = [...new Set(["Сироп", "Варенье", "Специи", "Топпинг", "Молоко", ...S.addons.map(x => x.kind)])];
+  return `<div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">${a.id ? "Добавка" : "Новая добавка"}</h2><button class="link" data-act="close-addon">Закрыть</button></div>
+    <label class="f">Название *</label><input class="field" id="a-name" value="${v("a-name", a.name)}">
+    <label class="f">English · переводится сам</label><input class="field" id="a-name-en" value="${v("a-name-en", a.name_en)}">
+    <label class="f">Группа</label><div class="chips">${kinds.map(k => `<button class="chip ${(t["a-kind"] ?? a.kind) === k ? "on" : ""}" data-kind="${esc(k)}">${esc(k)}</button>`).join("")}</div>
+    <input class="field" id="a-kind" value="${v("a-kind", a.kind)}" style="margin-top:6px" placeholder="Своя группа">
+    <label class="f">Цена, ₽ (0 — бесплатно)</label><input class="field" id="a-price" type="number" min="0" value="${v("a-price", a.price)}" style="max-width:160px">
+    <h2>Где предлагать</h2><p class="note">Целая категория или отдельные напитки. В выбранной категории снимите отметку с напитков, к которым добавка не идёт (эспрессо, ристретто).</p>
+    ${targetPicker(a.targets, "bar")}
+    <div style="margin-top:10px"><button class="chip ${a.hidden ? "on" : ""}" data-act="addon-hidden">Нет в наличии</button></div>
+    ${a.error ? `<div class="error">${esc(a.error)}</div>` : ""}
+    <div class="row" style="margin-top:16px"><button class="btn" data-act="save-addon">Сохранить</button>${a.id ? `<button class="btn danger" data-act="delete-addon">Удалить</button>` : ""}</div></div>`;
+}
+async function saveAddon() {
+  keepForm(S.addon, "a-");
+  const a = S.addon, t = a.typed;
+  const row = { name: t["a-name"].trim().slice(0, 60), name_en: t["a-name-en"].trim().slice(0, 60) || null, kind: t["a-kind"].trim().slice(0, 30),
+    price: parseInt(t["a-price"]) || 0, targets: a.targets, hidden: a.hidden };
+  if (a.id) row.id = a.id;
+  if (!row.name || !row.kind) { a.error = "Заполните название и группу."; return render(); }
+  try { await upsert("addons", [row]); await loadAll(); S.addon = null; toast("Сохранено"); } catch (e) { a.error = problem(e); }
+  render();
+}
+
+// ── Opening hours ───────────────────────────────────────────────────────────
+function renderHours() {
+  const week = S.hours || [0, 1, 2, 3, 4, 5, 6].map(d => ({ open: "09:00", close: d === 4 || d === 5 ? "22:00" : "21:00" }));
+  return `<h1>Часы работы</h1><p class="sub">Приложения и сервер принимают заказы и предзаказы только в эти часы.</p>
+    <div class="card" style="max-width:520px"><table>${DAYS.map((d, i) => `<tr><td><b>${d}</b></td>
+      <td><input class="field" type="time" id="h-open-${i}" value="${week[i]?.open || ""}" ${week[i] ? "" : "disabled"}></td>
+      <td><input class="field" type="time" id="h-close-${i}" value="${week[i]?.close || ""}" ${week[i] ? "" : "disabled"}></td>
+      <td><label class="small"><input type="checkbox" data-dayoff="${i}" ${week[i] ? "" : "checked"}> выходной</label></td></tr>`).join("")}</table>
+      <div style="margin-top:14px"><button class="btn" data-act="save-hours">Сохранить</button></div></div>`;
+}
+async function saveHours() {
+  const week = DAYS.map((_, i) => document.querySelector(`[data-dayoff="${i}"]`).checked ? null : { open: val("h-open-" + i), close: val("h-close-" + i) });
+  if (week.some(h => h && (!h.open || !h.close || h.open >= h.close))) return toast("Проверьте время: открытие раньше закрытия");
+  try { await upsert("settings", [{ key: "hours", value: week }]); S.hours = week; toast("Часы сохранены"); } catch (e) { toast(problem(e)); }
+}
+
+// ── Statistics (the owner) ──────────────────────────────────────────────────
+const ymd = (d) => d.toISOString().slice(0, 10);
+const vlToday = () => new Date(Date.now() + 10 * 3600e3);
+function setPeriod(kind) {
+  const today = vlToday(), d = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  if (kind === "day") { S.statsFrom = S.statsTo = ymd(d); }
+  if (kind === "week") { const m = new Date(d); m.setUTCDate(d.getUTCDate() - (d.getUTCDay() + 6) % 7); S.statsFrom = ymd(m); S.statsTo = ymd(d); }
+  if (kind === "month") { S.statsFrom = ymd(new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1))); S.statsTo = ymd(d); }
+  if (kind === "30") { const m = new Date(d); m.setUTCDate(d.getUTCDate() - 29); S.statsFrom = ymd(m); S.statsTo = ymd(d); }
+  S.period = kind;
+}
+async function loadStats() {
+  S.stats = null; render();
+  try {
+    const [days, sum] = await Promise.all([rpc("revenue_by_day", { p_from: S.statsFrom, p_to: S.statsTo }), rpc("stats_summary", { p_from: S.statsFrom, p_to: S.statsTo })]);
+    S.stats = { days, sum };
+  } catch (e) { S.stats = { error: problem(e) }; }
+  render();
+}
+function itemName(l) {
+  const r = catalog().find(r => r.item.id === l.item_id), it = r?.item;
+  const flavor = l.flavor_id && (it?.flavors?.find(f => f.id === l.flavor_id)?.name.ru || l.flavor);
+  return (it?.name.ru || l.title) + (flavor ? " · " + flavor : "") + (l.unit === "cut" ? ` (${cutText(l.amount)})` : "");
+}
+function bars(title, rows) {
+  if (!rows.length) return "";
+  const top = Math.max(1, ...rows.map(r => r[2]));
+  return `<div class="card"><h2 style="margin-top:0">${title}</h2>${rows.map(r => `<div style="margin:8px 0"><div class="row" style="justify-content:space-between"><span style="font-weight:600">${esc(r[0])}</span><b class="small">${esc(r[1])}</b></div>
+    <div class="bar"><i style="width:${Math.max(2, 100 * r[2] / top)}%"></i></div></div>`).join("")}</div>`;
+}
+function renderStats() {
+  if (!S.statsFrom) setPeriod("week");
+  const st = S.stats, s = st?.sum;
+  const head = `<h1>Статистика</h1><p class="sub">Выданные заказы из приложения и оплаченные, за которыми не пришли; предзаказы — по дню выдачи.</p>
+    <div class="row" style="flex-wrap:wrap;margin-bottom:16px">${[["day", "Сегодня"], ["week", "Неделя"], ["month", "Месяц"], ["30", "30 дней"]].map(([k, t]) => `<button class="chip ${S.period === k ? "on" : ""}" data-period="${k}">${t}</button>`).join("")}
+      <input class="field" type="date" id="s-from" value="${S.statsFrom}" style="width:160px"> — <input class="field" type="date" id="s-to" value="${S.statsTo}" style="width:160px">
+      <button class="btn sm" data-act="stats-dates">Показать</button>${s ? `<button class="btn line sm" data-act="csv">Выгрузить в Excel (CSV)</button>` : ""}</div>`;
+  if (!st) return head + `<p class="muted">Загружаем…</p>`;
+  if (st.error) return head + `<p class="error">${esc(st.error)}</p>`;
+  const max = Math.max(1, ...st.days.map(d => d.revenue));
+  const lost = [["не оплатили", s.unpaid], ["отменили после оплаты", s.cancelled], ["отклонено", s.rejected], ["не пришли", s.no_show]].filter(x => x[1]);
+  const wd = ["", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"];
+  return head + `<div class="tiles">
+      <div class="tile"><b>${price(s.revenue)}</b><span>Выручка</span></div><div class="tile"><b>${s.checks}</b><span>Чеков</span></div>
+      <div class="tile"><b>${price(s.avg_check)}</b><span>Средний чек</span></div><div class="tile"><b>${s.guests}</b><span>Гостей</span></div>
+      <div class="tile"><b>${s.new_guests}</b><span>Новых гостей</span></div><div class="tile"><b>${s.ratings ? s.rating + " ★" : "—"}</b><span>Оценка (${s.ratings})</span></div>
+      <div class="tile"><b>${price(s.discounts)}</b><span>Скидки по акциям</span></div></div>
+    ${lost.length ? `<p class="warn" style="font-weight:700">Потери: ${lost.map(x => x[0] + " " + x[1]).join(", ")}</p>` : ""}
+    ${st.days.length > 1 ? `<div class="card" style="margin-top:16px"><h2 style="margin-top:0">Выручка по дням</h2><div class="chart">${st.days.map(d =>
+      `<div style="height:${100 * d.revenue / max}%" data-t="${d.day.slice(8)}.${d.day.slice(5, 7)}: ${price(d.revenue)} · ${d.checks} чек."></div>`).join("")}</div></div>` : ""}
+    <div class="grid2" style="margin-top:16px;align-items:start">
+      ${bars("Что продаётся", s.items.slice(0, 25).map(l => [itemName(l), `${l.qty} шт · ${price(l.revenue)}`, l.revenue]))}
+      <div style="display:grid;gap:16px">
+        ${bars("По часам", s.hours.map(h => [h.hour + ":00", `${h.checks} чек. · ${price(h.revenue)}`, h.checks]))}
+        ${bars("По дням недели", s.weekdays.map(d => [wd[d.day], `${d.checks} чек. · ${price(d.revenue)}`, d.revenue]))}
+        ${bars("Добавки", s.addons.map(a => [a.name, `${a.qty} · ${price(a.revenue)}`, a.qty]))}
+        ${bars("Кто выдавал", s.staff.map(p => [p.name, String(p.done), p.done]))}
+        ${s.feedback.length ? `<div class="card"><h2 style="margin-top:0">Жалобы гостей</h2>${s.feedback.map(f => `<p><b class="warn">№${f.number} · ${"★".repeat(f.rating)}</b><br>${esc(f.feedback || "без комментария")}</p>`).join("")}</div>` : ""}
+      </div></div>`;
+}
+function downloadCsv() {
+  const s = S.stats.sum, clean = (x) => String(x).replace(/;/g, ",");
+  const lines = [`DAD;${S.statsFrom};${S.statsTo}`,
+    ...[["Выручка", "revenue"], ["Чеков", "checks"], ["Средний чек", "avg_check"], ["Скидки по акциям", "discounts"], ["Гостей", "guests"], ["Новых гостей", "new_guests"],
+      ["Не оплатили", "unpaid"], ["Отменили после оплаты", "cancelled"], ["Отклонено", "rejected"], ["Не пришли", "no_show"]].map(([t, k]) => `${t};${s[k]}`),
+    "", "День;Чеков;Выручка", ...S.stats.days.map(d => `${d.day};${d.checks};${d.revenue}`),
+    "", "Позиция;Штук;Выручка", ...s.items.map(l => `${clean(itemName(l))};${l.qty};${l.revenue}`),
+    "", "Добавка;Штук;Выручка", ...s.addons.map(a => `${clean(a.name)};${a.qty};${a.revenue}`),
+    "", "Час;Чеков;Выручка", ...s.hours.map(h => `${h.hour}:00;${h.checks};${h.revenue}`),
+    "", "Сотрудник;Выдал заказов", ...s.staff.map(p => `${clean(p.name)};${p.done}`)];
+  // «;» and a BOM: Russian Excel opens it in columns with Cyrillic intact.
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob(["﻿" + lines.join("\n")], { type: "text/csv" }));
+  a.download = `dad-${S.statsFrom}-${S.statsTo}.csv`; a.click();
+}
+
+// ── Events ──────────────────────────────────────────────────────────────────
+function afterRender() {
+  if (S.edit && document.getElementById("e-name-ru")) {
+    autoTranslate("e-name-ru", [["e-name-en", "en"], ["e-name-zh", "zh-CN"]]);
+    autoTranslate("e-desc-ru", [["e-desc-en", "en"], ["e-desc-zh", "zh-CN"]]);
+    autoTranslate("e-ingr-ru", [["e-ingr-en", "en"]]);
+  }
+  if (S.promo) autoTranslate("p-title", [["p-title-en", "en"]]);
+  if (S.addon) autoTranslate("a-name", [["a-name-en", "en"]]);
+}
+document.addEventListener("submit", async (ev) => {
+  if (ev.target.id !== "login") return;
+  ev.preventDefault();
+  // The password is read before the form is drawn again (the redraw empties the field).
+  const l = S.login, password = val("l-pass"); l.text = val("l-text"); l.busy = true; l.error = null; render();
+  try { await signIn(l.text, password); } catch { l.error = "Неверный телефон, логин или пароль"; l.busy = false; return render(); }
+  await loadRole();
+  if (!S.role) l.error = "У этого аккаунта нет прав сотрудника.";
+  try { await loadAll(); } catch (e) { toast(problem(e)); }
+  l.busy = false; render();
+});
+document.addEventListener("input", (ev) => {
+  if (ev.target.id === "q") {
+    S.query = ev.target.value; const pos = ev.target.selectionStart; render();
+    const q = document.getElementById("q"); q.focus(); q.setSelectionRange(pos, pos);
+  }
+  if (ev.target.id === "b-text") S.broadcastText = ev.target.value;
+});
+document.addEventListener("change", async (ev) => {
+  const d = ev.target.dataset;
+  if (ev.target.id === "e-section") { keepEditor(); S.edit.section = ev.target.value; S.edit.category = "";
+    if (S.edit.typed) S.edit.typed["e-category"] = "";
+    if (S.edit.isNew) S.edit.unit = ev.target.value === "desserts" ? "pc" : "g"; render(); }
+  if (ev.target.id === "e-category") { keepEditor(); S.edit.category = ev.target.value; }
+  if (d.dayoff !== undefined) { for (const k of ["open", "close"]) document.getElementById(`h-${k}-${d.dayoff}`).disabled = ev.target.checked; }
+  if (d.photo) {
+    const file = ev.target.files[0]; if (!file) return;
+    keepEditor(); toast("Загружаем фото…");
+    try { await uploadPhoto(d.photo, file); await loadAll(); toast("Фото обновлено"); } catch (e) { toast(problem(e)); }
+    render();
+  }
+});
+document.addEventListener("click", async (ev) => {
+  const el = ev.target.closest("[data-tab],[data-act],[data-edit],[data-unit],[data-portion],[data-allergen],[data-stop],[data-count],[data-uncount],[data-promo],[data-addon],[data-target],[data-expand],[data-day],[data-kind],[data-period]");
+  if (!el) return;
+  const d = el.dataset;
+  if (d.tab) { S.tab = d.tab; store.set("adminTab", d.tab); S.query = ""; render();
+    if (d.tab === "stats" && !S.stats) loadStats();
+    if (d.tab === "promos") { S.audience = null; rpc("promo_audience", {}).then(a => { S.audience = a; render(); }).catch(() => {}); }
+    return; }
+  if (d.edit) { startEdit(d.edit); return render(); }
+  if (d.unit) { keepEditor(); S.edit.unit = d.unit; return render(); }
+  if (d.portion) { keepEditor(); const a = +d.portion, p = S.edit.portions; S.edit.portions = p.includes(a) ? p.filter(x => x !== a) : [...p, a]; return render(); }
+  if (d.allergen) { keepEditor(); const s = S.edit.allergens; s.has(d.allergen) ? s.delete(d.allergen) : s.add(d.allergen); return render(); }
+  if (d.stop) {
+    const key = d.stop, on = S.stop.has(key);
+    try {
+      if (on) await authed(`/rest/v1/stoplist?item_id=eq.${enc(key)}`, { method: "DELETE" }); else await upsert("stoplist", [{ item_id: key }]);
+      on ? S.stop.delete(key) : S.stop.add(key);
+    } catch (e) { toast(problem(e)); }
+    return render();
+  }
+  if (d.count) {
+    const key = d.count, cut = d.cut === "1", w = parseInt(val("w-" + key)) || 0, e8 = Math.min(7, parseInt(val("e8-" + key)) || 0);
+    try { await upsert("stock", [{ item_id: key, cut, left_units: cut ? w * 24 + e8 * 3 : w }]); await loadAll(); toast("Остаток сохранён"); } catch (e) { toast(problem(e)); }
+    return render();
+  }
+  if (d.uncount) { try { await authed(`/rest/v1/stock?item_id=eq.${enc(d.uncount)}`, { method: "DELETE" }); await loadAll(); } catch (e) { toast(problem(e)); } return render(); }
+  if (d.promo) { const x = S.promos.find(p => p.id === d.promo); S.promo = { ...x, days: [...x.days], targets: [...x.targets] }; return render(); }
+  if (d.addon) { const x = S.addons.find(a => a.id === d.addon); S.addon = { ...x, targets: [...x.targets] }; return render(); }
+  if (d.target) {
+    const obj = S.tab === "promos" ? S.promo : S.addon; keepForm(obj, S.tab === "promos" ? "p-" : "a-");
+    obj.targets = toggleTarget(obj.targets, d.target); return render();
+  }
+  if (d.expand) { keepForm(S.tab === "promos" ? S.promo : S.addon, S.tab === "promos" ? "p-" : "a-"); (S.expanded ||= new Set()).add(d.expand); return render(); }
+  if (d.day) { keepForm(S.promo, "p-"); const n = +d.day; S.promo.days = S.promo.days.includes(n) ? S.promo.days.filter(x => x !== n) : [...S.promo.days, n]; return render(); }
+  if (d.kind) { keepForm(S.addon, "a-"); S.addon.typed["a-kind"] = d.kind; return render(); }
+  if (d.period) { setPeriod(d.period); return loadStats(); }
+  switch (d.act) {
+    case "signout": S.session = null; S.role = null; store.set("session", null); return render();
+    case "new-item": startNew(); return render();
+    case "close-edit": S.edit = null; return render();
+    case "save-item": return saveItem();
+    case "hide": if (confirm(S.edit.row.bundled ? "Убрать позицию из меню? Её можно будет вернуть." : "Удалить позицию насовсем?")) setHidden(true); return;
+    case "unhide": return setHidden(false);
+    case "restore":
+      if (!confirm("Вернуть позицию как в исходном меню? Ваши изменения названия, описания и порций пропадут (цены останутся).")) return;
+      try { await authed(`/rest/v1/menu_items?id=eq.${enc(S.edit.id)}`, { method: "DELETE" }); await loadAll(); startEdit(S.edit.id); toast("Вернули как было"); } catch (e) { S.edit.error = problem(e); }
+      return render();
+    case "pause":
+      try { await upsert("settings", [{ key: "orders_paused", value: !S.paused }]); S.paused = !S.paused; } catch (e) { toast(problem(e)); }
+      return render();
+    case "new-promo": S.promo = { title: "", percent: 30, days: [1, 2, 3, 4, 5, 6, 7], start_time: "20:00", end_time: null, targets: ["cat:custards", "cat:cream-cheese", "cat:cakes"], active: true }; return render();
+    case "close-promo": S.promo = null; return render();
+    case "promo-active": keepForm(S.promo, "p-"); S.promo.active = !S.promo.active; return render();
+    case "save-promo": return savePromo();
+    case "delete-promo":
+      if (!confirm("Удалить акцию?")) return;
+      try { await authed(`/rest/v1/promos?id=eq.${enc(S.promo.id)}`, { method: "DELETE" }); await loadAll(); S.promo = null; } catch (e) { S.promo.error = problem(e); }
+      return render();
+    case "ask-consent":
+      if (!confirm(`${S.audience.unasked} гостей получат в Telegram вопрос «Присылать акции DAD?». Это делается один раз.`)) return;
+      try { await rpc("send_broadcast", { p_text: "", p_kind: "consent" }); toast("Вопрос отправлен"); S.audience = await rpc("promo_audience", {}); } catch (e) { toast(problem(e)); }
+      return render();
+    case "broadcast": {
+      const text = val("b-text").trim();
+      if (text.length < 3) return toast("Напишите текст сообщения");
+      if (!confirm(`${S.audience.yes} гостей получат это сообщение в Telegram. Отправить?`)) return;
+      try { await rpc("send_broadcast", { p_text: text, p_kind: "offer" }); S.broadcastText = ""; toast("Отправлено"); } catch (e) { toast(problem(e)); }
+      return render();
+    }
+    case "new-addon": S.addon = { name: "", kind: "Сироп", price: 0, targets: [], hidden: false }; return render();
+    case "close-addon": S.addon = null; return render();
+    case "addon-hidden": keepForm(S.addon, "a-"); S.addon.hidden = !S.addon.hidden; return render();
+    case "save-addon": return saveAddon();
+    case "delete-addon":
+      if (!confirm("Удалить добавку?")) return;
+      try { await authed(`/rest/v1/addons?id=eq.${enc(S.addon.id)}`, { method: "DELETE" }); await loadAll(); S.addon = null; } catch (e) { S.addon.error = problem(e); }
+      return render();
+    case "save-hours": return saveHours();
+    case "stats-dates": S.statsFrom = val("s-from"); S.statsTo = val("s-to"); S.period = null; return loadStats();
+    case "csv": return downloadCsv();
+  }
+});
+
+(async () => {
+  render();
+  if (S.session && await token()) { await loadRole(); }
+  try { await loadAll(); } catch (e) { toast(problem(e)); }
+  render();
+  if (S.role && S.tab === "stats") loadStats();
+  if (S.role && S.tab === "promos") rpc("promo_audience", {}).then(a => { S.audience = a; render(); }).catch(() => {});
+})();
+</script>
+</body>
+</html>
