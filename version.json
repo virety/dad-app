@@ -1,8 +1,8 @@
 {
- "versionCode": 47,
- "versionName": "1.46",
- "notes": "СБП по QR в раннем доступе. В карточке сотрудника вернулся логотип DAD, а номер теперь показан как «Заказ №…».",
- "apk": "https://github.com/virety/dad-app/releases/download/v1.46/DAD.apk",
+ "versionCode": 48,
+ "versionName": "1.47",
+ "notes": "Звук и вибрация каждые 10 секунд, пока у бариста есть непринятый заказ.",
+ "apk": "https://github.com/virety/dad-app/releases/download/v1.47/DAD.apk",
  "size": 28643730,
  "date": "2026-11-21"
 }
