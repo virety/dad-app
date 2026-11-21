@@ -44,8 +44,6 @@
   textarea.field { resize: vertical; min-height: 64px; }
   label.f { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin: 10px 0 4px; }
   .row { display: flex; gap: 12px; align-items: center; }
-  .pilot-card { margin-bottom: 16px; }
-  .pilot-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -122,7 +120,6 @@ const S = {
   session: store.get("session", null), role: null, tab: store.get("adminTab", "menu"),
   bundled: null, custom: [], prices: {}, photos: {}, stop: new Set(), stock: {}, addons: [], promos: [], hours: null, paused: false,
   query: "", edit: null, addon: null, promo: null, audience: null, stats: null, statsFrom: null, statsTo: null, credits: {},
-  pilotBusy: false,
   login: { text: "", password: "", error: null, busy: false },
 };
 
@@ -509,58 +506,6 @@ function stockText(row) {
   const w = Math.floor(row.left_units / 24), e = Math.floor((row.left_units % 24) / 3);
   return w && e ? `${w} целый и ${e}/8` : w ? `${w} ${w === 1 ? "целый" : "целых"}` : `${e}/8`;
 }
-function pilotAccessForm() {
-  if (S.role !== "admin") return "";
-  const disabled = S.pilotBusy ? "disabled" : "";
-  return `<form class="card pilot-card" id="pilot-access">
-    <b>Закрытый самовывоз</b>
-    <p class="note">Гость сначала регистрируется по телефону. После приглашения он сможет оформить самовывоз и оплатить на кассе.</p>
-    <label class="f" for="pilot-phone">Телефон гостя в международном формате</label>
-    <input class="field" id="pilot-phone" name="phone" type="tel" autocomplete="off" maxlength="26" placeholder="+7 900 000-00-00"
-      required ${disabled} style="max-width:300px">
-    <div class="pilot-actions">
-      <button class="btn sm" type="submit" value="allow" ${disabled}>Открыть доступ</button>
-      <button class="btn sm line" type="submit" value="deny" ${disabled}>Закрыть доступ</button>
-    </div>
-    <div class="small" id="pilot-result" role="status" aria-live="polite"></div>
-  </form>`;
-}
-async function setPilotAccess(form, allowed) {
-  if (S.role !== "admin" || S.pilotBusy) return;
-  const phone = form.elements.phone.value.trim();
-  const result = form.querySelector("#pilot-result");
-  const digits = phone.replace(/\D/g, "");
-  if (!/^[+0-9(). -]+$/.test(phone) || digits.length < 10 || digits.length > 15) {
-    result.className = "small error";
-    result.textContent = "Проверьте номер и укажите код страны.";
-    return;
-  }
-  S.pilotBusy = true;
-  for (const control of form.elements) control.disabled = true;
-  result.className = "small note";
-  result.textContent = "Сохраняем…";
-  const account = S.session?.id;
-  let error = "";
-  try {
-    await rpc("set_pilot_guest", { p_phone: phone, p_allowed: allowed });
-  } catch (e) {
-    if (/no_account/.test(e.message)) error = "Аккаунт не найден. Проверьте номер и регистрацию гостя.";
-    else if (/bad_phone/.test(e.message)) error = "Проверьте номер и укажите код страны.";
-    else error = problem(e);
-  } finally {
-    S.pilotBusy = false;
-  }
-  if (S.session?.id !== account || S.role !== "admin") return;
-  const currentForm = document.getElementById("pilot-access");
-  const message = error || (allowed ? "Гостю открыт доступ к самовывозу." : "Доступ гостя к новым заказам закрыт.");
-  if (!currentForm) { toast(message); return; }
-  for (const control of currentForm.elements) control.disabled = false;
-  if (!error) currentForm.reset();
-  else currentForm.elements.phone.value = phone;
-  const status = currentForm.querySelector("#pilot-result");
-  status.className = error ? "small error" : "small note ok";
-  status.textContent = message;
-}
 function renderStock() {
   const q = S.query.trim().toLowerCase();
   const rows = catalog().filter(r => !r.item.hidden && (!q || r.item.name.ru.toLowerCase().includes(q)));
@@ -590,9 +535,8 @@ function renderStock() {
   }
   return `<h1>Остатки и стоп-лист</h1><p class="sub">Утром введите, сколько десертов на витрине: заказы будут списывать сами, на нуле позиция пропадёт у гостей.</p>
     <div class="card row" style="justify-content:space-between;margin-bottom:16px"><div><b>Приём заказов из приложения</b>
-      <div class="small ${S.paused ? "warn" : "muted"}">${S.paused ? "На паузе, включая предзаказы" : "Включён для приглашённых гостей"}</div></div>
+      <div class="small ${S.paused ? "warn" : "muted"}">${S.paused ? "На паузе, включая предзаказы" : "Самовывоз доступен зарегистрированным гостям"}</div></div>
       <button class="switch ${S.paused ? "" : "on"}" data-act="pause" role="switch" aria-checked="${!S.paused}" aria-label="Приём заказов из приложения"></button></div>
-    ${pilotAccessForm()}
     <input class="field" id="q" placeholder="Поиск по меню" value="${esc(S.query)}" style="max-width:360px;margin-bottom:12px">
     <table><thead><tr><th>Позиция</th><th></th><th></th><th>Остаток (десерты)</th></tr></thead><tbody>${html}</tbody></table>`;
 }
@@ -857,10 +801,6 @@ document.addEventListener("keydown", (ev) => {
   S.edit = S.promo = S.addon = null; render();
 });
 document.addEventListener("submit", async (ev) => {
-  if (ev.target.id === "pilot-access") {
-    ev.preventDefault();
-    return setPilotAccess(ev.target, ev.submitter?.value !== "deny");
-  }
   if (ev.target.id !== "login") return;
   ev.preventDefault();
   // The password is read before the form is drawn again (the redraw empties the field).

@@ -231,7 +231,7 @@ const S = {
   tab: "menu", section: "kitchen", query: "",
   bundled: null, menu: null, custom: [], prices: {}, stop: new Set(store.get("stop", [])), photos: store.get("photos", null) || {}, photosReady: store.get("photos", null) != null, paused: false, hours: store.get("hours", null), addons: store.get("addons", []), promos: store.get("promos", []), milkExtra: store.get("milkExtra", {}), stock: {}, extras: null,
   cart: store.get("cart", []), session: store.get("session", null), myRef: store.get("myRef", null),
-  myOrder: null, history: [], item: null, pay: null, pilotAccess: null,
+  myOrder: null, history: [], item: null, pay: null,
   checkout: { name: store.get("name", ""), comment: "", later: false, day: 0, slot: null,
     payment: store.get("payment", "card") === "cash" ? "cash" : "card", busy: false, error: null },
   account: { mode: "signin", phone: "", name: "", password: "", busy: false, error: null, code: null, checked: null },
@@ -315,7 +315,7 @@ async function api(path, { method = "GET", body, token, prefer } = {}) {
   if (!r.ok) {
     const m = text.match(/unavailable:([\w,:-]+)/);
     const e = new ApiError(text);
-    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more|pilot_not_invited|pilot_pickup_only|pilot_counter_only)"/) || [])[1] || (r.status + "");
+    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more|pilot_pickup_only|pilot_counter_only)"/) || [])[1] || (r.status + "");
     if (m) e.ids = m[1].split(",");
     e.status = r.status; e.text = text;
     throw e;
@@ -325,19 +325,7 @@ async function api(path, { method = "GET", body, token, prefer } = {}) {
 const rpc = (name, args, token) => api("/rest/v1/rpc/" + name, { method: "POST", body: args, token });
 
 function saveSession(s) {
-  if (S.session?.id !== s?.id) S.pilotAccess = null;
   S.session = s; store.set("session", s);
-}
-async function refreshPilotAccess() {
-  const id = S.session?.id;
-  if (!id || !guestPhone()) return;
-  let access;
-  try {
-    const auth = await token();
-    if (!auth) return;
-    access = await rpc("pilot_checkout_access", {}, auth) === true ? "allowed" : "denied";
-  } catch { access = "unavailable"; }
-  if (S.session?.id === id) S.pilotAccess = access;
 }
 function parseSession(r) {
   return { access: r.access_token, refresh: r.refresh_token, expires: Date.now() + r.expires_in * 1000,
@@ -771,25 +759,22 @@ function renderItem() {
 
 /**
  * Sign-in for everybody (phone or login), registration by phone, and a new password when it is forgotten.
- * With the Telegram bot set up, registering and resetting need the phone confirmed there (supabase/functions/telegram).
+ * Registration and password recovery use the phone confirmed by the Telegram bot.
  */
 function accountForm() {
-  const a = S.account, check = a.mode !== "signin" && S.bot;
-  const d = a.checked || digits(a.phone);
-  const ok = a.mode === "signin" ? true
-    : a.mode === "register" ? d.length >= 10 && d.length <= 15 && a.name.trim() && a.password.length >= 6 && (!check || a.checked)
-    : a.checked && a.password.length >= 6;
-  const fields = a.mode === "signin" || !check || a.checked;
+  const a = S.account, signingIn = a.mode === "signin";
+  const fields = signingIn || Boolean(S.bot && a.checked);
+  const ok = signingIn || (fields && a.password.length >= 6 && (a.mode !== "register" || a.name.trim()));
   return `<div class="stack">
     <div class="wrap"><button class="chip ${a.mode === "signin" ? "on" : ""}" data-act="signin-mode">${t("Вход", "Sign in")}</button>
       <button class="chip ${a.mode === "register" ? "on" : ""}" data-act="register-mode">${t("Регистрация", "Register")}</button></div>
-    ${a.mode === "signin" ? `<input class="field" id="a-phone" autocapitalize="off" autocomplete="username" placeholder="${t("Телефон или логин", "Phone or login")}" value="${esc(a.phone)}">`
-      : check && !a.checked ? `<div style="font-weight:600;font-size:14px">${a.mode === "reset" ? t("Чтобы задать новый пароль, подтвердите номер в Telegram: бот DAD попросит поделиться номером.", "To set a new password, confirm your phone in Telegram: the DAD bot asks you to share it.")
+    ${signingIn ? `<input class="field" id="a-phone" autocapitalize="off" autocomplete="username" placeholder="${t("Телефон или логин", "Phone or login")}" value="${esc(a.phone)}">`
+      : !S.bot ? `<p class="note warn">${t("Подтверждение номера через Telegram сейчас недоступно. Попробуйте чуть позже.", "Phone verification through Telegram is unavailable. Please try again later.")}</p>`
+      : !a.checked ? `<div style="font-weight:600;font-size:14px">${a.mode === "reset" ? t("Чтобы задать новый пароль, подтвердите номер в Telegram: бот DAD попросит поделиться номером.", "To set a new password, confirm your phone in Telegram: the DAD bot asks you to share it.")
           : t("Подтвердите номер в Telegram: бот DAD попросит поделиться номером — это одно нажатие.", "Confirm your phone in Telegram: the DAD bot asks you to share it — one tap.")}</div>
         <button class="btn" data-act="telegram">${a.code ? t("Открыть Telegram ещё раз", "Open Telegram again") : t("Подтвердить в Telegram", "Confirm in Telegram")}</button>
         ${a.code ? `<div class="note">${t("Ждём подтверждения… Нажмите в боте «Поделиться номером» и вернитесь сюда.", "Waiting… Tap “Share phone number” in the bot and come back here.")}</div>` : ""}`
-      : check ? `<div style="font-weight:700">✓ ${t("Номер подтверждён:", "Phone confirmed:")} ${phoneText(a.checked)}</div>`
-      : `<input class="field" id="a-phone" type="tel" autocomplete="tel" placeholder="${t("Телефон", "Phone")}" value="${esc(a.phone)}">`}
+      : `<div style="font-weight:700">✓ ${t("Номер подтверждён:", "Phone confirmed:")} ${phoneText(a.checked)}</div>`}
     ${a.mode === "register" && fields ? `<input class="field" id="a-name" autocomplete="given-name" placeholder="${t("Имя", "Name")}" value="${esc(a.name)}">` : ""}
     ${fields ? `<input class="field" id="a-pass" type="password" autocomplete="${a.mode === "signin" ? "current-password" : "new-password"}" placeholder="${a.mode === "reset" ? t("Новый пароль (от 6 символов)", "New password (6+ characters)") : t("Пароль (от 6 символов)", "Password (6+ characters)")}" value="${esc(a.password)}">` : ""}
     ${a.error ? `<div class="warn small" style="font-weight:600">${esc(a.error)}</div>` : ""}
@@ -797,9 +782,7 @@ function accountForm() {
     ${a.mode === "signin" && S.bot ? `<a class="btn line" href="https://t.me/${esc(S.bot)}?start=reset" target="_blank" rel="noopener">${t("Забыли пароль?", "Forgot the password?")}</a>
       <div class="note">${t("Откроется Telegram: бот DAD попросит поделиться номером и написать новый пароль. Потом войдите здесь с новым паролем.",
         "Telegram opens: the DAD bot asks you to share your phone and type the new password. Then sign in here with it.")}</div>` : ""}
-    <div class="note">${S.bot ? t("Один аккаунт для Android, iPhone и сайта: заказы видны на любом устройстве.", "One account for Android, iPhone and the web: your orders show on any device.")
-      : t("Один аккаунт для Android, iPhone и сайта: заказы видны на любом устройстве. Забыли пароль — скажите баристе: аккаунт сбросят, и вы зарегистрируетесь заново с тем же номером.",
-      "One account for Android, iPhone and the web: your orders show on any device. Forgot the password? Tell the barista: the account is reset and you register again with the same number.")}</div>
+    <div class="note">${t("Один аккаунт для Android, iPhone и сайта: заказы видны на любом устройстве.", "One account for Android, iPhone and the web: your orders show on any device.")}</div>
   </div>`;
 }
 
@@ -821,7 +804,7 @@ function renderAccount() {
       const bad = FINISHED.includes(o.status) && o.status !== "done";
       return `<div class="row"><div class="info"><span class="name">№${o.number} · ${dayName(when)}, ${hhmm(when)}</span>
         <span class="meta">${esc(o.items.map(l => l.quantity + "× " + l.title).join(", "))}</span>
-        <span class="small ${bad ? "warn" : ""}" style="font-weight:600">${STATUS[o.status][S.lang === "ru" ? 0 : 1]}</span></div>
+        <span class="small ${bad ? "warn" : ""}" style="font-weight:600">${statusText(o)}</span></div>
         ${o.total != null ? `<span class="price">${price(o.total)}</span>` : ""}</div>`;
     }).join("") : `<p class="note">${t("Здесь появятся ваши заказы со всех устройств", "Your orders from every device show up here")}</p>`}
   </div>`;
@@ -868,18 +851,9 @@ function renderCart() {
 function renderCheckout() {
   const c = S.checkout;
   if (!guestPhone()) return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>
-    <p style="font-weight:600;font-size:14px">${t("Чтобы заказать, войдите или зарегистрируйтесь по номеру телефона — это один раз.", "To order, sign in or register with your phone number — just once.")}</p>${accountForm()}`;
+    <p style="font-weight:600;font-size:14px">${t("Войдите или зарегистрируйтесь по номеру телефона. При регистрации понадобится подтверждение в Telegram.", "Sign in or register with your phone number. New accounts require verification in Telegram.")}</p>${accountForm()}`;
   const heading = `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>`;
   if (S.paused) return heading + `<p class="note warn">${t("Приём заказов временно приостановлен.", "Orders are temporarily paused.")}</p>`;
-  if (S.pilotAccess !== "allowed") {
-    const message = S.pilotAccess === "denied"
-      ? t("Самовывоз через приложение пока доступен по приглашению. Уточните у бариста, добавлен ли ваш номер.", "Pickup orders are by invitation. Ask the barista if your account has access.")
-      : S.pilotAccess === "unavailable"
-        ? t("Не удалось проверить доступ к заказам.", "Could not check your access to ordering.")
-        : t("Проверяем доступ к заказам…", "Checking your access to ordering…");
-    const retry = S.pilotAccess ? `<button class="btn line" data-act="pilot-retry">${t("Проверить доступ", "Check access")}</button>` : "";
-    return heading + `<div class="stack"><p class="note">${message}</p>${retry}</div>`;
-  }
   const asap = isOpen(), pre = c.later || !asap;
   const all = slots();
   const blocked = S.cart.some(l => !available(l.id, l.flavor)) || overStock().size > 0;
@@ -1018,7 +992,6 @@ const errorText = (e) => ({
   costs_more: t("Замена дороже оплаченного — выберите другую позицию или доплатите на кассе", "The replacement costs more than you paid — pick another or pay the difference at the counter"),
   unavailable: t("Пока вы выбирали, некоторые позиции закончились — они отмечены выше.", "Some items ran out while you were choosing — they are marked above."),
   prepay_required: t("Для этого номера доступен заказ у бариста.", "Please order at the counter with the barista."),
-  pilot_not_invited: t("Оформление пока доступно по приглашению.", "Ordering is available by invitation."),
   pilot_pickup_only: t("Сейчас доступен самовывоз.", "Pickup is available at the moment."),
   pilot_counter_only: t("Выберите оплату на кассе.", "Choose payment at the counter."),
 }[e.code] || t("Не получилось, попробуйте ещё раз", "Something went wrong, please try again"));
@@ -1026,7 +999,11 @@ const errorText = (e) => ({
 /** Polls which phone Telegram confirmed for the code (the guest shares the contact with the bot). */
 async function waitForPhone(code) {
   for (let i = 0; i < 900 && S.account.code === code && !S.account.checked; i++) {
-    try { const p = await rpc("checked_phone", { p_code: code }); if (p) { S.account.checked = p; render(); return; } } catch {}
+    try {
+      const phone = await rpc("checked_phone", { p_code: code });
+      if (S.account.code !== code) return;
+      if (phone) { S.account.checked = phone; render(); return; }
+    } catch {}
     await new Promise(r => setTimeout(r, 2000));
   }
 }
@@ -1098,7 +1075,6 @@ document.addEventListener("click", async (e) => {
     if (d.tab === "menu" && S.tab === "menu") { S.query = ""; S.item = null; window.scrollTo(0, 0); }
     S.tab = d.tab; S.item = null; render(); window.scrollTo(0, 0);
     if (d.tab === "account") { await refreshMyOrders(); render(); }
-    if (d.tab === "order" && guestPhone()) { await refreshPilotAccess(); if (S.tab === "order") render(); }
     return;
   }
   if (d.item) { S.item = { id: d.item }; render(); document.getElementById("sheet")?.scrollTo(0, 0); return; }
@@ -1120,7 +1096,7 @@ document.addEventListener("click", async (e) => {
   }
   if (d.day) { c.day = +d.day; c.slot = null; render(); return; }
   if (d.slot) { c.slot = +d.slot; render(); return; }
-  if (d.pay) { c.payment = d.pay; store.set("payment", d.pay); render(); return; }
+  if (d.pay === "card" || d.pay === "cash") { c.payment = d.pay; store.set("payment", d.pay); render(); return; }
   if (d.unextra && S.item) { S.item.addons = (S.item.addons || []).filter(x => x !== d.unextra); render(); return; }
   if (d.extra && S.extras) { const c = S.extras.chosen; S.extras.chosen = c.includes(d.extra) ? c.filter(x => x !== d.extra) : [...c, d.extra]; render(); return; }
   if (d.choice) { const [i, id] = d.choice.split("|"); S.choice[i] = id || null; render(); return; }
@@ -1146,17 +1122,18 @@ document.addEventListener("click", async (e) => {
       addToCart(item, v, st.qty, st.flavor, S.extras ? S.extras.chosen : st.addons || []); S.item = null; S.extras = null; render(); toast(t("Добавлено в заказ", "Added to the order")); break;
     }
     case "empty": S.cart = []; store.set("cart", S.cart); render(); break;
-    case "pilot-retry": S.pilotAccess = null; render(); await refreshPilotAccess(); render(); break;
     case "asap": c.later = false; render(); break;
     case "later": c.later = true; render(); break;
     case "signin-mode": case "register-mode": case "reset-mode":
       Object.assign(a, { mode: d.act.split("-")[0], error: null, code: null, checked: null, password: "" }); render(); break;
     case "telegram": {
+      if (!S.bot || a.mode === "signin") break;
       a.code ||= crypto.randomUUID();
       window.open(`https://t.me/${S.bot}?start=${a.code}`, "_blank");
       render(); waitForPhone(a.code); break;
     }
     case "auth": {
+      if (a.mode !== "signin" && (!S.bot || !a.checked)) break;
       // What is in the fields now (autofill), not only what was typed.
       a.phone = document.getElementById("a-phone")?.value ?? a.phone;
       a.password = document.getElementById("a-pass")?.value || a.password;
@@ -1164,7 +1141,7 @@ document.addEventListener("click", async (e) => {
       a.busy = true; a.error = null; render();
       // Sign-in takes a phone or a login: «root» means root@dad.cafe.
       const text = a.phone.trim(), phoneLike = /^[\d+()\s-]+$/.test(text), dd = digits(text);
-      const email = a.mode !== "signin" ? (a.checked || dd) + GUEST_DOMAIN
+      const email = a.mode !== "signin" ? a.checked + GUEST_DOMAIN
         : text.includes("@") ? text.toLowerCase() : phoneLike && dd.length >= 10 && dd.length <= 15 ? dd + GUEST_DOMAIN : text.toLowerCase() + "@dad.cafe";
       try {
         if (a.mode === "reset") {
@@ -1181,10 +1158,12 @@ document.addEventListener("click", async (e) => {
         const staffRole = await api("/rest/v1/staff?select=role", { token: S.session.access }).then(x => x[0]?.role).catch(() => null);
         if (staffRole && a.mode === "signin") { S.role = staffRole; store.set("adminTab", null); location.href = "admin.html"; return; }
         if (!c.name) { c.name = S.session.name; store.set("name", c.name); }
-        a.password = ""; setRef(null); await Promise.all([refreshMyOrders(), refreshPilotAccess()]);
+        a.password = ""; setRef(null); await refreshMyOrders();
       } catch (err) {
         const text = err.text || "";
-        a.error = /not_checked|Database error saving/.test(text) ? t("Подтвердите номер в Telegram ещё раз", "Please confirm the phone in Telegram again")
+        const needsPhoneCheck = a.mode !== "signin" && /not_checked|Database error saving/.test(text);
+        if (needsPhoneCheck) { a.code = null; a.checked = null; }
+        a.error = needsPhoneCheck ? t("Подтвердите номер в Telegram ещё раз", "Please confirm the phone in Telegram again")
           : /no_account/.test(text) ? t("Этот номер ещё не зарегистрирован", "This number is not registered yet")
           : a.mode === "signin" ? t("Неверный телефон, логин или пароль", "Wrong phone, login or password")
           : /signup_disabled|email_provider_disabled/.test(text) ? t("Регистрация на сервере выключена", "Sign-ups are off on the server")
@@ -1196,7 +1175,7 @@ document.addEventListener("click", async (e) => {
     }
     case "signout": saveSession(null); S.history = []; setRef(null); render(); break;
     case "place": {
-      if (c.busy || S.pilotAccess !== "allowed" || S.paused) break;
+      if (c.busy || !guestPhone() || S.paused) break;
       c.busy = true; c.error = null; render();
       const pre = c.later || !isOpen();
       try {
@@ -1210,7 +1189,6 @@ document.addEventListener("click", async (e) => {
         S.pay = null;
       } catch (err) {
         if (err.code === "unavailable") { err.ids.forEach(id => S.stop.add(id)); }
-        if (err.code === "pilot_not_invited") { S.pilotAccess = "denied"; }
         if (err.code === "paused") { S.paused = true; }
         if (err.code === "bad_time") c.slot = null;
         if (err.code === "login_required") saveSession(null);
@@ -1247,7 +1225,7 @@ document.addEventListener("click", async (e) => {
 (async () => {
   render();
   // Everything at once: the menu file, the server data and the guest's order load in parallel.
-  const server = loadServer(), mine = refreshMyOrder().then(refreshPilotAccess);
+  const server = loadServer(), mine = refreshMyOrder();
   // Bundled photos: the kitchen's (credited) and the bar's illustrations (photos.json lists every one).
   const [menu, credits, bundled] = await Promise.all([fetch("menu.json").then(r => r.json()), fetch("photo_credits.json").then(r => r.json()).catch(() => ({})),
     fetch("photos.json").then(r => r.json()).catch(() => [])]);
@@ -1266,7 +1244,7 @@ document.addEventListener("click", async (e) => {
     const after = JSON.stringify([S.history.map(o => [o.id, o.status, o.updated_at]), S.myOrder?.status, S.myOrder?.updated_at, S.myRef]);
     if (before !== after && !S.item && !S.pay && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) render();
   }, POLL_MS);
-  document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder().then(refreshPilotAccess)]); render(); } });
+  document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder()]); render(); } });
 })();
 </script>
 </body>
