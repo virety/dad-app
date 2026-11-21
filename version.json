@@ -1,8 +1,8 @@
 {
- "versionCode": 48,
- "versionName": "1.47",
- "notes": "Звук и вибрация каждые 10 секунд, пока у бариста есть непринятый заказ.",
- "apk": "https://github.com/virety/dad-app/releases/download/v1.47/DAD.apk",
- "size": 28643730,
+ "versionCode": 49,
+ "versionName": "1.48",
+ "notes": "Кнопка «Изменить заказ» для персонала. Позиции можно убрать из заказа или предложить гостю замену. Добавление в стоп-лист стало отдельным действием.",
+ "apk": "https://github.com/virety/dad-app/releases/download/v1.48/DAD.apk",
+ "size": 28660114,
  "date": "2026-11-21"
 }
