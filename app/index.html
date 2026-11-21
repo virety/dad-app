@@ -197,7 +197,7 @@ const GUEST_DOMAIN = "@guest.dad.cafe";
 // Opening hours from Monday, null for a day off; the owner changes them in the app (settings 'hours').
 const DEFAULT_HOURS = [0, 1, 2, 3, 4, 5, 6].map(d => ({ open: "09:00", close: d === 4 || d === 5 ? "22:00" : "21:00" }));
 const PHONE = "+79046283013", PHONE_TEXT = "+7 904 628-30-13";
-const SLOT_MINUTES = 15, PREORDER_LEAD_MINUTES = 30, PREORDER_DAYS = 2, DELIVERY_DAYS = 8, KITCHEN_LEAD_MINUTES = 20, NEW_ITEM_DAYS = 14;
+const SLOT_MINUTES = 15, PREORDER_LEAD_MINUTES = 30, PREORDER_DAYS = 2, KITCHEN_LEAD_MINUTES = 20, NEW_ITEM_DAYS = 14;
 const VLAT_OFFSET = 10 * 3600e3;  // Vladivostok is UTC+10 all year
 const POLL_MS = 5000;
 
@@ -231,8 +231,9 @@ const S = {
   tab: "menu", section: "kitchen", query: "",
   bundled: null, menu: null, custom: [], prices: {}, stop: new Set(store.get("stop", [])), photos: store.get("photos", null) || {}, photosReady: store.get("photos", null) != null, paused: false, hours: store.get("hours", null), addons: store.get("addons", []), promos: store.get("promos", []), milkExtra: store.get("milkExtra", {}), stock: {}, extras: null,
   cart: store.get("cart", []), session: store.get("session", null), myRef: store.get("myRef", null),
-  myOrder: null, history: [], item: null, pay: null, checkout: { name: store.get("name", ""), comment: "", takeaway: false, delivery: false, address: store.get("address", ""),
-    later: false, day: 0, slot: null, payment: store.get("payment", "sbp"), busy: false, error: null },
+  myOrder: null, history: [], item: null, pay: null, pilotAccess: null,
+  checkout: { name: store.get("name", ""), comment: "", later: false, day: 0, slot: null,
+    payment: store.get("payment", "card") === "cash" ? "cash" : "card", busy: false, error: null },
   account: { mode: "signin", phone: "", name: "", password: "", busy: false, error: null, code: null, checked: null },
   bot: null,  // Telegram bot that confirms phones (settings telegram_bot), once phone_check is on
 };
@@ -314,7 +315,7 @@ async function api(path, { method = "GET", body, token, prefer } = {}) {
   if (!r.ok) {
     const m = text.match(/unavailable:([\w,:-]+)/);
     const e = new ApiError(text);
-    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more)"/) || [])[1] || (r.status + "");
+    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more|pilot_not_invited|pilot_pickup_only|pilot_counter_only)"/) || [])[1] || (r.status + "");
     if (m) e.ids = m[1].split(",");
     e.status = r.status; e.text = text;
     throw e;
@@ -323,7 +324,21 @@ async function api(path, { method = "GET", body, token, prefer } = {}) {
 }
 const rpc = (name, args, token) => api("/rest/v1/rpc/" + name, { method: "POST", body: args, token });
 
-function saveSession(s) { S.session = s; store.set("session", s); }
+function saveSession(s) {
+  if (S.session?.id !== s?.id) S.pilotAccess = null;
+  S.session = s; store.set("session", s);
+}
+async function refreshPilotAccess() {
+  const id = S.session?.id;
+  if (!id || !guestPhone()) return;
+  let access;
+  try {
+    const auth = await token();
+    if (!auth) return;
+    access = await rpc("pilot_checkout_access", {}, auth) === true ? "allowed" : "denied";
+  } catch { access = "unavailable"; }
+  if (S.session?.id === id) S.pilotAccess = access;
+}
 function parseSession(r) {
   return { access: r.access_token, refresh: r.refresh_token, expires: Date.now() + r.expires_in * 1000,
     email: r.user?.email, id: r.user?.id, name: r.user?.user_metadata?.name || "" };
@@ -605,10 +620,15 @@ function isCurrent(o) {
 const awaitsPrepay = (o) => o.status === "accepted" && o.prepay && !o.paid;
 const kitchenAt = (o) => o.pickup_at ? Date.parse(o.pickup_at) - KITCHEN_LEAD_MINUTES * 6e4 : null;
 const scheduled = (o) => o.status === "accepted" && !awaitsPrepay(o) && kitchenAt(o) > Date.now();
-/** Same rule as guest_update('cancel'): only before paying. */
-const canCancel = (o) => o.status === "unpaid";
+const waitingForStaff = (o) => o.pilot_checkout && o.status === "new";
+const canCancel = (o) => o.status === "unpaid" || waitingForStaff(o);
+const statusText = (o) => waitingForStaff(o) ? t("Ждёт подтверждения бариста", "Awaiting confirmation by the barista")
+  : STATUS[o.status][S.lang === "ru" ? 0 : 1];
 async function guestAction(action, items) {
-  await rpc("guest_update", { p_id: S.myRef.id, p_token: S.myRef.token, p_action: action, ...(items ? { p_items: items } : {}) });
+  const ref = S.myRef;
+  if (!ref) return;
+  const auth = S.myOrder?.pilot_checkout ? await token() : undefined;
+  await rpc("guest_update", { p_id: ref.id, p_token: ref.token, p_action: action, ...(items ? { p_items: items } : {}) }, auth);
   await refreshMyOrder();
 }
 
@@ -824,7 +844,7 @@ function renderCart() {
         : `<button class="btn line" data-tab="menu">${t("Дозаказать", "Order more")}</button>`}</div>`}</div>`;
   }
   const cards = openOrders().map(o => `<button class="ordercard" data-open="${o.id}"><span><b>${t("Заказ", "Order")} №${o.number}</b>
-    <small class="${o.status === "unpaid" || deliveryDue(o) ? "warn" : "muted"}">${[o.status === "unpaid" ? t("Ждёт оплаты", "Awaiting payment") : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : STATUS[o.status][S.lang === "ru" ? 0 : 1],
+    <small class="${o.status === "unpaid" || deliveryDue(o) ? "warn" : "muted"}">${[o.status === "unpaid" ? t("Ждёт оплаты", "Awaiting payment") : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : statusText(o),
       o.pickup_at ? pickupText(o.pickup_at) : null].filter(Boolean).join(" · ")}</small></span><span>›</span></button>`).join("");
   if (!S.cart.length) return `<div class="page">${topBar()}<h1>${t("Мой заказ", "My order")}</h1>
     <div class="empty"><div class="logo big">DAD</div><b>${t("Заказ пуст", "Your order is empty")}</b><p>${t("Добавьте позиции из меню", "Add something from the menu")}</p></div></div>`;
@@ -849,34 +869,40 @@ function renderCheckout() {
   const c = S.checkout;
   if (!guestPhone()) return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>
     <p style="font-weight:600;font-size:14px">${t("Чтобы заказать, войдите или зарегистрируйтесь по номеру телефона — это один раз.", "To order, sign in or register with your phone number — just once.")}</p>${accountForm()}`;
-  const asap = isOpen() && !S.paused, pre = c.later || !asap;
-  // Delivery by Yandex Go only for a pre-order, up to a week ahead; on the day the barista calls and tells the price.
-  const dl = c.delivery && pre;
-  const all = slots(dl ? DELIVERY_DAYS : PREORDER_DAYS);
+  const heading = `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>`;
+  if (S.paused) return heading + `<p class="note warn">${t("Приём заказов временно приостановлен.", "Orders are temporarily paused.")}</p>`;
+  if (S.pilotAccess !== "allowed") {
+    const message = S.pilotAccess === "denied"
+      ? t("Самовывоз через приложение пока доступен по приглашению. Уточните у бариста, добавлен ли ваш номер.", "Pickup orders are by invitation. Ask the barista if your account has access.")
+      : S.pilotAccess === "unavailable"
+        ? t("Не удалось проверить доступ к заказам.", "Could not check your access to ordering.")
+        : t("Проверяем доступ к заказам…", "Checking your access to ordering…");
+    const retry = S.pilotAccess ? `<button class="btn line" data-act="pilot-retry">${t("Проверить доступ", "Check access")}</button>` : "";
+    return heading + `<div class="stack"><p class="note">${message}</p>${retry}</div>`;
+  }
+  const asap = isOpen(), pre = c.later || !asap;
+  const all = slots();
   const blocked = S.cart.some(l => !available(l.id, l.flavor)) || overStock().size > 0;
   const d = Math.min(c.day, Math.max(0, all.length - 1));
   const reason = blocked ? t("Уберите позиции, которых нет в наличии, или уменьшите количество.", "Remove the items that are out of stock or reduce them.")
     : cartTotal() == null ? t("У некоторых позиций пока нет цены — такой заказ можно сделать на кассе.", "Some items have no price yet — please order them at the counter.")
     : pre && !all.length ? t("Нет свободного времени для предзаказа.", "No pre-order times available.") : null;
-  const ok = !reason && c.name.trim() && (!pre || c.slot) && (!dl || c.address.trim());
+  const ok = !reason && c.name.trim() && (!pre || c.slot);
   return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div><div class="stack" style="margin-top:12px">
     <input class="field" id="c-name" placeholder="${t("Ваше имя", "Your name")}" value="${esc(c.name)}">
     <div class="note">${t("Телефон", "Phone")}: ${phoneText(guestPhone())} · ${t("бариста позвонит, если с заказом что-то не так", "the barista calls if something is wrong")}</div>
     <textarea class="field" id="c-comment" rows="2" placeholder="${t("Комментарий (необязательно)", "Comment (optional)")}">${esc(c.comment)}</textarea>
-    <div class="label">${t("Когда", "When")}</div>
-    ${asap ? "" : `<div class="warn small" style="font-weight:600">${isOpen() ? t("Бариста сейчас не успевает принимать срочные заказы — можно оформить предзаказ ко времени.", "The barista is too busy right now — you can pre-order for a later time.") : t("Сейчас мы закрыты — можно оформить предзаказ ко времени.", "We are closed now — you can pre-order for a later time.")} ${hoursStatus()}</div>`}
+    <div class="label">${t("Самовывоз", "Pickup")}</div>
+    ${asap ? "" : `<div class="warn small" style="font-weight:600">${t("Сейчас мы закрыты — можно оформить предзаказ ко времени.", "We are closed now — you can pre-order for a later time.")} ${hoursStatus()}</div>`}
     <div class="wrap">${asap ? `<button class="chip ${pre ? "" : "on"}" data-act="asap">${t("Как можно скорее", "As soon as possible")}</button>` : ""}<button class="chip ${pre ? "on" : ""}" data-act="later">${t("Ко времени", "For a time")}</button></div>
-    <div class="wrap"><button class="chip ${c.takeaway || dl ? "" : "on"}" data-act="here">${t("В зале", "For here")}</button><button class="chip ${c.takeaway && !dl ? "on" : ""}" data-act="togo">${pre ? t("Самовывоз", "Pickup") : t("С собой", "To go")}</button>${pre ? `<button class="chip ${dl ? "on" : ""}" data-act="delivery">${t("Доставка", "Delivery")}</button>` : ""}</div>
     ${pre && all.length ? `<div class="wrap">${all.map((list, i) => `<button class="chip ${i === d ? "on" : ""}" data-day="${i}">${dayName(list[0])}</button>`).join("")}</div>
       <div class="chips" style="position:static;padding-top:0">${all[d].map(s => `<button class="chip ${c.slot === s.getTime() ? "on" : ""}" data-slot="${s.getTime()}">${hhmm(s)}</button>`).join("")}</div>` : ""}
-    ${dl ? `<textarea class="field" id="c-address" rows="2" placeholder="${t("Адрес: улица, дом, подъезд, этаж, квартира", "Address: street, building, entrance, floor, flat")}">${esc(c.address)}</textarea>
-      <div class="note">${t("Доставка Яндекс Go по Владивостоку оплачивается отдельно. В день доставки бариста позвонит, скажет стоимость — её можно оплатить по тому же QR здесь.", "Yandex Go delivery in Vladivostok is paid separately. On the day the barista calls you with the price — pay it by the same QR here.")}</div>` : ""}
+    <div class="label">${t("Оплата на кассе", "Pay at the counter")}</div>
+    <div class="wrap">${["card", "cash"].map(p => `<button class="chip ${c.payment === p ? "on" : ""}" data-pay="${p}">${PAYMENTS[p][S.lang === "ru" ? 0 : 1]}</button>`).join("")}</div>
     ${c.error ? `<div class="warn small" style="font-weight:600">${esc(c.error)}</div>` : ""}
-    <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : t("Перейти к оплате", "Go to payment") + (cartTotal() != null ? " · " + price(cartTotal()) : "")}</button>
+    <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : (pre ? t("Оформить предзаказ", "Place pre-order") : t("Отправить заказ", "Place order"))}</button>
     <div class="note ${reason ? "warn" : ""}">${reason || (pre && !c.slot ? t("Выберите время, к которому приготовить заказ.", "Choose when to have the order ready.")
-      : dl && !c.address.trim() ? t("Укажите адрес доставки.", "Enter the delivery address.")
-      : t("Оплата по СБП сразу. После оплаты заказ уйдёт баристе; если чего-то не окажется, бариста предложит замену или вернёт разницу. Наличными и картой — на кассе.",
-        "Pay by SBP right away. Then the order goes to the barista; if something ran out, they offer a replacement or refund the difference. Cash and card — at the counter."))}</div>
+      : t("Оплатите заказ на кассе при получении.", "Pay at the counter when you pick up."))}</div>
   </div>`;
 }
 
@@ -884,7 +910,7 @@ function renderStatus() {
   const o = S.myOrder;
   if (!o) return `<div class="empty"><div class="logo big">DAD</div><p>…</p></div>`;
   const title = awaitsPrepay(o) ? t("Оплатите заказ — готовить начнём после оплаты", "Please pay — we start cooking once it is paid")
-    : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : STATUS[o.status][S.lang === "ru" ? 0 : 1];
+    : scheduled(o) ? t("Предзаказ принят", "Pre-order accepted") : statusText(o);
   const alarming = ["waiting", "rejected", "cancelled", "no_show"].includes(o.status) || awaitsPrepay(o);
   const reached = o.status === "unpaid" ? null : scheduled(o) || awaitsPrepay(o) ? 0 : { new: 0, waiting: 0, accepted: 1, ready: 2, done: 2 }[o.status];
   const steps = reached == null ? "" : `<div class="steps">${[t("Отправлен", "Sent"), t("Готовится", "Preparing"), t("Готов", "Ready")].map((s, i) => `<div class="${i <= reached ? "on" : ""}"><i></i>${s}</div>`).join("")}</div>`;
@@ -901,6 +927,7 @@ function renderStatus() {
       : ["card", "cash"].includes(o.payment) ? `<div class="center" style="font-weight:700">${t("Оплата на кассе при получении", "Pay at the counter when you pick up")}</div>`
       : o.paid_claimed ? `<div class="center" style="font-weight:700">✓ ${t("Вы оплатили — бариста проверит поступление", "You have paid — the barista checks the payment")}</div>`
       : o.status !== "new" ? `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}</button><button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>` : "";
+    if (canCancel(o)) actions += `<button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button>`;
   } else actions = `<button class="btn" data-act="neworder">${t("Новый заказ", "New order")}</button>`;
   return `<div class="stack"><div class="center label muted" style="margin-top:16px">${t("Заказ", "Order")}</div>
     <div class="num">№${o.number}</div>
@@ -987,11 +1014,13 @@ const errorText = (e) => ({
   bad_time: t("Это время уже недоступно — выберите другое", "That time is no longer available — pick another"),
   login_required: t("Войдите в аккаунт ещё раз", "Please sign in again"),
   no_price: t("У одной из позиций пока нет цены — обновите меню", "An item has no price yet — refresh the menu"),
-  too_many: t("Сначала оплатите или отмените прошлый заказ", "Pay for or cancel your previous order first"),
+  too_many: t("У вас уже три активных заказа. Дождитесь выдачи или отмените один из них.", "You already have three active orders. Pick up or cancel an order first."),
   costs_more: t("Замена дороже оплаченного — выберите другую позицию или доплатите на кассе", "The replacement costs more than you paid — pick another or pay the difference at the counter"),
   unavailable: t("Пока вы выбирали, некоторые позиции закончились — они отмечены выше.", "Some items ran out while you were choosing — they are marked above."),
-  prepay_required: t("Прошлый заказ с этого номера не забрали, поэтому теперь заказ нужно оплатить по СБП заранее — готовить начнём после оплаты. Мы выбрали СБП, отправьте заказ ещё раз.",
-    "An earlier order from this number was not picked up, so now the order must be paid by SBP in advance. SBP is selected, please send the order again."),
+  prepay_required: t("Для этого номера доступен заказ у бариста.", "Please order at the counter with the barista."),
+  pilot_not_invited: t("Оформление пока доступно по приглашению.", "Ordering is available by invitation."),
+  pilot_pickup_only: t("Сейчас доступен самовывоз.", "Pickup is available at the moment."),
+  pilot_counter_only: t("Выберите оплату на кассе.", "Choose payment at the counter."),
 }[e.code] || t("Не получилось, попробуйте ещё раз", "Something went wrong, please try again"));
 
 /** Polls which phone Telegram confirmed for the code (the guest shares the contact with the bot). */
@@ -1055,7 +1084,6 @@ const onField = (e) => {
   else if (id === "a-pass") { S.account.password = v; render(); }
   else if (id === "c-name") { S.checkout.name = v; store.set("name", v); render(); }
   else if (id === "c-comment") { S.checkout.comment = v; }
-  else if (id === "c-address") { S.checkout.address = v.slice(0, 200); store.set("address", S.checkout.address); render(); }
 };
 document.addEventListener("input", onField);
 document.addEventListener("change", onField);
@@ -1070,6 +1098,7 @@ document.addEventListener("click", async (e) => {
     if (d.tab === "menu" && S.tab === "menu") { S.query = ""; S.item = null; window.scrollTo(0, 0); }
     S.tab = d.tab; S.item = null; render(); window.scrollTo(0, 0);
     if (d.tab === "account") { await refreshMyOrders(); render(); }
+    if (d.tab === "order" && guestPhone()) { await refreshPilotAccess(); if (S.tab === "order") render(); }
     return;
   }
   if (d.item) { S.item = { id: d.item }; render(); document.getElementById("sheet")?.scrollTo(0, 0); return; }
@@ -1117,9 +1146,7 @@ document.addEventListener("click", async (e) => {
       addToCart(item, v, st.qty, st.flavor, S.extras ? S.extras.chosen : st.addons || []); S.item = null; S.extras = null; render(); toast(t("Добавлено в заказ", "Added to the order")); break;
     }
     case "empty": S.cart = []; store.set("cart", S.cart); render(); break;
-    // Back from delivery: a day next week is too far for pickup.
-    case "here": c.takeaway = false; if (c.delivery) Object.assign(c, { delivery: false, day: 0, slot: null }); render(); break;
-    case "togo": c.takeaway = true; if (c.delivery) Object.assign(c, { delivery: false, day: 0, slot: null }); render(); break;
+    case "pilot-retry": S.pilotAccess = null; render(); await refreshPilotAccess(); render(); break;
     case "asap": c.later = false; render(); break;
     case "later": c.later = true; render(); break;
     case "signin-mode": case "register-mode": case "reset-mode":
@@ -1154,7 +1181,7 @@ document.addEventListener("click", async (e) => {
         const staffRole = await api("/rest/v1/staff?select=role", { token: S.session.access }).then(x => x[0]?.role).catch(() => null);
         if (staffRole && a.mode === "signin") { S.role = staffRole; store.set("adminTab", null); location.href = "admin.html"; return; }
         if (!c.name) { c.name = S.session.name; store.set("name", c.name); }
-        a.password = ""; setRef(null); await refreshMyOrders();
+        a.password = ""; setRef(null); await Promise.all([refreshMyOrders(), refreshPilotAccess()]);
       } catch (err) {
         const text = err.text || "";
         a.error = /not_checked|Database error saving/.test(text) ? t("Подтвердите номер в Telegram ещё раз", "Please confirm the phone in Telegram again")
@@ -1169,22 +1196,22 @@ document.addEventListener("click", async (e) => {
     }
     case "signout": saveSession(null); S.history = []; setRef(null); render(); break;
     case "place": {
+      if (c.busy || S.pilotAccess !== "allowed" || S.paused) break;
       c.busy = true; c.error = null; render();
-      const pre = c.later || !(isOpen() && !S.paused);
+      const pre = c.later || !isOpen();
       try {
         const tk = await token();
         if (!tk) throw Object.assign(new Error(), { code: "login_required" });
-        const dl = c.delivery && pre;
-        const rows = await rpc("place_order", { p_name: c.name.trim(), p_comment: c.comment.trim(), p_takeaway: c.takeaway || dl,
-          p_items: orderLines(), p_payment: "sbp", p_pickup_at: pre && c.slot ? fromLocal(new Date(c.slot)).toISOString() : null, p_phone: "",
-          ...(dl ? { p_address: c.address.trim() } : {}) }, tk);
+        const rows = await rpc("place_order", { p_name: c.name.trim(), p_comment: c.comment.trim(), p_takeaway: true,
+          p_items: orderLines(), p_payment: c.payment, p_pickup_at: pre && c.slot ? fromLocal(new Date(c.slot)).toISOString() : null, p_phone: "" }, tk);
         setRef({ id: rows[0].id, token: rows[0].token });
         S.cart = []; store.set("cart", S.cart); c.comment = ""; c.slot = null;
         await refreshMyOrder();
-        S.pay = true;  // straight to the QR
+        S.pay = null;
       } catch (err) {
         if (err.code === "unavailable") { err.ids.forEach(id => S.stop.add(id)); }
-        if (err.code === "prepay_required") { c.payment = "sbp"; store.set("payment", "sbp"); }
+        if (err.code === "pilot_not_invited") { S.pilotAccess = "denied"; }
+        if (err.code === "paused") { S.paused = true; }
         if (err.code === "bad_time") c.slot = null;
         if (err.code === "login_required") saveSession(null);
         c.error = errorText(err);
@@ -1211,7 +1238,6 @@ document.addEventListener("click", async (e) => {
     case "pay": S.pay = true; render(); break;
     case "paydelivery": S.pay = S.myOrder.delivery_fee; render(); break;
     case "deliverypaid": try { await guestAction("delivery_paid"); } catch {} render(); break;
-    case "delivery": c.delivery = true; render(); break;
     case "closepay": S.pay = null; render(); break;
     case "copysum": try { await navigator.clipboard.writeText(String(typeof S.pay === "number" ? S.pay : S.myOrder.total)); toast(t("Сумма скопирована", "Amount copied")); } catch {} break;
   }
@@ -1221,7 +1247,7 @@ document.addEventListener("click", async (e) => {
 (async () => {
   render();
   // Everything at once: the menu file, the server data and the guest's order load in parallel.
-  const server = loadServer(), mine = refreshMyOrder();
+  const server = loadServer(), mine = refreshMyOrder().then(refreshPilotAccess);
   // Bundled photos: the kitchen's (credited) and the bar's illustrations (photos.json lists every one).
   const [menu, credits, bundled] = await Promise.all([fetch("menu.json").then(r => r.json()), fetch("photo_credits.json").then(r => r.json()).catch(() => ({})),
     fetch("photos.json").then(r => r.json()).catch(() => [])]);
@@ -1240,7 +1266,7 @@ document.addEventListener("click", async (e) => {
     const after = JSON.stringify([S.history.map(o => [o.id, o.status, o.updated_at]), S.myOrder?.status, S.myOrder?.updated_at, S.myRef]);
     if (before !== after && !S.item && !S.pay && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) render();
   }, POLL_MS);
-  document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder()]); render(); } });
+  document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder().then(refreshPilotAccess)]); render(); } });
 })();
 </script>
 </body>

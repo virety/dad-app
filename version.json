@@ -1,8 +1,8 @@
 {
- "versionCode": 44,
- "versionName": "1.43",
- "notes": "Android запоминает «Позже» для конкретной версии. Скачать её по-прежнему можно через «Ещё».",
- "apk": "https://github.com/virety/dad-app/releases/latest/download/DAD.apk",
- "size": 28643710,
- "date": "2026-11-20"
+ "versionCode": 45,
+ "versionName": "1.44",
+ "notes": "- Карточка заказа в разделе «Персонал» адаптируется к узкому экрану и крупному шрифту.\n- Закрытый самовывоз по приглашению с оплатой картой или наличными при выдаче.\n- Уведомления о новых заказах на Android через Firebase. Нажатие открывает раздел «Персонал».",
+ "apk": "https://github.com/virety/dad-app/releases/download/v1.44/DAD.apk",
+ "size": 28643730,
+ "date": "2026-11-21"
 }
