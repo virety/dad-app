@@ -233,7 +233,7 @@ const S = {
   cart: store.get("cart", []), session: store.get("session", null), myRef: store.get("myRef", null),
   myOrder: null, history: [], item: null, pay: null,
   checkout: { name: store.get("name", ""), comment: "", later: false, day: 0, slot: null,
-    payment: store.get("payment", "card") === "cash" ? "cash" : "card", busy: false, error: null },
+    payment: store.get("payment", "card") === "cash" ? "cash" : "card", sbpEarlyAccess: false, busy: false, error: null },
   account: { mode: "signin", phone: "", name: "", password: "", busy: false, error: null, code: null, checked: null },
   bot: null,  // Telegram bot that confirms phones (settings telegram_bot), once phone_check is on
 };
@@ -315,7 +315,7 @@ async function api(path, { method = "GET", body, token, prefer } = {}) {
   if (!r.ok) {
     const m = text.match(/unavailable:([\w,:-]+)/);
     const e = new ApiError(text);
-    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more|pilot_pickup_only|pilot_counter_only)"/) || [])[1] || (r.status + "");
+    e.code = m ? "unavailable" : (text.match(/"message":"(closed|paused|bad_time|bad_phone|prepay_required|login_required|no_price|too_many|costs_more|pilot_pickup_only|pilot_counter_only|payment_expired|order_changed|sbp_unavailable|sbp_cancel_contact)"/) || [])[1] || (r.status + "");
     if (m) e.ids = m[1].split(",");
     e.status = r.status; e.text = text;
     throw e;
@@ -574,7 +574,10 @@ function paymentLink(rubles) {
 }
 
 // ── Orders ──────────────────────────────────────────────────────────────────
-function setRef(ref) { S.myRef = ref; store.set("myRef", ref); if (!ref) S.myOrder = null; }
+function setRef(ref) {
+  if (S.myRef?.id !== ref?.id) { S.myOrder = null; S.pay = null; }
+  S.myRef = ref; store.set("myRef", ref);
+}
 async function refreshMyOrders() {
   const tk = await token();
   if (!tk || !S.session?.id) return;
@@ -609,13 +612,17 @@ const awaitsPrepay = (o) => o.status === "accepted" && o.prepay && !o.paid;
 const kitchenAt = (o) => o.pickup_at ? Date.parse(o.pickup_at) - KITCHEN_LEAD_MINUTES * 6e4 : null;
 const scheduled = (o) => o.status === "accepted" && !awaitsPrepay(o) && kitchenAt(o) > Date.now();
 const waitingForStaff = (o) => o.pilot_checkout && o.status === "new";
-const canCancel = (o) => o.status === "unpaid" || waitingForStaff(o);
-const statusText = (o) => waitingForStaff(o) ? t("Ждёт подтверждения бариста", "Awaiting confirmation by the barista")
+const isEarlySbp = (o) => o?.pilot_checkout && o.payment === "sbp";
+const canPayEarly = (o) => isEarlySbp(o) && o.status === "unpaid" && o.total > 0 && isCurrent(o);
+const canCancel = (o) => o.status === "unpaid" || (waitingForStaff(o) && !isEarlySbp(o));
+const statusText = (o) => waitingForStaff(o) && !isEarlySbp(o) ? t("Ждёт подтверждения бариста", "Awaiting confirmation by the barista")
   : STATUS[o.status][S.lang === "ru" ? 0 : 1];
 async function guestAction(action, items) {
   const ref = S.myRef;
   if (!ref) return;
-  const auth = S.myOrder?.pilot_checkout ? await token() : undefined;
+  const authenticated = S.myOrder?.pilot_checkout;
+  const auth = authenticated ? await token() : undefined;
+  if (authenticated && !auth) throw Object.assign(new Error(), { code: "login_required" });
   await rpc("guest_update", { p_id: ref.id, p_token: ref.token, p_action: action, ...(items ? { p_items: items } : {}) }, auth);
   await refreshMyOrder();
 }
@@ -858,8 +865,10 @@ function renderCheckout() {
   const all = slots();
   const blocked = S.cart.some(l => !available(l.id, l.flavor)) || overStock().size > 0;
   const d = Math.min(c.day, Math.max(0, all.length - 1));
+  const total = cartTotal();
   const reason = blocked ? t("Уберите позиции, которых нет в наличии, или уменьшите количество.", "Remove the items that are out of stock or reduce them.")
-    : cartTotal() == null ? t("У некоторых позиций пока нет цены — такой заказ можно сделать на кассе.", "Some items have no price yet — please order them at the counter.")
+    : total == null ? t("У некоторых позиций пока нет цены — такой заказ можно сделать на кассе.", "Some items have no price yet — please order them at the counter.")
+    : c.sbpEarlyAccess && total <= 0 ? t("Для заказа с нулевой суммой выберите оплату на кассе.", "Choose payment at the counter for an order with a zero total.")
     : pre && !all.length ? t("Нет свободного времени для предзаказа.", "No pre-order times available.") : null;
   const ok = !reason && c.name.trim() && (!pre || c.slot);
   return `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div><div class="stack" style="margin-top:12px">
@@ -872,10 +881,15 @@ function renderCheckout() {
     ${pre && all.length ? `<div class="wrap">${all.map((list, i) => `<button class="chip ${i === d ? "on" : ""}" data-day="${i}">${dayName(list[0])}</button>`).join("")}</div>
       <div class="chips" style="position:static;padding-top:0">${all[d].map(s => `<button class="chip ${c.slot === s.getTime() ? "on" : ""}" data-slot="${s.getTime()}">${hhmm(s)}</button>`).join("")}</div>` : ""}
     <div class="label">${t("Оплата на кассе", "Pay at the counter")}</div>
-    <div class="wrap">${["card", "cash"].map(p => `<button class="chip ${c.payment === p ? "on" : ""}" data-pay="${p}">${PAYMENTS[p][S.lang === "ru" ? 0 : 1]}</button>`).join("")}</div>
+    <div class="wrap">${["card", "cash"].map(p => {
+      const selected = !c.sbpEarlyAccess && c.payment === p;
+      return `<button class="chip ${selected ? "on" : ""}" data-pay="${p}" aria-pressed="${selected}">${PAYMENTS[p][S.lang === "ru" ? 0 : 1]}</button>`;
+    }).join("")}</div>
+    <div class="wrap"><button class="chip ${c.sbpEarlyAccess ? "on" : ""}" data-pay="sbp" aria-pressed="${c.sbpEarlyAccess}">${t("СБП по QR · ранний доступ", "SBP by QR · early access")}</button></div>
     ${c.error ? `<div class="warn small" style="font-weight:600">${esc(c.error)}</div>` : ""}
-    <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : (pre ? t("Оформить предзаказ", "Place pre-order") : t("Отправить заказ", "Place order"))}</button>
+    <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : c.sbpEarlyAccess ? t("Перейти к оплате по QR", "Continue to QR payment") : pre ? t("Оформить предзаказ", "Place pre-order") : t("Отправить заказ", "Place order")}</button>
     <div class="note ${reason ? "warn" : ""}">${reason || (pre && !c.slot ? t("Выберите время, к которому приготовить заказ.", "Choose when to have the order ready.")
+      : c.sbpEarlyAccess ? t("После оплаты нажмите «Я оплатил». Бариста проверит поступление перед принятием заказа.", "Once you have paid, tap “I have paid”. The barista checks the payment before accepting the order.")
       : t("Оплатите заказ на кассе при получении.", "Pay at the counter when you pick up."))}</div>
   </div>`;
 }
@@ -892,14 +906,16 @@ function renderStatus() {
   if (o.status === "waiting") actions = renderResolve(o);
   else if (o.status === "unpaid") {
     // Pay first: the order reaches the barista only after «Я оплатил».
-    actions = `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}${o.total != null ? " · " + price(o.total) : ""}</button>
+    actions = isEarlySbp(o) && !canPayEarly(o)
+      ? `<div class="note warn">${t("Оплата недоступна. Если деньги уже отправлены, обратитесь к бариста.", "Payment is unavailable. If you already paid, contact the barista.")}</div>`
+      : `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}${o.total != null ? " · " + price(o.total) : ""}</button>
       <button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>
       <button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button>
       <div class="note center">${t("Неоплаченный заказ отменится сам через 30 минут.", "An unpaid order is cancelled by itself after 30 minutes.")}</div>`;
   } else if (["new", "accepted", "ready"].includes(o.status)) {
     actions = o.paid ? `<div class="center" style="font-weight:700">✓ ${t("Оплачено", "Paid")}</div>`
       : ["card", "cash"].includes(o.payment) ? `<div class="center" style="font-weight:700">${t("Оплата на кассе при получении", "Pay at the counter when you pick up")}</div>`
-      : o.paid_claimed ? `<div class="center" style="font-weight:700">✓ ${t("Вы оплатили — бариста проверит поступление", "You have paid — the barista checks the payment")}</div>`
+      : o.paid_claimed ? `<div class="center" style="font-weight:700">${t("Вы отметили оплату. Бариста проверит поступление.", "You marked the order as paid. The barista will check the payment.")}</div>`
       : o.status !== "new" ? `<button class="btn" data-act="pay">${t("Оплатить по QR", "Pay by QR")}</button><button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>` : "";
     if (canCancel(o)) actions += `<button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button>`;
   } else actions = `<button class="btn" data-act="neworder">${t("Новый заказ", "New order")}</button>`;
@@ -929,6 +945,8 @@ function renderDelivery(o) {
 /** The only question the guest is ever asked: a replacement for what ran out, or go on without it. */
 function renderResolve(o) {
   S.choice ||= {};
+  const earlySbp = isEarlySbp(o);
+  const refundOnly = earlySbp && o.items.every(line => line.missing) && !Object.values(S.choice).some(Boolean);
   const alts = (line) => {
     const cat = S.menu.sections.flatMap(s => s.categories).find(c => c.id !== "new" && c.items.some(i => i.id === line.item_id));
     return (cat?.items || []).filter(i => i.id !== line.item_id && !i.flavors && itemAvailable(i)).slice(0, 8);
@@ -938,9 +956,12 @@ function renderResolve(o) {
       <div class="wrap"><button class="chip ${S.choice[i] ? "" : "on"}" data-choice="${i}|">${t("Без замены", "No replacement")}</button>
       ${alts(l).map(a => `<button class="chip ${S.choice[i] === a.id ? "on" : ""}" data-choice="${i}|${a.id}">${esc(L(a.name))}</button>`).join("")}</div></div>`
     : `<div>${l.quantity} × ${esc(l.title)} ✓</div>`).join("")}
-    <button class="btn" data-act="resolve">${t("Готово — на кухню", "Done — send to the kitchen")}</button>
-    <div class="note">${t("Если замена дешевле или без замены, разницу вернут при выдаче.", "If the replacement costs less, or you skip it, the difference is refunded at pickup.")}</div>
-    <button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button></div>`;
+    ${refundOnly
+      ? `<div class="note">${t("Выберите замену или свяжитесь с кофейней для возврата.", "Choose a replacement or contact the café for a refund.")} <a href="tel:${PHONE}">${PHONE_TEXT}</a></div>`
+      : `<button class="btn" data-act="resolve">${t("Готово — на кухню", "Done — send to the kitchen")}</button>
+         <div class="note">${t("Если замена дешевле или без замены, разницу вернут при выдаче.", "If the replacement costs less, or you skip it, the difference is refunded at pickup.")}</div>`}
+    ${earlySbp && !refundOnly ? `<div class="note">${t("Для отмены оплаченного заказа обратитесь к бариста.", "Contact the barista to cancel an order after paying.")}</div>` : ""}
+    ${earlySbp ? "" : `<button class="btn line" data-act="cancel">${t("Отменить заказ", "Cancel order")}</button>`}</div>`;
 }
 
 function renderPay() {
@@ -954,10 +975,14 @@ function renderPay() {
     <a class="btn" href="${esc(link)}">${t("Открыть в приложении банка", "Open in the bank app")}</a>
     ${total != null ? `<button class="btn line" data-act="copysum">${t("Скопировать сумму", "Copy the amount")} ${total}</button>
       <div class="note">${t("Сумма передаётся в банк вместе с QR. Если банк попросит ввести её сам — вставьте скопированную.", "The amount is passed to the bank with the QR. If your bank asks for it, paste the copied amount.")}</div>` : ""}
-    <div class="note">${t("После оплаты вернитесь к заказу и нажмите «Я оплатил».", "After paying, come back and tap “I have paid”.")}</div></div></div>`;
+    ${S.pay === true && isEarlySbp(S.myOrder)
+      ? `<button class="btn line" data-act="paid">${t("Я оплатил", "I have paid")}</button>
+        <div class="note">${t("Бариста проверит поступление. Оплатите заказ один раз.", "The barista will check the payment. Pay for the order once.")}</div>`
+      : `<div class="note">${t("После оплаты вернитесь к заказу и нажмите «Я оплатил».", "After paying, come back and tap “I have paid”.")}</div>`}</div></div>`;
 }
 
 function render() {
+  if (S.pay === true && isEarlySbp(S.myOrder) && !canPayEarly(S.myOrder)) S.pay = null;
   const keepScroll = window.scrollY;
   const focus = document.activeElement?.id, caret = document.activeElement?.selectionStart;
   let html = S.tab === "order" ? renderCart() : S.tab === "account" ? renderAccount() : renderMenu();
@@ -991,9 +1016,13 @@ const errorText = (e) => ({
   too_many: t("У вас уже три активных заказа. Дождитесь выдачи или отмените один из них.", "You already have three active orders. Pick up or cancel an order first."),
   costs_more: t("Замена дороже оплаченного — выберите другую позицию или доплатите на кассе", "The replacement costs more than you paid — pick another or pay the difference at the counter"),
   unavailable: t("Пока вы выбирали, некоторые позиции закончились — они отмечены выше.", "Some items ran out while you were choosing — they are marked above."),
-  prepay_required: t("Для этого номера доступен заказ у бариста.", "Please order at the counter with the barista."),
+  prepay_required: t("Для этого номера при заказе в приложении нужна предоплата. Выберите СБП по QR или закажите у бариста.", "Orders in the app require prepayment for this phone. Choose SBP by QR or order with the barista."),
   pilot_pickup_only: t("Сейчас доступен самовывоз.", "Pickup is available at the moment."),
   pilot_counter_only: t("Выберите оплату на кассе.", "Choose payment at the counter."),
+  payment_expired: t("Время оплаты истекло. Если вы уже отправили деньги, обратитесь к бариста.", "The payment window expired. If you already paid, contact the barista."),
+  order_changed: t("Заказ уже изменился. Проверьте его статус.", "The order has changed. Check its status."),
+  sbp_unavailable: t("Для этого заказа выберите оплату на кассе.", "Choose payment at the counter for this order."),
+  sbp_cancel_contact: t("Для отмены после отметки об оплате обратитесь к бариста.", "Contact the barista to cancel after marking the order as paid."),
 }[e.code] || t("Не получилось, попробуйте ещё раз", "Something went wrong, please try again"));
 
 /** Polls which phone Telegram confirmed for the code (the guest shares the contact with the bot). */
@@ -1087,6 +1116,7 @@ document.addEventListener("click", async (e) => {
     const i = +(d.inc ?? d.dec), l = S.cart[i];
     l.quantity += d.inc ? 1 : -1;
     if (l.quantity <= 0) S.cart.splice(i, 1); else l.quantity = Math.min(20, l.quantity);
+    if (!S.cart.length) c.sbpEarlyAccess = false;
     store.set("cart", S.cart); render(); return;
   }
   if (d.open) {
@@ -1096,7 +1126,12 @@ document.addEventListener("click", async (e) => {
   }
   if (d.day) { c.day = +d.day; c.slot = null; render(); return; }
   if (d.slot) { c.slot = +d.slot; render(); return; }
-  if (d.pay === "card" || d.pay === "cash") { c.payment = d.pay; store.set("payment", d.pay); render(); return; }
+  if (["card", "cash", "sbp"].includes(d.pay)) {
+    if (c.busy) return;
+    if (d.pay === "sbp") c.sbpEarlyAccess = !c.sbpEarlyAccess;
+    else { c.sbpEarlyAccess = false; c.payment = d.pay; store.set("payment", d.pay); }
+    c.error = null; render(); return;
+  }
   if (d.unextra && S.item) { S.item.addons = (S.item.addons || []).filter(x => x !== d.unextra); render(); return; }
   if (d.extra && S.extras) { const c = S.extras.chosen; S.extras.chosen = c.includes(d.extra) ? c.filter(x => x !== d.extra) : [...c, d.extra]; render(); return; }
   if (d.choice) { const [i, id] = d.choice.split("|"); S.choice[i] = id || null; render(); return; }
@@ -1121,7 +1156,7 @@ document.addEventListener("click", async (e) => {
       if (addonsFor(item).length && !S.extras && !st.decided) { S.extras = { step: "ask", chosen: [], q: "" }; render(); break; }
       addToCart(item, v, st.qty, st.flavor, S.extras ? S.extras.chosen : st.addons || []); S.item = null; S.extras = null; render(); toast(t("Добавлено в заказ", "Added to the order")); break;
     }
-    case "empty": S.cart = []; store.set("cart", S.cart); render(); break;
+    case "empty": S.cart = []; c.sbpEarlyAccess = false; store.set("cart", S.cart); render(); break;
     case "asap": c.later = false; render(); break;
     case "later": c.later = true; render(); break;
     case "signin-mode": case "register-mode": case "reset-mode":
@@ -1173,31 +1208,51 @@ document.addEventListener("click", async (e) => {
       }
       a.busy = false; render(); break;
     }
-    case "signout": saveSession(null); S.history = []; setRef(null); render(); break;
+    case "signout": saveSession(null); S.history = []; c.sbpEarlyAccess = false; setRef(null); render(); break;
     case "place": {
       if (c.busy || !guestPhone() || S.paused) break;
       c.busy = true; c.error = null; render();
       const pre = c.later || !isOpen();
+      const payment = c.sbpEarlyAccess ? "sbp_early" : c.payment;
       try {
         const tk = await token();
         if (!tk) throw Object.assign(new Error(), { code: "login_required" });
         const rows = await rpc("place_order", { p_name: c.name.trim(), p_comment: c.comment.trim(), p_takeaway: true,
-          p_items: orderLines(), p_payment: c.payment, p_pickup_at: pre && c.slot ? fromLocal(new Date(c.slot)).toISOString() : null, p_phone: "" }, tk);
-        setRef({ id: rows[0].id, token: rows[0].token });
-        S.cart = []; store.set("cart", S.cart); c.comment = ""; c.slot = null;
+          p_items: orderLines(), p_payment: payment, p_pickup_at: pre && c.slot ? fromLocal(new Date(c.slot)).toISOString() : null, p_phone: "" }, tk);
+        const { id, token: orderToken } = rows[0];
+        setRef({ id, token: orderToken });
+        S.cart = []; store.set("cart", S.cart); c.comment = ""; c.slot = null; c.sbpEarlyAccess = false;
         await refreshMyOrder();
-        S.pay = null;
+        S.pay = payment === "sbp_early" && S.myOrder?.id === id && canPayEarly(S.myOrder) ? true : null;
       } catch (err) {
         if (err.code === "unavailable") { err.ids.forEach(id => S.stop.add(id)); }
         if (err.code === "paused") { S.paused = true; }
         if (err.code === "bad_time") c.slot = null;
-        if (err.code === "login_required") saveSession(null);
+        if (err.code === "login_required") { saveSession(null); c.sbpEarlyAccess = false; }
         c.error = errorText(err);
       }
       c.busy = false; render(); break;
     }
-    case "cancel": try { await guestAction("cancel"); } catch {} render(); break;
-    case "paid": try { await guestAction("paid"); } catch {} render(); break;
+    case "cancel": {
+      try { await guestAction("cancel"); }
+      catch (err) {
+        if (err.code === "sbp_cancel_contact") { await refreshMyOrder(); toast(errorText(err)); }
+      }
+      render(); break;
+    }
+    case "paid": {
+      const early = isEarlySbp(S.myOrder);
+      try {
+        await guestAction("paid");
+        if (early) S.pay = null;
+      } catch (err) {
+        if (early) {
+          if (err.code === "payment_expired" || err.code === "order_changed") { S.pay = null; await refreshMyOrder(); }
+          toast(errorText(err));
+        }
+      }
+      render(); break;
+    }
     case "resolve": {
       const o = S.myOrder;
       const items = o.items.flatMap((l, i) => {
@@ -1213,7 +1268,9 @@ document.addEventListener("click", async (e) => {
     }
     case "neworder": setRef(null); render(); break;
     case "tocart": S.viewing = false; render(); break;
-    case "pay": S.pay = true; render(); break;
+    case "pay":
+      if (!isEarlySbp(S.myOrder) || canPayEarly(S.myOrder)) S.pay = true;
+      render(); break;
     case "paydelivery": S.pay = S.myOrder.delivery_fee; render(); break;
     case "deliverypaid": try { await guestAction("delivery_paid"); } catch {} render(); break;
     case "closepay": S.pay = null; render(); break;
@@ -1237,12 +1294,14 @@ document.addEventListener("click", async (e) => {
   let rounds = 0;
   setInterval(async () => {
     if (document.hidden) return;
+    const showingEarlyQr = S.pay === true && isEarlySbp(S.myOrder);
     const before = JSON.stringify([S.history.map(o => [o.id, o.status, o.updated_at]), S.myOrder?.status, S.myOrder?.updated_at, S.myRef]);
     if (S.session && (S.myRef || S.tab !== "menu" || rounds % 12 === 0)) await refreshMyOrders();
     if (S.myRef) await refreshMyOrder();
     rounds++;
     const after = JSON.stringify([S.history.map(o => [o.id, o.status, o.updated_at]), S.myOrder?.status, S.myOrder?.updated_at, S.myRef]);
-    if (before !== after && !S.item && !S.pay && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) render();
+    if ((showingEarlyQr && !canPayEarly(S.myOrder))
+      || (before !== after && !S.item && !S.pay && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName))) render();
   }, POLL_MS);
   document.addEventListener("visibilitychange", async () => { if (!document.hidden) { await Promise.all([loadServer(), refreshMyOrder()]); render(); } });
 })();

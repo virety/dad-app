@@ -1,8 +1,8 @@
 {
- "versionCode": 46,
- "versionName": "1.45",
- "notes": "Самовывоз открыт всем гостям после регистрации с подтверждением телефона в Telegram. Оплата картой или наличными на кассе при получении.",
- "apk": "https://github.com/virety/dad-app/releases/download/v1.45/DAD.apk",
- "size": 28643726,
+ "versionCode": 47,
+ "versionName": "1.46",
+ "notes": "СБП по QR в раннем доступе. В карточке сотрудника вернулся логотип DAD, а номер теперь показан как «Заказ №…».",
+ "apk": "https://github.com/virety/dad-app/releases/download/v1.46/DAD.apk",
+ "size": 28643730,
  "date": "2026-11-21"
 }
