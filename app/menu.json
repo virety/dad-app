@@ -59,7 +59,17 @@
                       "fat": 28.6,
                       "carbs": 1.4
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "egg",
+                      "name": {
+                        "ru": "Яйца",
+                        "en": "Eggs",
+                        "zh": "鸡蛋"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -111,7 +121,17 @@
                       "fat": 28.6,
                       "carbs": 1.4
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "egg",
+                      "name": {
+                        "ru": "Яйца",
+                        "en": "Eggs",
+                        "zh": "鸡蛋"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -164,7 +184,17 @@
                       "fat": 15.6,
                       "carbs": 2.1
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "egg",
+                      "name": {
+                        "ru": "Яйца",
+                        "en": "Eggs",
+                        "zh": "鸡蛋"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -204,6 +234,16 @@
                   ],
                   "mayContain": [
                     "soy"
+                  ],
+                  "removableIngredients": [
+                    {
+                      "id": "egg",
+                      "name": {
+                        "ru": "Яйца",
+                        "en": "Eggs",
+                        "zh": "鸡蛋"
+                      }
+                    }
                   ]
                 }
               ],
@@ -545,7 +585,17 @@
                       "fat": 17.6,
                       "carbs": 2.1
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "egg",
+                      "name": {
+                        "ru": "Яйца",
+                        "en": "Eggs",
+                        "zh": "鸡蛋"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -715,7 +765,17 @@
                       "fat": 35.4,
                       "carbs": 6.7
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "pumpkin-seeds",
+                      "name": {
+                        "ru": "Тыквенные семечки",
+                        "en": "Pumpkin seeds",
+                        "zh": "南瓜籽"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -764,7 +824,17 @@
                       "fat": 17.8,
                       "carbs": 0.8
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "pine-nuts",
+                      "name": {
+                        "ru": "Кедровые орехи",
+                        "en": "Pine nuts",
+                        "zh": "松子"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -831,7 +901,17 @@
                       "fat": 12.6,
                       "carbs": 6.0
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "sesame",
+                      "name": {
+                        "ru": "Кунжут",
+                        "en": "Sesame",
+                        "zh": "芝麻"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -887,7 +967,17 @@
                       "fat": 12.6,
                       "carbs": 6.0
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "sesame",
+                      "name": {
+                        "ru": "Кунжут",
+                        "en": "Sesame",
+                        "zh": "芝麻"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -943,7 +1033,17 @@
                       "fat": 12.6,
                       "carbs": 6.0
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "sesame",
+                      "name": {
+                        "ru": "Кунжут",
+                        "en": "Sesame",
+                        "zh": "芝麻"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -991,7 +1091,17 @@
                       "ru": "Ореховый соус",
                       "en": "Nut sauce"
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "pumpkin-seeds",
+                      "name": {
+                        "ru": "Тыквенные семечки",
+                        "en": "Pumpkin seeds",
+                        "zh": "南瓜籽"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -1049,7 +1159,17 @@
                       "fat": 35.4,
                       "carbs": 6.7
                     }
-                  }
+                  },
+                  "removableIngredients": [
+                    {
+                      "id": "pumpkin-seeds",
+                      "name": {
+                        "ru": "Тыквенные семечки",
+                        "en": "Pumpkin seeds",
+                        "zh": "南瓜籽"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
@@ -1139,6 +1259,16 @@
                   "mayContain": [
                     "crustaceans",
                     "fish"
+                  ],
+                  "removableIngredients": [
+                    {
+                      "id": "sesame",
+                      "name": {
+                        "ru": "Кунжут",
+                        "en": "Sesame",
+                        "zh": "芝麻"
+                      }
+                    }
                   ]
                 }
               ],
@@ -1181,6 +1311,16 @@
                   "mayContain": [
                     "gluten",
                     "soy"
+                  ],
+                  "removableIngredients": [
+                    {
+                      "id": "sesame",
+                      "name": {
+                        "ru": "Кунжут",
+                        "en": "Sesame",
+                        "zh": "芝麻"
+                      }
+                    }
                   ]
                 }
               ],
@@ -1232,7 +1372,17 @@
                     "soy",
                     "sesame"
                   ],
-                  "mayContain": []
+                  "mayContain": [],
+                  "removableIngredients": [
+                    {
+                      "id": "pine-nuts",
+                      "name": {
+                        "ru": "Кедровые орехи",
+                        "en": "Pine nuts",
+                        "zh": "松子"
+                      }
+                    }
+                  ]
                 }
               ],
               "description": {
