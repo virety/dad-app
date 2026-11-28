@@ -125,6 +125,7 @@
   @keyframes up { from { transform: translateY(24px); opacity: 0; } }
   .sheet .hero { width: 100%; height: 320px; object-fit: cover; display: block; background: var(--tint); }
   .sheet .body { max-width: 560px; margin: 0 auto; padding: 16px 16px calc(110px + var(--safe-b)); }
+  .sheet.has-cart-summary .body { padding-bottom: calc(150px + var(--safe-b)); }
   .close { position: fixed; top: calc(var(--safe-t) + 12px); left: 12px; width: 44px; height: 44px; border-radius: 50%; background: #fff; display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.12); z-index: 31; font-size: 25px; }
   .sheet h3 { font-weight: 900; font-size: 34px; line-height: 1.1; text-transform: uppercase; margin: 8px 0 2px; }
   .table { border-top: 1.5px solid var(--blue); }
@@ -149,6 +150,8 @@
   .order-item-note { display: block; margin-top: 2px; font-size: 13px; color: var(--muted); }
   .bar { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--hair); padding: 10px 16px calc(10px + var(--safe-b)); z-index: 32; }
   .bar .in { max-width: 560px; margin: 0 auto; display: flex; gap: 12px; align-items: center; }
+  .item-cart-summary { max-width: 560px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 700; }
+  .item-cart-summary button { min-height: 40px; padding: 4px 0 8px; text-decoration: underline; text-underline-offset: 2px; }
   /* The DAD plate stays on top while the menu scrolls; the category chips stick under it. */
   .page.wide > .top { position: sticky; top: 0; z-index: 6; background: var(--bg); }
   .page.wide .chips { top: 84px; }
@@ -619,11 +622,16 @@ function addToCart(item, v, quantity, flavor, addons = [], selection = {}) {
     noSauce: selection.noSauce === true && !!v.removableSauce,
     omissions: selectedIngredients(v, selection).map(ingredient => ingredient.id),
     item_comment: itemComment(selection.item_comment) };
-  const same = S.cart.find(l => lineKey(l) === lineKey(line));
-  if (same) same.quantity = Math.min(20, same.quantity + quantity); else S.cart.push(line);
+  const key = lineKey(line);
+  const same = S.cart.find(l => l.quantity + quantity <= 20 && lineKey(l) === key);
+  if (same) same.quantity += quantity; else S.cart.push(line);
   store.set("cart", S.cart);
 }
 const cartCount = () => S.cart.reduce((a, l) => a + l.quantity, 0);
+const variantCartCount = (item, variant, flavor) => S.cart.reduce((count, line) => count + (
+  line.id === item.id && line.amount === variant.amount && (line.milk || null) === (variant.milk || null)
+    && (line.flavor || null) === (flavor || null) ? line.quantity : 0), 0);
+const cartUnits = (quantity) => t(`${quantity} шт.`, `${quantity} ${quantity === 1 ? "item" : "items"}`);
 const NUTRIENTS = ["kcal", "protein", "fat", "carbs"];
 const withoutSauce = (sauceName) => t("Без соуса", "No sauce") + (L(sauceName) ? " · " + L(sauceName) : "");
 function excludedComponents(variant, selection) {
@@ -811,8 +819,12 @@ const ICONS = {
   account: '<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>',
 };
 function tabs() {
-  const n = S.myRef ? 0 : cartCount();
-  const b = (id, label) => `<button class="${S.tab === id ? "on" : ""}" data-tab="${id}"><svg viewBox="0 0 24 24">${ICONS[id]}</svg>${label}${id === "order" && n ? `<span class="count">${n}</span>` : ""}</button>`;
+  const n = cartCount();
+  const b = (id, label) => {
+    const count = id === "order" && n;
+    const accessibleLabel = count ? ` aria-label="${label}. ${t("В корзине", "In cart")} ${cartUnits(count)}"` : "";
+    return `<button class="${S.tab === id ? "on" : ""}" data-tab="${id}"${accessibleLabel}><svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]}</svg>${label}${count ? `<span class="count" aria-hidden="true">${count}</span>` : ""}</button>`;
+  };
   return `<nav class="tabs">${b("menu", t("Меню", "Menu"))}${b("order", t("Заказ", "Order"))}${b("account", t("Аккаунт", "Account"))}</nav>`;
 }
 function thumb(id, cls = "thumb", card = false) {
@@ -926,6 +938,7 @@ function renderItem() {
   // No flavor at first: the photo of all of them shows until the guest picks one.
   st.flavor ??= null;
   const v = draftVariant(item, st);
+  const inCart = variantCartCount(item, v, st.flavor);
   const excluded = excludedComponents(v, st);
   const nutrition = portionNutrition(v, excluded);
   const chosenExtra = addonsFor(item).filter(a => (st.addons || []).includes(a.id)).reduce((s, a) => s + a.price, 0);
@@ -936,7 +949,7 @@ function renderItem() {
   const al = (list) => list.map(a => ALLERGENS[a][S.lang === "ru" ? 0 : 1].toLowerCase()).join(", ");
   // Each flavor can have its own photo (photo id "<item>:<flavor>"); the item's photo until it is uploaded.
   const fp = st.flavor && item.id + ":" + st.flavor, photo = photoUrl(fp && S.photos[fp] ? fp : item.id);
-  return `<div class="sheet" id="sheet"><button class="close" data-act="close" aria-label="${t("Назад", "Back")}">←</button>
+  return `<div class="sheet${inCart ? " has-cart-summary" : ""}" id="sheet"><button class="close" data-act="close" aria-label="${t("Назад", "Back")}">←</button>
     ${photo ? `<img class="hero" src="${esc(photo)}" alt="">` : `<div class="hero" style="display:grid;place-items:center;font-size:32px">DAD</div>`}
     <div class="body stack">
       <div><h3>${esc(L(item.name))}</h3>${S.lang === "ru" ? `<div class="muted">${esc(item.name.en)}</div>` : ""}
@@ -969,9 +982,13 @@ function renderItem() {
         ${!v.allergens?.length && !v.mayContain?.length ? t("Основные аллергены по техкарте не указаны", "No major allergens are listed on the recipe card") : ""}</div>
       <p class="note">${t("При аллергии уточните состав и риск контакта у бариста.", "If you have an allergy, ask the barista about ingredients and the risk of cross-contact.")}</p>
     </div>
-    <div class="bar"><div class="in"><div class="qty"><button data-act="minus">−</button><span>${st.qty}</span><button data-act="plus">+</button></div>
-      <button class="btn" data-act="add" ${ok ? "" : "disabled"}>${item.flavors && !st.flavor ? (item.choice ? t("Выберите ", "Choose a ") + L(item.choice).toLowerCase() : groups.some(Boolean) ? t("Выберите сорт", "Choose a tea") : t("Выберите вкус", "Choose a flavor"))
-        : itemAvailable(item) && !enough ? t("Столько не осталось", "Not that many left") : t("В заказ", "Add to order") + (p != null ? " · " + price(p * st.qty) : "")}</button></div></div>
+    <div class="bar"><div class="item-cart-summary"><span id="item-cart-count" role="status" aria-atomic="true">${inCart
+      ? `${t("В корзине", "In cart")} · ${cartUnits(inCart)}` : ""}</span>${inCart
+      ? `<button data-tab="order">${t("К корзине", "Go to cart")}</button>` : ""}</div>
+      <div class="in"><div class="qty"><button data-act="minus">−</button><span>${st.qty}</span><button data-act="plus">+</button></div>
+      <button class="btn" id="item-add" data-act="add" ${ok ? "" : "disabled"}>${item.flavors && !st.flavor ? (item.choice ? t("Выберите ", "Choose a ") + L(item.choice).toLowerCase() : groups.some(Boolean) ? t("Выберите сорт", "Choose a tea") : t("Выберите вкус", "Choose a flavor"))
+        : itemAvailable(item) && !enough ? t("Столько не осталось", "Not that many left")
+          : (inCart ? t("Добавить ещё", "Add more") : t("В заказ", "Add to order")) + (p != null ? " · " + price(p * st.qty) : "")}</button></div></div>
   </div>`;
 }
 
@@ -1275,6 +1292,7 @@ function render() {
   if (S.pay === true && isEarlySbp(S.myOrder) && !canPayEarly(S.myOrder)) S.pay = null;
   if (typeof S.pay === "number" && (!deliveryDue(S.myOrder) || S.myOrder.delivery_fee !== S.pay)) S.pay = null;
   const keepScroll = window.scrollY;
+  const sheetScroll = document.getElementById("sheet")?.scrollTop;
   const focus = document.activeElement?.id, caret = document.activeElement?.selectionStart;
   let html = S.tab === "order" ? renderCart() : S.tab === "account" ? renderAccount() : renderMenu();
   html += tabs() + (S.item ? renderItem() : "") + (S.item && S.extras ? renderExtras() : "");
@@ -1288,6 +1306,8 @@ function render() {
   } else {
     $app.innerHTML = html;
     if (focus) { const el = document.getElementById(focus); if (el) { el.focus(); try { el.setSelectionRange(caret, caret); } catch {} } }
+    const sheet = document.getElementById("sheet");
+    if (sheet && sheetScroll != null) sheet.scrollTop = sheetScroll;
   }
   document.documentElement.lang = S.lang;
   document.body.style.overflow = S.item || S.pay ? "hidden" : "";
@@ -1345,7 +1365,7 @@ function renderExtras() {
   if (x.step === "ask") return `<div class="extras"><div class="panel stack">
     <h3>${t("Добавить что-нибудь?", "Anything to add?")}</h3>
     <div class="muted">${esc([...new Set(offered.map(a => a.kind))].join(" · "))} — ${esc(L(item.name))}</div>
-    <button class="btn" data-act="add">${t("Нет, спасибо", "No, thanks")}</button>
+    <button class="btn" data-act="extras-none">${t("Нет, спасибо", "No, thanks")}</button>
     <button class="btn line" data-act="extras-pick">${t("Да, выбрать добавки", "Yes, choose add-ons")}</button>
     <button class="link" data-act="extras-close">${t("Отмена", "Cancel")}</button></div></div>`;
   const { found, similar } = searchAddons(offered, x.q);
@@ -1361,7 +1381,7 @@ function renderExtras() {
         <span class="info"><span class="name">${esc(addonName(a))}</span></span><span class="price" style="${a.price ? "" : "color:var(--muted)"}">${addonPrice(a)}</span></button>`).join("")).join("")}</div>
     ${x.chosen.length ? `<div class="small" style="font-weight:600">${esc(offered.filter(a => x.chosen.includes(a.id)).map(addonName).join(", "))}</div>` : ""}
     ${x.page ? `<button class="btn" data-act="extras-done">${t("Готово", "Done")}${extra ? " · +" + price(extra) : ""}</button>`
-      : `<button class="btn" data-act="add">${t("В заказ", "Add to order")}${base != null ? " · " + price((base + extra) * st.qty) : ""}</button>`}
+      : `<button class="btn" data-act="extras-add">${t("В заказ", "Add to order")}${base != null ? " · " + price((base + extra) * st.qty) : ""}</button>`}
     <button class="link" data-act="${x.page ? "extras-done-none" : "extras-none"}">${t("Без добавок", "Without add-ons")}</button></div></div>`;
 }
 
@@ -1493,7 +1513,8 @@ document.addEventListener("click", async (e) => {
   if (d.tab) {
     closeStreetPicker();
     if (d.tab === "menu" && S.tab === "menu") { S.query = ""; S.item = null; window.scrollTo(0, 0); }
-    S.tab = d.tab; S.item = null; render(); window.scrollTo(0, 0);
+    if (d.tab === "order") { S.viewing = false; S.pay = null; }
+    S.tab = d.tab; S.item = null; S.extras = null; render(); window.scrollTo(0, 0);
     if (d.tab === "account") { await refreshMyOrders(); render(); }
     return;
   }
@@ -1538,15 +1559,24 @@ document.addEventListener("click", async (e) => {
     case "extras-done": S.item.addons = S.extras.chosen; S.item.decided = true; S.extras = null; render(); break;
     case "extras-done-none": S.item.addons = []; S.item.decided = true; S.extras = null; render(); break;
     case "extras-close": S.extras = null; render(); break;
-    case "extras-none": S.extras.chosen = []; document.querySelector('[data-act="add"]')?.click(); break;
     case "minus": S.item.qty = Math.max(1, S.item.qty - 1); render(); break;
     case "plus": S.item.qty = Math.min(20, S.item.qty + 1); render(); break;
-    case "add": {
-      const item = findItem(S.item.id), st = S.item;
+    case "add": case "extras-none": case "extras-add": {
+      const st = S.item, extras = S.extras;
+      const item = st && findItem(st.id);
+      if (!item || (d.act === "add" ? extras : !extras || extras.page)) break;
       const v = draftVariant(item, st);
+      if (!available(item.id, st.flavor) || (item.flavors && !st.flavor) || !fits(item, v.amount, st.flavor, st.qty)) {
+        S.extras = null; render(); break;
+      }
       // A drink with add-ons asks «Добавить что-нибудь?» first.
-      if (addonsFor(item).length && !S.extras && !st.decided) { S.extras = { step: "ask", chosen: [], q: "" }; render(); break; }
-      addToCart(item, v, st.qty, st.flavor, S.extras ? S.extras.chosen : st.addons || [], st); S.item = null; S.extras = null; render(); toast(t("Добавлено в заказ", "Added to the order")); break;
+      if (!extras && !st.decided && addonsFor(item).length) { S.extras = { step: "ask", chosen: [], q: "" }; render(); break; }
+      const addons = d.act === "extras-none" ? [] : extras?.chosen || st.addons || [];
+      addToCart(item, v, st.qty, st.flavor, addons, st);
+      st.addons = addons; st.decided = true; S.extras = null;
+      render();
+      if (extras) document.getElementById("item-add")?.focus({ preventScroll: true });
+      break;
     }
     case "empty": S.cart = []; c.sbpEarlyAccess = false; store.set("cart", S.cart); render(); break;
     case "dinein-mode": case "pickup-mode": case "delivery-mode": {
