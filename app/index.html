@@ -103,6 +103,14 @@
   textarea.field { resize: vertical; min-height: 52px; }
   .stack { display: flex; flex-direction: column; gap: 12px; }
   .label { font-weight: 900; font-size: 16px; text-transform: uppercase; margin: 6px 0 0; }
+  .delivery-field { display: grid; gap: 5px; min-width: 0; }
+  .delivery-field label { font-size: 14px; font-weight: 700; }
+  .delivery-parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: end; gap: 8px; }
+  .street-options { max-height: 192px; overflow-y: auto; overscroll-behavior: contain;
+    border: 1.5px solid var(--blue); border-radius: 12px; background: #fff; }
+  .street-options button { display: block; width: 100%; min-height: 44px; padding: 8px 12px; text-align: left; overflow-wrap: anywhere; }
+  .street-options button + button { border-top: 1px solid var(--hair); }
+  .street-options button[aria-selected="true"], .street-options button:hover { background: var(--tint); }
   .tabs { position: fixed; left: 0; right: 0; bottom: 0; background: #fff; border-top: 1px solid var(--hair); display: flex; justify-content: center; padding: 6px 8px calc(6px + var(--safe-b)); z-index: 20; }
   .tabs button { flex: 1; max-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 13px; color: var(--muted); padding: 4px 0; position: relative; }
   .tabs button svg { width: 26px; height: 26px; fill: currentColor; }
@@ -214,7 +222,7 @@ const PAYMENT_LINK = "https://qr.nspk.ru/AS1A004NVTEA9DA38MN8FKC20JTOR7HR?type=0
 const GUEST_DOMAIN = "@guest.dad.cafe";
 // Opening hours from Monday, null for a day off; the owner changes them in the app (settings 'hours').
 const DEFAULT_HOURS = [0, 1, 2, 3, 4, 5, 6].map(d => ({ open: "09:00", close: d === 4 || d === 5 ? "22:00" : "21:00" }));
-const PHONE = "+79046283013", PHONE_TEXT = "+7 904 628-30-13";
+const PHONE = "+79046283013";
 const SLOT_MINUTES = 15, PREORDER_LEAD_MINUTES = 30, PREORDER_DAYS = 2, DELIVERY_DAYS = 8, KITCHEN_LEAD_MINUTES = 20, NEW_ITEM_DAYS = 14;
 const VLAT_OFFSET = 10 * 3600e3;  // Vladivostok is UTC+10 all year
 const POLL_MS = 5000;
@@ -244,6 +252,43 @@ const store = {
   set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch {} },
 };
 
+const DELIVERY_ADDRESS_MAX = 200;
+const DELIVERY_CITY = "Владивосток";
+const STREET_TYPES = "улица|ул|переулок|пер|проспект|просп|пр кт|пр т|проезд|пр|набережная|наб|площадь|пл|шоссе|тракт|бульвар|бул|б р|тупик|аллея";
+const CITY_PREFIX = /^(?:г(?:ород)?\.?\s+)?владивосток(?:\s*[,;]\s*|\s+|$)/i;
+const HOUSE_PREFIX = /^(?:дом\s+|д(?:\.\s*|\s+|(?=\d)))/i;
+const APARTMENT_PREFIX = /^(?:квартира\s+|кв(?:\.\s*|\s+|(?=\d)))/i;
+const addressPart = (value) => String(value ?? "").trim().replace(/\s+/g, " ").replace(/^[,;]+\s*|\s*[,;]+$/g, "");
+function migrateDeliveryAddress(legacy) {
+  const address = { street: "", house: "", apartment: "", details: "" };
+  if (typeof legacy !== "string") return address;
+  const original = legacy.trim().replace(CITY_PREFIX, "");
+  const parts = original.split(/[,;]\s*/).map(addressPart).filter(Boolean);
+  if (!parts.length) return address;
+  address.street = parts.shift();
+  if (parts.length && new RegExp(`^(?:${STREET_TYPES})\\.?$`, "i").test(parts[0])) address.street += " " + parts.shift();
+  if (parts.length && /^\d/.test(parts[0].replace(HOUSE_PREFIX, ""))) {
+    address.house = parts.shift().replace(HOUSE_PREFIX, "");
+  } else {
+    const combined = address.street.match(/^(.+?)\s+((?:(?:д\.?|дом)\s*)?\d+[\p{L}\d/-]*(?:\s+(?:к(?:орп(?:ус)?)?|стр(?:оение)?)\.?\s*\d+[\p{L}]*)?)$/iu);
+    if (combined) { address.street = combined[1]; address.house = combined[2].replace(HOUSE_PREFIX, ""); }
+  }
+  if (!address.house) return { street: "", house: "", apartment: "", details: original };
+  const apartment = parts.findIndex(part => APARTMENT_PREFIX.test(part));
+  if (apartment !== -1) address.apartment = parts.splice(apartment, 1)[0].replace(APARTMENT_PREFIX, "");
+  else if (parts.length === 1 && /^\d+[а-яa-z]?$/.test(parts[0])) address.apartment = parts.pop();
+  address.details = parts.join(", ");
+  return address;
+}
+function deliveryAddressText({ street, house, apartment, details }) {
+  street = addressPart(street).replace(CITY_PREFIX, "");
+  house = addressPart(house).replace(HOUSE_PREFIX, "");
+  apartment = addressPart(apartment).replace(APARTMENT_PREFIX, "");
+  if (!street || !house) return "";
+  return [DELIVERY_CITY, street, "д. " + house, apartment && "кв. " + apartment, addressPart(details)].filter(Boolean).join(", ");
+}
+const deliveryAddressTooLong = (address) => Array.from(address).length > DELIVERY_ADDRESS_MAX;
+
 const S = {
   lang: store.get("lang", (navigator.language || "ru").startsWith("ru") ? "ru" : "en"),
   tab: "menu", section: "kitchen", query: "",
@@ -251,9 +296,10 @@ const S = {
   cart: store.get("cart", []), session: store.get("session", null), myRef: store.get("myRef", null),
   myOrder: null, history: [], item: null, pay: null,
   checkout: { name: store.get("name", ""), comment: "", later: false, day: 0, slot: null,
-    fulfillment: "pickup", address: store.get("address", ""),
+    fulfillment: "pickup", address: store.get("deliveryAddress", null) || migrateDeliveryAddress(store.get("address", "")),
     payment: store.get("payment", "card") === "cash" ? "cash" : "card", sbpEarlyAccess: false, busy: false, error: null },
   account: { mode: "signin", phone: "", name: "", password: "", busy: false, error: null, code: null, checked: null },
+  streets: [], streetPicker: { open: false, index: -1 },
   bot: null,  // Telegram bot that confirms phones (settings telegram_bot), once phone_check is on
 };
 const t = (ru, en) => S.lang === "ru" ? ru : en;
@@ -269,9 +315,57 @@ const defVariant = (item) => item.variants.find(v => v.unit === "cut" && v.amoun
 const kbju = (n) => n ? `${n.kcal} / ${fmt(n.protein)} / ${fmt(n.fat)} / ${fmt(n.carbs)}` : "";
 const fmt = (x) => (Math.round(x * 10) / 10).toLocaleString(S.lang === "ru" ? "ru-RU" : "en-US", { minimumFractionDigits: 1 });
 // 8 921…, +7 921… and 921… (ten digits, without the country code) are the same Russian number.
-const digits = (s) => { const d = String(s).replace(/\D/g, ""); return d.length === 11 && d[0] === "8" ? "7" + d.slice(1) : d.length === 10 && d[0] === "9" ? "7" + d : d; };
-const phoneText = (d) => d.length === 11 && d[0] === "7" ? `+7 ${d.slice(1, 4)} ${d.slice(4, 7)}-${d.slice(7, 9)}-${d.slice(9)}` : "+" + d;
+const digits = (s) => {
+  const raw = String(s).trim(), d = raw.replace(/\D/g, "");
+  if (raw.startsWith("+")) return d;
+  return d.length === 11 && d[0] === "8" ? "7" + d.slice(1) : d.length === 10 && d[0] === "9" ? "7" + d : d;
+};
+function phoneText(value, typing = false) {
+  const raw = String(value ?? "");
+  if (!/^[\d\s()+-]*$/.test(raw) || !/\d/.test(raw)) return raw;
+  let d = digits(raw);
+  if (typing && !raw.trim().startsWith("+")) {
+    if (d.length < 11 && d[0] === "8") d = "7" + d.slice(1);
+    else if (d.length < 11 && d[0] === "9") d = "7" + d;
+  }
+  if (d[0] !== "7" || d.length > 11 || (!typing && d.length !== 11)) return "+" + d;
+  return ["+7", d.slice(1, 4), [d.slice(4, 7), d.slice(7, 9), d.slice(9)].filter(Boolean).join("-")].filter(Boolean).join(" ");
+}
+const PHONE_TEXT = phoneText(PHONE);
 const guestPhone = () => S.session?.email?.endsWith(GUEST_DOMAIN) ? S.session.email.slice(0, -GUEST_DOMAIN.length) : null;
+
+const STREET_TYPE_PREFIX = new RegExp(`^(?:${STREET_TYPES})\\s+`);
+const STREET_TYPE_SUFFIX = new RegExp(`\\s+(?:${STREET_TYPES})$`);
+const streetSearchKey = (value) => (value.toLowerCase().replace(/ё/g, "е").match(/[\p{L}\p{N}]+/gu) || []).join(" ")
+  .replace(STREET_TYPE_PREFIX, "").replace(STREET_TYPE_SUFFIX, "");
+function matchingDeliveryStreets() {
+  const query = streetSearchKey(S.checkout.address.street || "");
+  if (query.replace(/\s/g, "").length < 2) return [];
+  const prefix = [], contains = [];
+  const words = query.split(" ");
+  for (const { name, search } of S.streets) {
+    if (search.startsWith(query)) prefix.push(name);
+    else if (words.every(word => search.includes(word))) contains.push(name);
+  }
+  return [...prefix, ...contains].slice(0, 7);
+}
+function closeStreetPicker() {
+  S.streetPicker.open = false;
+  S.streetPicker.index = -1;
+}
+function setAddressField(field, value) {
+  S.checkout.address[field] = value;
+  store.set("deliveryAddress", S.checkout.address);
+}
+
+function chooseDeliveryStreet(name) {
+  if (!matchingDeliveryStreets().includes(name)) return;
+  setAddressField("street", name);
+  closeStreetPicker();
+  const input = document.getElementById("c-street");
+  if (input) input.value = name;
+  render();
+}
 
 // ── Vladivostok time ────────────────────────────────────────────────────────
 // A "local" Date here holds Vladivostok wall time in its UTC fields.
@@ -693,8 +787,12 @@ const waitingForStaff = (o) => o.pilot_checkout && o.status === "new";
 const isEarlySbp = (o) => o?.pilot_checkout && o.payment === "sbp";
 const canPayEarly = (o) => isEarlySbp(o) && o.status === "unpaid" && o.total > 0 && isCurrent(o);
 const canCancel = (o) => o.status === "unpaid" || (waitingForStaff(o) && !isEarlySbp(o));
-const statusText = (o) => waitingForStaff(o) && !isEarlySbp(o) ? t("Ждёт подтверждения бариста", "Awaiting confirmation by the barista")
-  : STATUS[o.status][S.lang === "ru" ? 0 : 1];
+function statusText(o) {
+  if (o.delivery_address && o.status === "ready") return t("Заказ готов к доставке", "Ready for delivery");
+  if (o.delivery_address && o.status === "done") return t("Заказ передан курьеру", "Handed to the courier");
+  return waitingForStaff(o) && !isEarlySbp(o) ? t("Ждёт подтверждения бариста", "Awaiting confirmation by the barista")
+    : STATUS[o.status][S.lang === "ru" ? 0 : 1];
+}
 async function guestAction(action, items) {
   const ref = S.myRef;
   if (!ref) return;
@@ -894,7 +992,7 @@ function accountForm() {
           : t("Подтвердите номер в Telegram: бот DAD попросит поделиться номером — это одно нажатие.", "Confirm your phone in Telegram: the DAD bot asks you to share it — one tap.")}</div>
         <button class="btn" data-act="telegram">${a.code ? t("Открыть Telegram ещё раз", "Open Telegram again") : t("Подтвердить в Telegram", "Confirm in Telegram")}</button>
         ${a.code ? `<div class="note">${t("Ждём подтверждения… Нажмите в боте «Поделиться номером» и вернитесь сюда.", "Waiting… Tap “Share phone number” in the bot and come back here.")}</div>` : ""}`
-      : `<div style="font-weight:700">✓ ${t("Номер подтверждён:", "Phone confirmed:")} ${phoneText(a.checked)}</div>`}
+      : `<div style="font-weight:700">✓ ${t("Номер подтверждён:", "Phone confirmed:")} ${esc(phoneText(a.checked))}</div>`}
     ${a.mode === "register" && fields ? `<input class="field" id="a-name" autocomplete="given-name" placeholder="${t("Имя", "Name")}" value="${esc(a.name)}">` : ""}
     ${fields ? `<input class="field" id="a-pass" type="password" autocomplete="${a.mode === "signin" ? "current-password" : "new-password"}" placeholder="${a.mode === "reset" ? t("Новый пароль (от 6 символов)", "New password (6+ characters)") : t("Пароль (от 6 символов)", "Password (6+ characters)")}" value="${esc(a.password)}">` : ""}
     ${a.error ? `<div class="warn small" style="font-weight:600">${esc(a.error)}</div>` : ""}
@@ -915,7 +1013,7 @@ function renderAccount() {
       <button class="link warn" data-act="signout">${t("Выйти", "Sign out")}</button></div></div>`;
   if (!phone) return `<div class="page">${topBar()}<h1>${t("Аккаунт", "Account")}</h1><div style="margin-top:16px">${accountForm()}</div></div>`;
   return `<div class="page">${topBar()}<h1>${t("Аккаунт", "Account")}</h1>
-    <div class="table" style="margin-top:16px"><div><span>${t("Телефон", "Phone")}</span><b>${phoneText(phone)}</b></div>
+    <div class="table" style="margin-top:16px"><div><span>${t("Телефон", "Phone")}</span><b>${esc(phoneText(phone))}</b></div>
       <div><span>${t("Имя", "Name")}</span><b>${esc(S.session.name)}</b></div></div>
     <button class="link warn" data-act="signout">${t("Выйти", "Sign out")}</button>
     <div class="heading"><h2>${t("Мои заказы", "My orders")}</h2></div>
@@ -991,6 +1089,30 @@ function checkoutSchedule(c) {
   return { asap, pre, all, day, slot };
 }
 
+function renderDeliveryAddress(address) {
+  const picker = S.streetPicker;
+  const suggestions = picker.open ? matchingDeliveryStreets() : [];
+  return `<div class="label">${t("Адрес доставки", "Delivery address")}</div>
+    <div class="note">${t("Город", "City")} · ${t(DELIVERY_CITY, "Vladivostok")}</div>
+    <div class="delivery-field" id="street-picker">
+      <label for="c-street">${t("Улица", "Street")}</label>
+      <input class="field" id="c-street" role="combobox" aria-autocomplete="list" aria-controls="delivery-streets"
+        aria-expanded="${suggestions.length > 0}" autocomplete="off" autocorrect="off" spellcheck="false" maxlength="120" required
+        value="${esc(address.street)}">
+      <div id="delivery-streets" class="street-options" role="listbox" aria-label="${t("Подсказки улиц", "Street suggestions")}"
+        ${suggestions.length ? "" : "hidden"}>${suggestions.map((name, i) => `<button type="button" role="option" tabindex="-1" id="delivery-street-${i}"
+          aria-selected="${i === picker.index}" data-delivery-street="${esc(name)}">${esc(name)}</button>`).join("")}</div>
+    </div>
+    <div class="delivery-parts">
+      <div class="delivery-field"><label for="c-house">${t("Дом", "Building")}</label>
+        <input class="field" id="c-house" autocomplete="off" maxlength="40" required value="${esc(address.house)}"></div>
+      <div class="delivery-field"><label for="c-apartment">${t("Квартира (необязательно)", "Flat (optional)")}</label>
+        <input class="field" id="c-apartment" autocomplete="off" maxlength="30" value="${esc(address.apartment)}"></div>
+    </div>
+    <div class="delivery-field"><label for="c-details">${t("Подъезд, этаж и другие детали (необязательно)", "Entrance, floor and other details (optional)")}</label>
+      <textarea class="field" id="c-details" rows="2" maxlength="${DELIVERY_ADDRESS_MAX}">${esc(address.details)}</textarea></div>`;
+}
+
 function renderCheckout() {
   const c = S.checkout;
   const heading = `<div class="heading"><h2>${t("Оформление", "Checkout")}</h2></div>`;
@@ -999,33 +1121,34 @@ function renderCheckout() {
     ? t("Доставка временно недоступна. Приём заказов на паузе.", "Delivery is temporarily unavailable while orders are paused.")
     : t("Приём заказов временно приостановлен.", "Orders are temporarily paused.")}</p>` : "";
   if (!guestPhone()) return heading + paused + `${delivery && !S.paused
-    ? `<p class="note">${t("После входа укажите адрес и время. Стоимость курьера согласует бариста.", "Sign in to enter the address and time. A barista will confirm the courier fee.")}</p>`
+    ? `<p class="note">${t("После входа укажите адрес и время. Когда заказ будет готов, бариста согласует стоимость доставки.", "Sign in to enter the address and time. Once the order is ready, a barista will confirm the delivery fee.")}</p>`
     : ""}
     <p style="font-weight:600;font-size:14px">${t("Войдите или зарегистрируйтесь по номеру телефона. При регистрации понадобится подтверждение в Telegram.", "Sign in or register with your phone number. New accounts require verification in Telegram.")}</p>${accountForm()}`;
   if (S.paused) return heading + paused;
   const { asap, pre, all, day, slot } = checkoutSchedule(c);
   const byQr = delivery || c.sbpEarlyAccess;
+  const address = delivery ? deliveryAddressText(c.address) : "";
   const blocked = S.cart.some(l => !available(l.id, l.flavor)) || overStock().size > 0;
   const total = cartTotal();
   const reason = blocked ? t("Уберите позиции, которых нет в наличии, или уменьшите количество.", "Remove the items that are out of stock or reduce them.")
     : total == null ? t("У некоторых позиций пока нет цены — такой заказ можно сделать на кассе.", "Some items have no price yet — please order them at the counter.")
     : byQr && total <= 0 ? (delivery ? t("Для доставки нужна корзина с положительной суммой.", "Delivery requires a positive order total.")
       : t("Для заказа с нулевой суммой выберите оплату на кассе.", "Choose payment at the counter for an order with a zero total."))
-    : pre && !all.length ? t("Нет свободного времени для предзаказа.", "No pre-order times available.") : null;
-  const ok = !reason && c.name.trim() && (!pre || slot) && (!delivery || c.address.trim());
+    : pre && !all.length ? t("Нет свободного времени для предзаказа.", "No pre-order times available.")
+    : deliveryAddressTooLong(address) ? t("Сократите адрес и детали доставки до 200 символов.", "Shorten the address and delivery details to 200 characters.") : null;
+  const ok = !reason && c.name.trim() && (!pre || slot) && (!delivery || address);
   return `${heading}<div class="stack" style="margin-top:12px">
     <input class="field" id="c-name" placeholder="${t("Ваше имя", "Your name")}" value="${esc(c.name)}">
-    <div class="note">${t("Телефон", "Phone")}: ${phoneText(guestPhone())} · ${t("бариста позвонит, если с заказом что-то не так", "the barista calls if something is wrong")}</div>
+    <div class="note">${t("Телефон", "Phone")}: ${esc(phoneText(guestPhone()))} · ${t("бариста позвонит, если с заказом что-то не так", "the barista calls if something is wrong")}</div>
     <textarea class="field" id="c-comment" rows="2" placeholder="${t("Комментарий (необязательно)", "Comment (optional)")}">${esc(c.comment)}</textarea>
     ${asap || delivery ? "" : `<div class="warn small" style="font-weight:600">${t("Сейчас мы закрыты — можно оформить предзаказ ко времени.", "We are closed now — you can pre-order for a later time.")} ${hoursStatus()}</div>`}
-    ${delivery ? `<label for="c-address" class="label">${t("Адрес доставки во Владивостоке", "Delivery address in Vladivostok")}</label>
-      <textarea class="field" id="c-address" rows="2" maxlength="200" placeholder="${t("Улица, дом, подъезд, этаж, квартира", "Street, building, entrance, floor, flat")}">${esc(c.address)}</textarea>
+    ${delivery ? `${renderDeliveryAddress(c.address)}
       <div class="label">${t("К какому времени приготовить", "When to have it ready")}</div>`
       : `<div class="wrap">${asap ? `<button class="chip ${pre ? "" : "on"}" data-act="asap">${t("Как можно скорее", "As soon as possible")}</button>` : ""}<button class="chip ${pre ? "on" : ""}" data-act="later">${t("Ко времени", "For a time")}</button></div>`}
     ${all.length ? `<div class="wrap">${all.map((list, i) => `<button class="chip ${i === day ? "on" : ""}" data-day="${i}">${dayName(list[0])}</button>`).join("")}</div>
       <div class="chips" style="position:static;padding-top:0">${all[day].map(s => `<button class="chip ${slot === s ? "on" : ""}" data-slot="${s.getTime()}">${hhmm(s)}</button>`).join("")}</div>` : ""}
-    ${delivery ? `<div class="note">${t("Доставка Яндекс Go. По QR оплачивается только заказ. В день доставки бариста позвонит и согласует стоимость курьера. Доставка оплачивается отдельно после согласования.",
-      "Yandex Go delivery. The QR payment covers the order. On the day of delivery, the barista calls to agree on the courier fee. The fee is paid separately after confirmation.")}</div>`
+    ${delivery ? `<div class="note">${t("Доставка Яндекс Go. Сначала оплатите заказ по QR. Когда заказ будет готов, бариста позвонит и согласует стоимость доставки. Доставка оплачивается отдельно после согласования.",
+      "Yandex Go delivery. First pay for the order by QR. Once the order is ready, the barista calls to agree on the delivery fee. You pay for delivery separately after confirmation.")}</div>`
       : `<div class="label">${t("Оплата на кассе", "Pay at the counter")}</div>
     <div class="wrap">${["card", "cash"].map(p => {
       const selected = !c.sbpEarlyAccess && c.payment === p;
@@ -1034,7 +1157,7 @@ function renderCheckout() {
     <div class="wrap"><button class="chip ${c.sbpEarlyAccess ? "on" : ""}" data-pay="sbp" aria-pressed="${c.sbpEarlyAccess}">${t("СБП по QR · ранний доступ", "SBP by QR · early access")}</button></div>`}
     ${c.error ? `<div class="warn small" style="font-weight:600">${esc(c.error)}</div>` : ""}
     <button class="btn" data-act="place" ${ok && !c.busy ? "" : "disabled"}>${c.busy ? "…" : byQr ? t("Перейти к оплате по QR", "Continue to QR payment") : pre ? t("Оформить предзаказ", "Place pre-order") : t("Отправить заказ", "Place order")}</button>
-    <div class="note ${reason ? "warn" : ""}">${reason || (delivery && !c.address.trim() ? t("Укажите адрес доставки.", "Enter the delivery address.")
+    <div class="note ${reason ? "warn" : ""}">${reason || (delivery && !address ? t("Укажите улицу и дом.", "Enter the street and building.")
       : pre && !slot ? t("Выберите время, к которому приготовить заказ.", "Choose when to have the order ready.")
       : byQr ? t("После оплаты нажмите «Я оплатил». Бариста проверит поступление перед принятием заказа.", "Once you have paid, tap “I have paid”. The barista checks the payment before accepting the order.")
       : t("Оплатите заказ на кассе при получении.", "Pay at the counter when you pick up."))}</div>
@@ -1097,7 +1220,7 @@ function renderStatus() {
 /** Delivery: the address, then the price the barista set after the call and «Оплатить доставку». */
 function renderDelivery(o) {
   const fee = o.delivery_fee;
-  const state = fee == null ? `<div class="note">${t("В день доставки бариста позвонит и скажет стоимость.", "On the day the barista calls you with the price.")}</div>`
+  const state = fee == null ? (FINISHED.includes(o.status) ? "" : `<div class="note">${t("Когда заказ будет готов, бариста позвонит и согласует стоимость доставки.", "Once the order is ready, the barista will call to agree on the delivery fee.")}</div>`)
     : o.delivery_paid ? `<div style="font-weight:700">✓ ${t("Доставка оплачена", "Delivery paid")} · ${price(fee)}</div>`
     : o.delivery_paid_claimed ? `<div style="font-weight:700">✓ ${t("Вы оплатили доставку — бариста проверит", "You paid for delivery — the barista checks it")}</div>`
     : deliveryDue(o) ? `<button class="btn" data-act="paydelivery">${t("Оплатить доставку", "Pay for delivery")} · ${price(fee)}</button>
@@ -1168,6 +1291,14 @@ function render() {
   }
   document.documentElement.lang = S.lang;
   document.body.style.overflow = S.item || S.pay ? "hidden" : "";
+  const street = document.getElementById("c-street");
+  if (street) {
+    const expanded = !document.getElementById("delivery-streets").hidden;
+    street.setAttribute("aria-expanded", expanded);
+    const option = expanded && document.getElementById("delivery-street-" + S.streetPicker.index);
+    if (option) street.setAttribute("aria-activedescendant", option.id);
+    else street.removeAttribute("aria-activedescendant");
+  }
   const qr = document.getElementById("qr");
   if (qr && !qr.firstChild && window.QRCode) new QRCode(qr, { text: qr.dataset.link, width: 212, height: 212, colorDark: "#1F2B8E", colorLight: "#FFFFFF" });
   if (!window.morphdom) window.scrollTo(0, keepScroll);
@@ -1235,32 +1366,44 @@ function renderExtras() {
 }
 
 // ── Events ──────────────────────────────────────────────────────────────────
-/** A phone typed into a field turns into «+7 964 405-56-45» as it goes; a login («root») stays as typed. */
-function phoneMask(v) {
-  if (!/^[\d\s()+-]*$/.test(v) || !/\d/.test(v)) return v;
-  let d = v.replace(/\D/g, "");
-  if (d[0] === "8") d = "7" + d.slice(1); else if (d[0] === "9") d = "7" + d;
-  if (d[0] !== "7") return "+" + d;
-  d = d.slice(1, 11);
-  return "+7" + (d ? " " + d.slice(0, 3) : "") + (d.length > 3 ? " " + d.slice(3, 6) : "") + (d.length > 6 ? "-" + d.slice(6, 8) : "") + (d.length > 8 ? "-" + d.slice(8, 10) : "");
+function typedPhone(event) {
+  const field = event.target, raw = field.value;
+  if (event.isComposing || event.inputType?.startsWith("delete")) return raw;
+  const formatted = phoneText(raw, true);
+  if (formatted === raw) return raw;
+  // Keep edits in the middle of the number at the same digit after adding spaces or the country code.
+  const numberLength = (text) => text.replace(/\D/g, "").length;
+  const digitsBefore = numberLength(raw.slice(0, field.selectionStart)) + numberLength(formatted) - numberLength(raw);
+  let caret = 0, seen = 0;
+  while (caret < formatted.length && seen < digitsBefore) {
+    if (/\d/.test(formatted[caret])) seen++;
+    caret++;
+  }
+  field.value = formatted;
+  field.setSelectionRange?.(caret, caret);
+  return formatted;
 }
-function typedPhone(field) {
-  // Deleting keeps what is there, so a dash can be erased.
-  const v = field.value, f = phoneMask(v);
-  if (f !== v && f.length >= v.length) field.value = f;
-  return field.value;
-}
+const DELIVERY_FIELDS = { "c-street": "street", "c-house": "house", "c-apartment": "apartment", "c-details": "details" };
 // Safari's password autofill may fill the fields without an input event: change counts too.
 const onField = (e) => {
   const id = e.target.id, v = e.target.value;
   if (id === "q") { S.query = v; render(); }
   else if (id === "x-q" && S.extras) { S.extras.q = v; render(); }
-  else if (id === "a-phone") { S.account.phone = e.type === "input" ? typedPhone(e.target) : v; render(); }
+  else if (id === "a-phone") {
+    S.account.phone = e.type === "input" ? typedPhone(e) : phoneText(v);
+    if (e.target.value !== S.account.phone) e.target.value = S.account.phone;
+  }
   else if (id === "a-name") { S.account.name = v; render(); }
   else if (id === "a-pass") { S.account.password = v; render(); }
   else if (id === "c-name") { S.checkout.name = v; store.set("name", v); render(); }
   else if (id === "c-comment") { S.checkout.comment = v; }
-  else if (id === "c-address") { S.checkout.address = v.slice(0, 200); store.set("address", S.checkout.address); render(); }
+  else if (DELIVERY_FIELDS[id]) {
+    const field = DELIVERY_FIELDS[id];
+    if (S.checkout.address[field] === v) return;
+    setAddressField(field, v);
+    if (field === "street") Object.assign(S.streetPicker, { open: e.type === "input", index: -1 });
+    render();
+  }
   else if (id === "item-comment-item" && S.item) { S.item.item_comment = v; }
   else if (id?.startsWith("item-comment-") && !S.checkout.busy) {
     const index = Number(id.slice("item-comment-".length)), line = S.cart[index];
@@ -1308,13 +1451,47 @@ function updateIngredientSelection(d) {
   render();
 }
 
-// The item page on a computer: a click beside it or Esc closes it.
-document.addEventListener("keydown", (e) => { if (e.key === "Escape" && S.item) { S.item = null; S.extras = null; render(); } });
+document.addEventListener("focusout", (e) => {
+  if (e.target.id !== "c-street" || !S.streetPicker.open) return;
+  // A tap can move focus before the option receives its click. Leave the list until the tap completes.
+  setTimeout(() => {
+    if (!S.streetPicker.open || document.activeElement?.closest("#street-picker")) return;
+    closeStreetPicker();
+    render();
+  }, 0);
+});
+document.addEventListener("mousedown", (e) => {
+  if (e.target.closest("[data-delivery-street]")) e.preventDefault();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.target.id === "c-street" && !e.isComposing) {
+    const picker = S.streetPicker;
+    const options = matchingDeliveryStreets();
+    if (e.key === "Escape" && picker.open) {
+      e.preventDefault(); closeStreetPicker(); render(); return;
+    }
+    if (e.key === "Enter" && picker.open && picker.index >= 0 && options[picker.index]) {
+      e.preventDefault(); chooseDeliveryStreet(options[picker.index]); return;
+    }
+    if ((e.key === "ArrowDown" || e.key === "ArrowUp") && options.length) {
+      e.preventDefault();
+      picker.open = true;
+      picker.index = e.key === "ArrowDown" ? Math.min(picker.index + 1, options.length - 1)
+        : picker.index < 0 ? options.length - 1 : Math.max(picker.index - 1, 0);
+      render();
+      document.getElementById("delivery-street-" + picker.index)?.scrollIntoView({ block: "nearest" });
+      return;
+    }
+  }
+  if (e.key === "Escape" && S.item) { S.item = null; S.extras = null; render(); }
+});
 document.addEventListener("click", async (e) => {
   if (e.target.id === "sheet" && S.item) { S.item = null; S.extras = null; render(); return; }
   const b = e.target.closest("button, [data-item]"); if (!b) return;
   const d = b.dataset, c = S.checkout, a = S.account;
+  if (d.deliveryStreet) { chooseDeliveryStreet(d.deliveryStreet); return; }
   if (d.tab) {
+    closeStreetPicker();
     if (d.tab === "menu" && S.tab === "menu") { S.query = ""; S.item = null; window.scrollTo(0, 0); }
     S.tab = d.tab; S.item = null; render(); window.scrollTo(0, 0);
     if (d.tab === "account") { await refreshMyOrders(); render(); }
@@ -1375,6 +1552,7 @@ document.addEventListener("click", async (e) => {
     case "dinein-mode": case "pickup-mode": case "delivery-mode": {
       const fulfillment = d.act.replace("-mode", "");
       if (!c.busy && c.fulfillment !== fulfillment) Object.assign(c, { fulfillment, day: 0, slot: null, error: null });
+      closeStreetPicker();
       render(); break;
     }
     case "asap": c.later = false; render(); break;
@@ -1432,8 +1610,8 @@ document.addEventListener("click", async (e) => {
     case "place": {
       if (c.busy || !guestPhone() || S.paused) break;
       const { pre, slot } = checkoutSchedule(c);
-      const delivery = isDeliveryCheckout(c), address = delivery ? c.address.trim().slice(0, 200) : "";
-      if ((pre && !slot) || (delivery && !address)) { render(); break; }
+      const delivery = isDeliveryCheckout(c), address = delivery ? deliveryAddressText(c.address) : "";
+      if ((pre && !slot) || (delivery && (!address || deliveryAddressTooLong(address)))) { render(); break; }
       c.busy = true; c.error = null; render();
       const payment = delivery || c.sbpEarlyAccess ? "sbp_early" : c.payment;
       try {
@@ -1510,6 +1688,12 @@ document.addEventListener("click", async (e) => {
 // ── Start ───────────────────────────────────────────────────────────────────
 (async () => {
   render();
+  fetch("delivery-streets.json").then(r => r.ok ? r.json() : []).then(rows => {
+    if (!Array.isArray(rows)) return;
+    S.streets = [...new Set(rows.filter(name => typeof name === "string" && name.trim()).map(name => name.trim()))]
+      .map(name => ({ name, search: streetSearchKey(name) }));
+    if (S.streetPicker.open) render();
+  }).catch(() => {});
   // Everything at once: the menu file, the server data and the guest's order load in parallel.
   const server = loadServer(), mine = refreshMyOrder();
   // Bundled photos: the kitchen's (credited) and the bar's illustrations (photos.json lists every one).
